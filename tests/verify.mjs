@@ -51,7 +51,7 @@ const constrained=questions.filter(q=>q.subject==='physics'&&q.chapters.includes
 const result=selectPaper(constrained,40,'balanced',true,{chapters:new Set(['physics-3.2'])});
 assert(result&&result.achieved<=40&&result.ids.every(id=>questionMap.get(id).chapters.includes('physics-3.2')));
 const html=fs.readFileSync(new URL('../docs/index.html',import.meta.url),'utf8');
-for(const src of [...html.matchAll(/(?:src|href)="([^"#]+\.(?:js|css))"/g)].map(m=>m[1])){
+for(const src of [...html.matchAll(/(?:src|href)="([^"#]+\.(?:js|css)(?:\?[^"#]*)?)"/g)].map(m=>m[1].split('?')[0])){
  assert(fs.existsSync(new URL('../docs/'+src,import.meta.url)),`Missing static asset ${src}`);
 }
 console.log(JSON.stringify({questions:questions.length,chapters:chapters.size,examTotalChecks:papers.size,selectionChecks,chapterConstrainedScore:result.achieved},null,2));

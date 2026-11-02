@@ -9,9 +9,10 @@
 - 94个课程分类，支持科目、章节、AS/A2、考试局、年份及估计难度筛选。
 - 目标总分组卷，尽量匹配难度配比、覆盖所选章节，题目不重复。
 - 保存练习、记录错题、避开已练题，导入和导出浏览器记录。
-- 公开页面提供原卷题号、页码、试卷链接及评分标准出处。
-- 导入本地题库后显示原题图，可打印或保存为PDF；未导入时可打印选题清单。
-- 无后端、无模型调用、无API密钥，无需构建或安装前端依赖。
+- 查看题目或组卷时自动读取原卷PDF，直接显示真实题目、公式、图表及共享题干。
+- 题图全部加载完成后，可打印完整练习卷或保存为PDF；加载失败时可重试，不会把来源清单当作完整试卷打印。
+- 保留原卷题号、页码、试卷链接及评分标准出处；支持本地离线题库导入。
+- 无后端、无模型调用、无API密钥。PDF.js已随站点提供，无需从第三方CDN加载程序。
 
 ## 收录范围与准确性
 
@@ -23,15 +24,17 @@
 
 ## 在本地运行
 
-直接打开 `docs/index.html`，或在仓库根目录运行：
+在线访问即可自动显示题目。在本地使用自动PDF渲染时，请在仓库根目录启动HTTP服务器：
 
 ```sh
 python -m http.server 8765 --directory docs
 ```
 
-然后打开 `http://127.0.0.1:8765/`。公开版不需要额外下载题图即可进行索引筛选、选题和查看原卷链接。
+然后打开 `http://127.0.0.1:8765/`。无需手工导入题图；第一次读取某套来源试卷时需要联网下载PDF，后续按原题区域显示。直接以 `file://` 打开HTML可能无法启动PDF工作线程，请使用HTTP服务器。
 
-## 导入已有离线题库
+## 可选：导入已有离线题库
+
+默认会自动加载来源PDF；需要离线显示或来源暂不可用时，也可以使用已有题图：
 
 1. 解压自己的 Chapter Lab 离线题库。
 2. 点击网页右上角「导入本地题库」。
@@ -55,11 +58,15 @@ python -m http.server 8765 --directory docs
 ```text
 docs/                 可直接发布的HTML/CSS/JavaScript
   selection.js        独立选题算法，可在Node中测试
+  question-geometry.js 原题区域坐标与画布裁切
+  question-renderer.js 原卷读取、并发控制、题图渲染及重试
+  vendor/pdfjs/       PDF.js 6.5.438及其Apache许可文件
   data.js             由公开索引生成的浏览器数据
 data/catalog.json     不包含完整题干和题图的公开索引
 data/curriculum.json  官方章节及其来源
 scripts/build.mjs     验证并生成docs/data.js
 tests/verify.mjs      索引完整性、整卷总分及组卷约束验证
+tests/geometry.mjs    PDF裁切边界与共享题干区域验证
 deployment/pages.yml  可选GitHub Actions模板
 ```
 
@@ -68,12 +75,13 @@ deployment/pages.yml  可选GitHub Actions模板
 ```sh
 node scripts/build.mjs
 node tests/verify.mjs
+node tests/geometry.mjs
 ```
 
 需要Node.js 20或更高版本，无第三方npm依赖。
 
 ## 数据与许可
 
-原创代码与项目说明采用 [MIT](LICENSE) 许可。考试试卷、评分标准、教材与考试局名称的权利属于相应权利人，**不在本项目的MIT许可内**；公开仓库不打包第三方试卷原图或完整题干。详情见 [第三方内容说明](THIRD_PARTY_NOTICES.md)。
+原创代码与项目说明采用 [MIT](LICENSE) 许可。PDF.js采用Apache-2.0许可，详见 `docs/vendor/pdfjs/LICENSE`。考试试卷、评分标准、教材与考试局名称的权利属于相应权利人，**不在本项目的MIT许可内**；公开仓库不打包第三方试卷原图或完整题干，浏览器直接读取来源PDF并显示题目。详情见 [第三方内容说明](THIRD_PARTY_NOTICES.md)。
 
 真题索引来源：[A Level Copilot](https://www.alevelcopilot.com/as-and-a-level-pastpapers)。课程分类来源链接保存在每个章节条目中。项目与上述考试局、出版社及来源网站无隶属或官方合作关系。

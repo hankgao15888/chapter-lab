@@ -1,13 +1,15 @@
 {
   "name": "chapter-lab",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "description": "A-Level chapter practice and rule-based paper selection",
   "license": "MIT",
   "repository": "github:hankgao15888/chapter-lab",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "build": "node scripts/build.mjs",
-    "test": "node tests/verify.mjs"
+    "test": "node tests/verify.mjs && node tests/geometry.mjs"
   }
 }

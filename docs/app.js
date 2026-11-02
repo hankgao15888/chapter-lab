@@ -37,10 +37,10 @@ function renderBank(){const qs=pool(),pageCount=Math.max(1,Math.ceil(qs.length/1
  $('#unmappedBtn').textContent=state.unmapped?'返回全部题目':'查看待归类';
  $('#questionList').innerHTML=qs.slice((state.page-1)*12,state.page*12).map(q=>card(q)).join('')||`<div class="empty-state"><strong>当前条件下还没有题目</strong>试试减少章节或考试局限制，也可到整卷档案查看原卷。<br>章节显示 0 表示当前导入的代表卷尚未覆盖。</div>`;
  $('#pagination').innerHTML=pagination(state.page,pageCount,'question');bindCards();}
-function card(q){const ch=qCh(q),done=saved.practice[q.id],added=state.basket.includes(q.id);return `<article class="question-card" data-id="${q.id}"><div class="card-top">${badge(q.board)}<span>${q.year} · ${esc(q.sourceUnit)}</span><span>原题 Q${q.number}</span>${done?`<span class="tag">${done==='wrong'?'↺ 错题':'✓ 已练'}</span>`:''}<span class="difficulty">${DIFF[q.difficulty]}（估计） · ${q.marks??'?'} 分</span></div><h3>${ch.length?ch.map(c=>esc(CH.get(c).zh)).join(' / '):'待归类 · 请对照原题核对'} <span class="tag">${saved.overrides[q.id]?'已调整':'自动匹配建议'}</span></h3><p class="snippet">${esc(q.text.slice(0,240))}</p><div class="tags">${ch.map(c=>`<span class="tag">${esc(CH.get(c).code)}</span>`).join('')}<span class="tag">${q.images.length?q.images.length+' 张原题图':'原卷定位'} · 原卷第 ${[...new Set(q.parts.map(p=>p.page))].join('、')} 页</span></div><div class="card-bottom"><button class="text-button" data-action="expand">查看原题 ▾</button><a class="text-button" href="${q.qp}#page=${q.parts[0]?.page||1}" target="_blank" rel="noopener">原卷 ↗</a>${q.ms?`<a class="text-button" href="${q.ms}" target="_blank" rel="noopener">评分标准 ↗</a>`:''}<button class="text-button" data-action="map">调整章节</button><button class="add ${added?'added':''}" data-action="add">${added?'✓ 已加入':'＋ 加入练习卷'}</button></div><div class="expand-slot"></div><div class="mapping-slot"></div></article>`;}
+function card(q){const ch=qCh(q),done=saved.practice[q.id],added=state.basket.includes(q.id);return `<article class="question-card" data-id="${q.id}"><div class="card-top">${badge(q.board)}<span>${q.year} · ${esc(q.sourceUnit)}</span><span>原题 Q${q.number}</span>${done?`<span class="tag">${done==='wrong'?'↺ 错题':'✓ 已练'}</span>`:''}<span class="difficulty">${DIFF[q.difficulty]}（估计） · ${q.marks??'?'} 分</span></div><h3>${ch.length?ch.map(c=>esc(CH.get(c).zh)).join(' / '):'待归类 · 请对照原题核对'} <span class="tag">${saved.overrides[q.id]?'已调整':'自动匹配建议'}</span></h3><p class="snippet">${esc(q.text.slice(0,240))}</p><div class="tags">${ch.map(c=>`<span class="tag">${esc(CH.get(c).code)}</span>`).join('')}<span class="tag">${q.images.length?q.images.length+' 张原题图':'可直接加载原题'} · 原卷第 ${[...new Set(q.parts.map(p=>p.page))].join('、')} 页</span></div><div class="card-bottom"><button class="text-button" data-action="expand">查看原题 ▾</button><a class="text-button" href="${q.qp}#page=${q.parts[0]?.page||1}" target="_blank" rel="noopener">原卷 ↗</a>${q.ms?`<a class="text-button" href="${q.ms}" target="_blank" rel="noopener">评分标准 ↗</a>`:''}<button class="text-button" data-action="map">调整章节</button><button class="add ${added?'added':''}" data-action="add">${added?'✓ 已加入':'＋ 加入练习卷'}</button></div><div class="expand-slot"></div><div class="mapping-slot"></div></article>`;}
 function bindCards(){$$('#questionList article').forEach(el=>{const q=QM.get(el.dataset.id);el.querySelectorAll('[data-action]').forEach(b=>b.onclick=()=>{
  if(b.dataset.action==='add'){const i=state.basket.indexOf(q.id);i>=0?state.basket.splice(i,1):state.basket.push(q.id);b.classList.toggle('added',i<0);b.textContent=i<0?'✓ 已加入':'＋ 加入练习卷';updateBasket();}
- if(b.dataset.action==='expand'){const slot=el.querySelector('.expand-slot');if(slot.innerHTML){slot.innerHTML='';b.textContent='查看原题 ▾';return;}slot.innerHTML=`<div class="question-images">${questionContent(q)}<div class="actions"><button class="quiet" data-result="correct">✓ 我已掌握</button><button class="quiet" data-result="wrong">↺ 加入错题</button><button class="quiet" data-result="clear">清除状态</button></div></div>`;slot.querySelectorAll('[data-result]').forEach(bt=>bt.onclick=()=>{bt.dataset.result==='clear'?delete saved.practice[q.id]:saved.practice[q.id]=bt.dataset.result;persist();toast(bt.dataset.result==='wrong'?'已加入错题，可筛选后再组卷。':'已更新练习状态。');});b.textContent='收起原题 ▴';}
+ if(b.dataset.action==='expand'){const slot=el.querySelector('.expand-slot');if(slot.innerHTML){slot.innerHTML='';b.textContent='查看原题 ▾';return;}slot.innerHTML=`<div class="question-images">${questionContent(q)}<div class="actions"><button class="quiet" data-result="correct">✓ 我已掌握</button><button class="quiet" data-result="wrong">↺ 加入错题</button><button class="quiet" data-result="clear">清除状态</button></div></div>`;slot.querySelectorAll('[data-result]').forEach(bt=>bt.onclick=()=>{bt.dataset.result==='clear'?delete saved.practice[q.id]:saved.practice[q.id]=bt.dataset.result;persist();toast(bt.dataset.result==='wrong'?'已加入错题，可筛选后再组卷。':'已更新练习状态。');});b.textContent='收起原题 ▴';ChapterLabQuestions.load(q).catch(()=>{});}
  if(b.dataset.action==='map'){const slot=el.querySelector('.mapping-slot');if(slot.innerHTML){slot.innerHTML='';return;}slot.innerHTML=`<div class="mapping-editor"><p>对照原图选择章节，可按 Ctrl / Command 多选。仅在本浏览器生效。</p><select multiple size="8">${DB.chapters.filter(c=>c.subject===q.subject).map(c=>`<option value="${c.id}" ${qCh(q).includes(c.id)?'selected':''}>${esc(c.code)} · ${esc(c.zh)} (${c.level})</option>`).join('')}</select><button class="primary" data-save-map>保存调整</button> <button class="quiet" data-reset-map>恢复自动建议</button></div>`;slot.querySelector('[data-save-map]').onclick=()=>{saved.overrides[q.id]=[...slot.querySelector('select').selectedOptions].map(o=>o.value);persist();renderChapters();renderBank();toast('章节调整已保存。');};slot.querySelector('[data-reset-map]').onclick=()=>{delete saved.overrides[q.id];persist();renderChapters();renderBank();};}
  });});}
 function pagination(page,count,type){return `<div class="pagination"><button data-page="${page-1}" data-type="${type}" ${page===1?'disabled':''}>← 上一页</button><span>${page} / ${count}</span><button data-page="${page+1}" data-type="${type}" ${page===count?'disabled':''}>下一页 →</button></div>`;}
@@ -65,11 +65,38 @@ $('#generateBtn').onclick=()=>{
  state.basket=result.ids;state.minutes=mins;state.title=$('#paperTitle').value.trim()||`${SUBJECT[state.subject]} · ${state.chapters.size?state.chapters.size+'章专题':'综合'}练习`;state.target=target;updateBasket();renderBank();$('#smartDialog').close();openPreview();if(result.achieved<target)toast(`已生成 ${result.achieved} 分，距目标差 ${target-result.achieved} 分。`);
 };
 function paperHtml(qs,answers){return qs.map((q,i)=>`<section class="paper-question"><div class="qhead"><strong>${i+1}. ${qCh(q).map(c=>esc(CH.get(c).zh)).join(' / ')||'待归类'}</strong><span>${q.marks??'?'} 分</span></div><div class="qsource">${BOARD[q.board]} · ${esc(q.title)} · 原题 Q${q.number} · 原卷页 ${q.parts.map(p=>p.page).join('、')}</div>${questionContent(q)}</section>`).join('')+(answers?`<section class="answer-section"><h2>答案出处与原题索引</h2><p class="print-note">按下表的「原题号」查阅原卷评分标准；跨页的子问属于同一道原题。</p><table class="answer-table"><thead><tr><th>本卷</th><th>出处 / 原题</th><th>评分标准</th></tr></thead><tbody>${qs.map((q,i)=>`<tr><td>${i+1}</td><td>${BOARD[q.board]} · ${esc(q.title)} · Q${q.number}</td><td>${q.ms?`<a href="${q.ms}" target="_blank" rel="noopener">原卷评分标准 · Q${q.number}</a>`:'暂无公开链接'}</td></tr>`).join('')}</tbody></table></section>`:'');}
-function openPreview(){if(!state.basket.length){toast('请先选题或智能组卷。');return;}previewQuestions=state.basket.map(id=>QM.get(id));const unknown=previewQuestions.filter(q=>!q.marks).length;$('#previewTitle').textContent=state.title||`${SUBJECT[state.subject]} · 章节练习`;$('#previewMeta').textContent=`${previewQuestions.length} 道 · ${total(previewQuestions)} 分${unknown?` + ${unknown} 道待核分`:''} · 建议 ${state.minutes} 分钟${state.target&&total(previewQuestions)<state.target?` · 距目标 ${state.target} 分差 ${state.target-total(previewQuestions)} 分`:''}`;$('#paperPreview').innerHTML=paperHtml(previewQuestions,$('#includeAnswers').checked);$('#printPaper').textContent=previewQuestions.every(q=>q.images.length)?'打印 / 存为 PDF':'打印选题清单';if(!$('#previewDialog').open)$('#previewDialog').showModal();}
-$('#previewBtn').onclick=openPreview;$('#includeAnswers').onchange=()=>{$('#paperPreview').innerHTML=paperHtml(previewQuestions,$('#includeAnswers').checked);};
+function updatePreviewStatus(){
+ const ready=previewQuestions.filter(q=>q.images.length).length;
+ const failures=previewQuestions.filter(q=>!q.images.length&&ChapterLabQuestions.state(q.id).status==='error').length;
+ const complete=ready===previewQuestions.length&&ready>0;
+ $('#previewProgress').textContent=complete?`${ready} 道真实题目已加载，可打印完整练习卷。`:`正在加载真实题目：${ready} / ${previewQuestions.length}${failures?`，${failures} 道暂未加载，请重试。`:'。'}`;
+ $('#printPaper').disabled=!complete;
+ $('#printPaper').textContent=complete?'打印 / 存为 PDF':`题目加载中 ${ready}/${previewQuestions.length}`;
+ $('#retryPaper').classList.toggle('hidden',!failures);
+}
+function loadPreviewQuestions(){
+ for(const q of previewQuestions)ChapterLabQuestions.load(q).catch(()=>{});
+ updatePreviewStatus();
+}
+function openPreview(){
+ if(!state.basket.length){toast('请先选题或智能组卷。');return;}
+ previewQuestions=state.basket.map(id=>QM.get(id));
+ const unknown=previewQuestions.filter(q=>!q.marks).length;
+ $('#previewTitle').textContent=state.title||`${SUBJECT[state.subject]} · 章节练习`;
+ $('#previewMeta').textContent=`${previewQuestions.length} 道 · ${total(previewQuestions)} 分${unknown?` + ${unknown} 道待核分`:''} · 建议 ${state.minutes} 分钟${state.target&&total(previewQuestions)<state.target?` · 距目标 ${state.target} 分差 ${state.target-total(previewQuestions)} 分`:''}`;
+ $('#paperPreview').innerHTML=paperHtml(previewQuestions,$('#includeAnswers').checked);
+ if(!$('#previewDialog').open)$('#previewDialog').showModal();
+ loadPreviewQuestions();
+}
+$('#previewBtn').onclick=openPreview;
+$('#retryPaper').onclick=loadPreviewQuestions;
+$('#includeAnswers').onchange=()=>{$('#paperPreview').innerHTML=paperHtml(previewQuestions,$('#includeAnswers').checked);};
 $('#printPaper').onclick=async()=>{
- $('#printArea').innerHTML=`<h1 class="print-title">${esc($('#previewTitle').textContent)}</h1><div class="print-meta">${esc($('#previewMeta').textContent)} · 姓名 __________ · 日期 __________</div><p class="print-note">本卷按 OxfordAQA 官方课程单元归类；分类与分值为自动建议，保留原卷题号便于核对。</p>`+paperHtml(previewQuestions,$('#includeAnswers').checked);
- await Promise.all($$('#printArea img').map(img=>img.decode().catch(()=>null)));$('#previewDialog').close();window.print();
+ if(previewQuestions.some(q=>!q.images.length)){loadPreviewQuestions();toast('正在加载题目，全部加载后即可打印。');return;}
+ $('#printArea').innerHTML=`<h1 class="print-title">${esc($('#previewTitle').textContent)}</h1><div class="print-meta">${esc($('#previewMeta').textContent)} · 姓名 __________ · 日期 __________</div><p class="print-note">本卷按 OxfordAQA 官方课程单元归类；保留原题图像、共享题干与原题号便于核对。</p>`+paperHtml(previewQuestions,$('#includeAnswers').checked);
+ try{await Promise.all($$('#printArea img').map(img=>img.decode()));}
+ catch{toast('部分题图尚未准备完成，请稍后重试打印。');return;}
+ $('#previewDialog').close();window.print();
 };
 function download(name,obj){const url=URL.createObjectURL(new Blob([JSON.stringify(obj,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),2000);}
 $('#exportPaper').onclick=()=>download('chapter-lab-paper.json',{format:'chapterlab-paper-v1',title:$('#previewTitle').textContent,minutes:state.minutes,questions:previewQuestions.map(q=>({...q,images:[],chapters:qCh(q)}))});
@@ -83,10 +110,22 @@ $('#questionTotal').textContent=DB.questions.length.toLocaleString('en-US');$('#
 renderChapters();renderBank();updateBasket();
 
 
-function questionContent(q){
+function questionVisual(q){
  if(q.images.length)return q.images.map(src=>`<img src="${esc(src)}" alt="${esc(BOARD[q.board])} ${esc(q.title)} 原题 Q${q.number}" loading="eager">`).join('');
- return `<div class="source-question"><strong>原题 Q${q.number} · 原卷第 ${[...new Set(q.parts.map(p=>p.page))].join('、')} 页</strong><p>公开版保留真题索引与来源链接。导入本地题库后，可在此显示并打印原题图。</p><a class="button" href="${esc(q.qp)}#page=${q.parts[0]?.page||1}" target="_blank" rel="noopener">打开原卷查看题目 ↗</a></div>`;
+ const status=ChapterLabQuestions.state(q.id);
+ if(status.status==='error')return `<div class="question-load-error" role="status"><strong>这道题暂未加载</strong><p>${esc(status.error)}</p><button class="quiet" data-load-question="${esc(q.id)}">重试加载题目</button> <a href="${esc(q.qp)}#page=${q.parts[0]?.page||1}" target="_blank" rel="noopener">打开原卷 ↗</a></div>`;
+ return `<div class="question-loading" role="status"><span class="loading-dot"></span><strong>正在加载真实题目…</strong><p>原题 Q${q.number} · ${q.parts.length} 个题图区域。公式与图表将随题目一同显示。</p></div>`;
 }
+function questionContent(q){return `<div class="question-visual" data-question-visual="${esc(q.id)}">${questionVisual(q)}</div>`;}
+ChapterLabQuestions.subscribe(id=>{
+ const q=QM.get(id);if(!q)return;
+ $$('[data-question-visual]').filter(el=>el.dataset.questionVisual===id).forEach(el=>el.innerHTML=questionVisual(q));
+ if($('#previewDialog').open)updatePreviewStatus();
+});
+document.addEventListener('click',event=>{
+ const button=event.target.closest('[data-load-question]');
+ if(button){const q=QM.get(button.dataset.loadQuestion);if(q)ChapterLabQuestions.load(q).catch(()=>{});}
+});
 const localImageUrls=[];
 $('#importBankBtn').onclick=()=>$('#localBankInput').click();
 $('#localBankInput').onchange=async e=>{

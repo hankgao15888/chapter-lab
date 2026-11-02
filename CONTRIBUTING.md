@@ -9,6 +9,7 @@
 ```sh
 node scripts/build.mjs
 node tests/verify.mjs
+node tests/geometry.mjs
 ```
 
 修改界面后，请检查窄屏和桌面布局、筛选、组卷、来源链接及打印预览。本项目无后端服务，不需要也不应提交访问令牌、个人记录或私有站点配置。

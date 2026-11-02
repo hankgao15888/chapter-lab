@@ -29,6 +29,7 @@ jobs:
         run: |
           node scripts/build.mjs
           node tests/verify.mjs
+          node tests/geometry.mjs
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:

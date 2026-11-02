@@ -5,3 +5,5 @@
 @media print{#printArea .paper-question img{width:auto;height:auto;max-width:100%;max-height:245mm}}
 
 .header-actions{display:flex;gap:8px;align-items:center}.distribution-note{padding:12px 15px;margin:0 0 20px;border:1px solid var(--line);border-radius:8px;background:#eef3e6;font-size:11px;color:#64775d}.source-question{padding:24px;background:#f4f6ef;border:1px dashed #cfd9c6;border-radius:8px;font-size:12px;margin:12px 0}.source-question p{font-size:11px;color:#7a8871}@media(max-width:700px){.header-actions{margin-left:auto;gap:5px}.header-actions button{font-size:9px;padding:6px}.distribution-note{font-size:10px}}
+
+.question-loading,.question-load-error{padding:26px 20px;margin:14px 0;border:1px solid var(--line);background:#f0f5e9;border-radius:9px;font-size:12px}.question-loading p,.question-load-error p{font-size:11px;color:var(--muted)}.question-load-error{background:#fbf4ec;border-color:#ead4ba}.loading-dot{display:inline-block;width:9px;height:9px;background:var(--green);border-radius:50%;margin-right:10px;animation:question-pulse 1s ease-in-out infinite}button:disabled{cursor:wait;opacity:.55}@keyframes question-pulse{50%{opacity:.25}}
