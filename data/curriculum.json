@@ -1,0 +1,1688 @@
+{
+  "generatedAt": "2026-11-02",
+  "basis": "OxfordAQA current specifications 9630, 9660 and 9665; Mathematics/Further Mathematics Version 5.2. Excludes revised 9760/9765 first teaching 2027.",
+  "classificationNote": "Keywords are heuristic hints, not sufficient evidence for confirmed question classification. Cross-board questions may exceed or only partially overlap OxfordAQA scope; retain uncertain or out-of-scope status. AS/A2 is target syllabus level, not source paper level.",
+  "chapters": [
+    {
+      "id": "mathematics-P1.1",
+      "subject": "mathematics",
+      "unit": "P1",
+      "level": "AS",
+      "code": "P1.1",
+      "name": "Algebra",
+      "zh": "代数",
+      "keywords": [
+        "surds",
+        "rationalise",
+        "indices",
+        "quadratic",
+        "discriminant",
+        "factor theorem",
+        "remainder theorem",
+        "complete the square",
+        "inequalit",
+        "polynomial",
+        "sketch"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "mathematics-P1.2",
+      "subject": "mathematics",
+      "unit": "P1",
+      "level": "AS",
+      "code": "P1.2",
+      "name": "Coordinate geometry",
+      "zh": "坐标几何",
+      "keywords": [
+        "straight line",
+        "midpoint",
+        "mid-point",
+        "perpendicular",
+        "parallel",
+        "gradient",
+        "intersection"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "mathematics-P1.3",
+      "subject": "mathematics",
+      "unit": "P1",
+      "level": "AS",
+      "code": "P1.3",
+      "name": "Differentiation",
+      "zh": "微分",
+      "keywords": [
+        "differentiat",
+        "derivative",
+        "stationary",
+        "tangent",
+        "normal to",
+        "maximum",
+        "minimum",
+        "increasing",
+        "decreasing"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "mathematics-P1.4",
+      "subject": "mathematics",
+      "unit": "P1",
+      "level": "AS",
+      "code": "P1.4",
+      "name": "Integration",
+      "zh": "积分",
+      "keywords": [
+        "integrat",
+        "area under",
+        "area bounded",
+        "trapezi"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "mathematics-P1.5",
+      "subject": "mathematics",
+      "unit": "P1",
+      "level": "AS",
+      "code": "P1.5",
+      "name": "Sequences and series",
+      "zh": "数列与级数",
+      "keywords": [
+        "sequence",
+        "series",
+        "arithmetic progression",
+        "geometric progression",
+        "common ratio",
+        "common difference",
+        "binomial expansion",
+        "nth term",
+        "sum to infinity"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "mathematics-PP1.1",
+      "subject": "mathematics",
+      "unit": "PSM1",
+      "level": "AS",
+      "code": "PP1.1",
+      "name": "Circle",
+      "zh": "圆",
+      "keywords": [
+        "circle",
+        "radius",
+        "centre",
+        "center",
+        "chord"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "mathematics-PP1.2",
+      "subject": "mathematics",
+      "unit": "PSM1",
+      "level": "AS",
+      "code": "PP1.2",
+      "name": "Trigonometry",
+      "zh": "三角学",
+      "keywords": [
+        "trigonometric",
+        "sine rule",
+        "cosine rule",
+        "radian",
+        "sector",
+        "sin ",
+        "cos ",
+        "tan "
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "mathematics-PP1.3",
+      "subject": "mathematics",
+      "unit": "PSM1",
+      "level": "AS",
+      "code": "PP1.3",
+      "name": "Exponential and logarithms",
+      "zh": "指数与对数",
+      "keywords": [
+        "logarithm",
+        "exponential",
+        "log "
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "mathematics-S1.1",
+      "subject": "mathematics",
+      "unit": "PSM1",
+      "level": "AS",
+      "code": "S1.1",
+      "name": "Further probability",
+      "zh": "概率",
+      "keywords": [
+        "probability",
+        "independent events",
+        "mutually exclusive",
+        "conditional"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "mathematics-S1.2",
+      "subject": "mathematics",
+      "unit": "PSM1",
+      "level": "AS",
+      "code": "S1.2",
+      "name": "Discrete random variables",
+      "zh": "离散随机变量",
+      "keywords": [
+        "discrete random",
+        "probability distribution",
+        "variance",
+        "expected value",
+        "expectation",
+        "standard deviation"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "mathematics-S1.3",
+      "subject": "mathematics",
+      "unit": "PSM1",
+      "level": "AS",
+      "code": "S1.3",
+      "name": "Bernoulli and binomial distributions",
+      "zh": "伯努利与二项分布",
+      "keywords": [
+        "bernoulli",
+        "binomial distribution",
+        "binomially distributed"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "mathematics-M1.1",
+      "subject": "mathematics",
+      "unit": "PSM1",
+      "level": "AS",
+      "code": "M1.1",
+      "name": "Motion in a straight line with constant acceleration",
+      "zh": "直线匀加速运动",
+      "keywords": [
+        "constant acceleration",
+        "uniform acceleration",
+        "velocity-time",
+        "speed-time",
+        "brakes",
+        "braking"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "mathematics-M1.2",
+      "subject": "mathematics",
+      "unit": "PSM1",
+      "level": "AS",
+      "code": "M1.2",
+      "name": "Motion in a straight line with variable acceleration",
+      "zh": "直线变加速运动",
+      "keywords": [
+        "variable acceleration",
+        "velocity.*function",
+        "acceleration.*function",
+        "displacement"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "mathematics-M1.3",
+      "subject": "mathematics",
+      "unit": "PSM1",
+      "level": "AS",
+      "code": "M1.3",
+      "name": "Forces and Newton's laws",
+      "zh": "力与牛顿定律",
+      "keywords": [
+        "newton",
+        "resultant force",
+        "friction",
+        "tension",
+        "pulley",
+        "connected particles",
+        "inclined plane"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "mathematics-M1.4",
+      "subject": "mathematics",
+      "unit": "PSM1",
+      "level": "AS",
+      "code": "M1.4",
+      "name": "Momentum and impulse",
+      "zh": "动量与冲量",
+      "keywords": [
+        "momentum",
+        "impulse",
+        "colli",
+        "coalesce"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "mathematics-P2.1",
+      "subject": "mathematics",
+      "unit": "P2",
+      "level": "A2",
+      "code": "P2.1",
+      "name": "Algebra and functions",
+      "zh": "代数与函数",
+      "keywords": [
+        "function",
+        "domain",
+        "range",
+        "inverse",
+        "composite",
+        "modulus",
+        "partial fraction",
+        "rational expression"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "mathematics-P2.2",
+      "subject": "mathematics",
+      "unit": "P2",
+      "level": "A2",
+      "code": "P2.2",
+      "name": "Sequences and series",
+      "zh": "数列与级数进阶",
+      "keywords": [
+        "binomial expansion",
+        "binomial series",
+        "series expansion",
+        "powers of x"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "mathematics-P2.3",
+      "subject": "mathematics",
+      "unit": "P2",
+      "level": "A2",
+      "code": "P2.3",
+      "name": "Coordinate geometry in the (x, y) plane",
+      "zh": "平面坐标几何与参数方程",
+      "keywords": [
+        "parametric",
+        "cartesian"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "mathematics-P2.4",
+      "subject": "mathematics",
+      "unit": "P2",
+      "level": "A2",
+      "code": "P2.4",
+      "name": "Trigonometry",
+      "zh": "三角学进阶",
+      "keywords": [
+        "trigonometric",
+        "sec ",
+        "cosec",
+        "cot ",
+        "double.angle",
+        "sin ",
+        "cos ",
+        "tan "
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "mathematics-P2.5",
+      "subject": "mathematics",
+      "unit": "P2",
+      "level": "A2",
+      "code": "P2.5",
+      "name": "Exponentials and logarithms",
+      "zh": "指数与对数进阶",
+      "keywords": [
+        "exponential",
+        "logarithm",
+        "ln ",
+        "growth",
+        "decay"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "mathematics-P2.6",
+      "subject": "mathematics",
+      "unit": "P2",
+      "level": "A2",
+      "code": "P2.6",
+      "name": "Differentiation",
+      "zh": "微分进阶",
+      "keywords": [
+        "differentiat",
+        "derivative",
+        "stationary",
+        "tangent",
+        "normal to",
+        "product rule",
+        "quotient rule",
+        "chain rule",
+        "rate of change"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "mathematics-P2.7",
+      "subject": "mathematics",
+      "unit": "P2",
+      "level": "A2",
+      "code": "P2.7",
+      "name": "Integration",
+      "zh": "积分进阶",
+      "keywords": [
+        "integrat",
+        "substitution",
+        "area bounded",
+        "volume of revolution",
+        "trapezi"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "mathematics-P2.8",
+      "subject": "mathematics",
+      "unit": "P2",
+      "level": "A2",
+      "code": "P2.8",
+      "name": "Differential equations",
+      "zh": "微分方程",
+      "keywords": [
+        "differential equation",
+        "separat.*variables",
+        "general solution",
+        "particular solution"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "mathematics-P2.9",
+      "subject": "mathematics",
+      "unit": "P2",
+      "level": "A2",
+      "code": "P2.9",
+      "name": "Numerical methods",
+      "zh": "数值方法",
+      "keywords": [
+        "iteration",
+        "iterative",
+        "approximate.*root",
+        "change of sign",
+        "numerical method"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "mathematics-P2.10",
+      "subject": "mathematics",
+      "unit": "P2",
+      "level": "A2",
+      "code": "P2.10",
+      "name": "Vectors",
+      "zh": "向量",
+      "keywords": [
+        "vector",
+        "scalar product",
+        "position vector",
+        "dot product",
+        "i.*j.*k"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "mathematics-S2.1",
+      "subject": "mathematics",
+      "unit": "S2",
+      "level": "A2",
+      "code": "S2.1",
+      "name": "Poisson distribution",
+      "zh": "泊松分布",
+      "keywords": [
+        "poisson"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "mathematics-S2.2",
+      "subject": "mathematics",
+      "unit": "S2",
+      "level": "A2",
+      "code": "S2.2",
+      "name": "Continuous random variables",
+      "zh": "连续随机变量",
+      "keywords": [
+        "continuous random",
+        "probability density",
+        "cumulative distribution",
+        "density function"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "mathematics-S2.3",
+      "subject": "mathematics",
+      "unit": "S2",
+      "level": "A2",
+      "code": "S2.3",
+      "name": "Exponential distribution",
+      "zh": "指数分布",
+      "keywords": [
+        "exponential distribution",
+        "exponentially distributed"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "mathematics-S2.4",
+      "subject": "mathematics",
+      "unit": "S2",
+      "level": "A2",
+      "code": "S2.4",
+      "name": "Normal distribution",
+      "zh": "正态分布",
+      "keywords": [
+        "normal distribution",
+        "normally distributed",
+        "standard normal"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "mathematics-S2.5",
+      "subject": "mathematics",
+      "unit": "S2",
+      "level": "A2",
+      "code": "S2.5",
+      "name": "Estimation",
+      "zh": "参数估计",
+      "keywords": [
+        "estimat",
+        "sample mean",
+        "central limit",
+        "standard error",
+        "sampling distribution"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "mathematics-S2.6",
+      "subject": "mathematics",
+      "unit": "S2",
+      "level": "A2",
+      "code": "S2.6",
+      "name": "Hypothesis testing",
+      "zh": "假设检验",
+      "keywords": [
+        "hypothesis",
+        "hypotheses",
+        "significance",
+        "critical region",
+        "critical value",
+        "p-value",
+        "one-tailed",
+        "two-tailed",
+        "test statistic"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "mathematics-M2.1",
+      "subject": "mathematics",
+      "unit": "M2",
+      "level": "A2",
+      "code": "M2.1",
+      "name": "Mathematical modelling",
+      "zh": "数学建模",
+      "keywords": [
+        "modelling assumption",
+        "modeling assumption",
+        "model.*valid",
+        "model.*limitation",
+        "particle",
+        "inextensible"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "mathematics-M2.2",
+      "subject": "mathematics",
+      "unit": "M2",
+      "level": "A2",
+      "code": "M2.2",
+      "name": "Kinematics",
+      "zh": "运动学",
+      "keywords": [
+        "position vector",
+        "velocity vector",
+        "acceleration vector",
+        "displacement",
+        "velocity",
+        "acceleration"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "mathematics-M2.3",
+      "subject": "mathematics",
+      "unit": "M2",
+      "level": "A2",
+      "code": "M2.3",
+      "name": "Statics and forces",
+      "zh": "静力学与力",
+      "keywords": [
+        "equilibrium",
+        "moment",
+        "friction",
+        "limiting",
+        "lamina",
+        "centre of mass",
+        "center of mass",
+        "ladder",
+        "rod",
+        "beam"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "mathematics-M2.4",
+      "subject": "mathematics",
+      "unit": "M2",
+      "level": "A2",
+      "code": "M2.4",
+      "name": "Newton's law of motion",
+      "zh": "牛顿运动定律",
+      "keywords": [
+        "newton",
+        "pulley",
+        "connected particles",
+        "tension",
+        "resistance",
+        "resultant force"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "mathematics-M2.5",
+      "subject": "mathematics",
+      "unit": "M2",
+      "level": "A2",
+      "code": "M2.5",
+      "name": "Projectiles",
+      "zh": "抛体运动",
+      "keywords": [
+        "projectile",
+        "projection",
+        "projected",
+        "horizontal range",
+        "greatest height"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "mathematics-M2.6",
+      "subject": "mathematics",
+      "unit": "M2",
+      "level": "A2",
+      "code": "M2.6",
+      "name": "Work and energy",
+      "zh": "功与能",
+      "keywords": [
+        "work done",
+        "kinetic energy",
+        "potential energy",
+        "power",
+        "conservation of energy"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "mathematics-M2.7",
+      "subject": "mathematics",
+      "unit": "M2",
+      "level": "A2",
+      "code": "M2.7",
+      "name": "Uniform circular motion",
+      "zh": "匀速圆周运动",
+      "keywords": [
+        "circular motion",
+        "angular speed",
+        "centripetal",
+        "conical pendulum",
+        "horizontal circle"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FP1.1",
+      "subject": "furthermathematics",
+      "unit": "FP1",
+      "level": "AS",
+      "code": "FP1.1",
+      "name": "Algebra and graphs",
+      "zh": "代数与图像",
+      "keywords": [
+        "rational function",
+        "asymptote",
+        "hyperbola",
+        "ellipse",
+        "parabola",
+        "inequalit",
+        "sketch"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FP1.2",
+      "subject": "furthermathematics",
+      "unit": "FP1",
+      "level": "AS",
+      "code": "FP1.2",
+      "name": "Coordinate geometry",
+      "zh": "坐标几何",
+      "keywords": [
+        "locus",
+        "loci",
+        "equidistant",
+        "distance from"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FP1.3",
+      "subject": "furthermathematics",
+      "unit": "FP1",
+      "level": "AS",
+      "code": "FP1.3",
+      "name": "Complex numbers",
+      "zh": "复数",
+      "keywords": [
+        "complex",
+        "argand",
+        "conjugate",
+        "modulus",
+        "argument",
+        "imaginary"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FP1.4",
+      "subject": "furthermathematics",
+      "unit": "FP1",
+      "level": "AS",
+      "code": "FP1.4",
+      "name": "Roots and coefficients of a quadratic equation",
+      "zh": "二次方程的根与系数",
+      "keywords": [
+        "roots",
+        "coefficients",
+        "quadratic equation",
+        "alpha",
+        "beta"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FP1.5",
+      "subject": "furthermathematics",
+      "unit": "FP1",
+      "level": "AS",
+      "code": "FP1.5",
+      "name": "Series",
+      "zh": "级数",
+      "keywords": [
+        "series",
+        "sum",
+        "summation",
+        "method of differences"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FP1.6",
+      "subject": "furthermathematics",
+      "unit": "FP1",
+      "level": "AS",
+      "code": "FP1.6",
+      "name": "Trigonometry",
+      "zh": "三角学",
+      "keywords": [
+        "general solution",
+        "trigonometric",
+        "sin ",
+        "cos ",
+        "tan "
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FP1.7",
+      "subject": "furthermathematics",
+      "unit": "FP1",
+      "level": "AS",
+      "code": "FP1.7",
+      "name": "Calculus",
+      "zh": "微积分",
+      "keywords": [
+        "first principles",
+        "differentiat",
+        "rate of change",
+        "small change",
+        "improper integral",
+        "integrat"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FPP1.1",
+      "subject": "furthermathematics",
+      "unit": "FPSM1",
+      "level": "AS",
+      "code": "FPP1.1",
+      "name": "Matrices and transformations",
+      "zh": "矩阵与变换",
+      "keywords": [
+        "matri",
+        "determinant",
+        "inverse",
+        "singular",
+        "transformation",
+        "invariant",
+        "shear"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FPP1.2",
+      "subject": "furthermathematics",
+      "unit": "FPSM1",
+      "level": "AS",
+      "code": "FPP1.2",
+      "name": "Linear graphs",
+      "zh": "线性化图像",
+      "keywords": [
+        "linear law",
+        "linear graph",
+        "straight.line graph",
+        "logarithm",
+        "log10"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FPP1.3",
+      "subject": "furthermathematics",
+      "unit": "FPSM1",
+      "level": "AS",
+      "code": "FPP1.3",
+      "name": "Numerical methods",
+      "zh": "数值方法",
+      "keywords": [
+        "newton.raphson",
+        "euler",
+        "bisection",
+        "interpolation",
+        "numerical",
+        "iteration"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FS1.1",
+      "subject": "furthermathematics",
+      "unit": "FPSM1",
+      "level": "AS",
+      "code": "FS1.1",
+      "name": "Bayes' theorem",
+      "zh": "贝叶斯定理",
+      "keywords": [
+        "bayes",
+        "tree diagram",
+        "conditional probability"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FS1.2",
+      "subject": "furthermathematics",
+      "unit": "FPSM1",
+      "level": "AS",
+      "code": "FS1.2",
+      "name": "Uniform distribution",
+      "zh": "均匀分布",
+      "keywords": [
+        "uniform distribution",
+        "uniformly distributed"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FS1.3",
+      "subject": "furthermathematics",
+      "unit": "FPSM1",
+      "level": "AS",
+      "code": "FS1.3",
+      "name": "Geometric distribution",
+      "zh": "几何分布",
+      "keywords": [
+        "geometric distribution",
+        "geometrically distributed",
+        "first success"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FS1.4",
+      "subject": "furthermathematics",
+      "unit": "FPSM1",
+      "level": "AS",
+      "code": "FS1.4",
+      "name": "Probability generating functions",
+      "zh": "概率生成函数",
+      "keywords": [
+        "probability generating",
+        "pgf",
+        "p.g.f"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FS1.5",
+      "subject": "furthermathematics",
+      "unit": "FPSM1",
+      "level": "AS",
+      "code": "FS1.5",
+      "name": "Linear combinations of discrete random variables",
+      "zh": "离散随机变量的线性组合",
+      "keywords": [
+        "linear combination",
+        "covariance",
+        "correlation",
+        "independent random variables"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FM1.1",
+      "subject": "furthermathematics",
+      "unit": "FPSM1",
+      "level": "AS",
+      "code": "FM1.1",
+      "name": "Constant velocity in two dimensions",
+      "zh": "二维匀速运动",
+      "keywords": [
+        "relative velocity",
+        "closest approach",
+        "intercept",
+        "ships",
+        "ship",
+        "bearing",
+        "constant velocity",
+        "two dimensions"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FM1.2",
+      "subject": "furthermathematics",
+      "unit": "FPSM1",
+      "level": "AS",
+      "code": "FM1.2",
+      "name": "Dimensional analysis",
+      "zh": "量纲分析",
+      "keywords": [
+        "dimension",
+        "dimensional",
+        "MLT"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FM1.3",
+      "subject": "furthermathematics",
+      "unit": "FPSM1",
+      "level": "AS",
+      "code": "FM1.3",
+      "name": "Collisions in one dimension",
+      "zh": "一维碰撞",
+      "keywords": [
+        "colli",
+        "restitution",
+        "momentum",
+        "impulse",
+        "smooth sphere"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FP2.1",
+      "subject": "furthermathematics",
+      "unit": "FP2",
+      "level": "A2",
+      "code": "FP2.1",
+      "name": "Roots and polynomials",
+      "zh": "多项式与根",
+      "keywords": [
+        "polynomial",
+        "roots",
+        "coefficients",
+        "conjugate"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FP2.2",
+      "subject": "furthermathematics",
+      "unit": "FP2",
+      "level": "A2",
+      "code": "FP2.2",
+      "name": "De Moivre's theorem",
+      "zh": "棣莫弗定理",
+      "keywords": [
+        "moivre",
+        "roots of unity",
+        "complex",
+        "argand",
+        "exponential form"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FP2.3",
+      "subject": "furthermathematics",
+      "unit": "FP2",
+      "level": "A2",
+      "code": "FP2.3",
+      "name": "Polar coordinates",
+      "zh": "极坐标",
+      "keywords": [
+        "polar",
+        "r.*theta",
+        "r.*θ"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FP2.4",
+      "subject": "furthermathematics",
+      "unit": "FP2",
+      "level": "A2",
+      "code": "FP2.4",
+      "name": "Proof by induction",
+      "zh": "数学归纳法",
+      "keywords": [
+        "induction",
+        "inductive"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FP2.5",
+      "subject": "furthermathematics",
+      "unit": "FP2",
+      "level": "A2",
+      "code": "FP2.5",
+      "name": "Finite series",
+      "zh": "有限级数",
+      "keywords": [
+        "finite series",
+        "method of differences",
+        "partial fraction",
+        "summation"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FP2.6",
+      "subject": "furthermathematics",
+      "unit": "FP2",
+      "level": "A2",
+      "code": "FP2.6",
+      "name": "Series and limits",
+      "zh": "级数与极限",
+      "keywords": [
+        "maclaurin",
+        "taylor",
+        "series expansion",
+        "limit",
+        "improper integral"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FP2.7",
+      "subject": "furthermathematics",
+      "unit": "FP2",
+      "level": "A2",
+      "code": "FP2.7",
+      "name": "The calculus of inverse trigonometrical functions",
+      "zh": "反三角函数的微积分",
+      "keywords": [
+        "inverse trig",
+        "arcsin",
+        "arccos",
+        "arctan"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FP2.8",
+      "subject": "furthermathematics",
+      "unit": "FP2",
+      "level": "A2",
+      "code": "FP2.8",
+      "name": "Arc length and surface area of revolution",
+      "zh": "弧长与旋转曲面面积",
+      "keywords": [
+        "arc length",
+        "surface.*revolution",
+        "surface area"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FP2.9",
+      "subject": "furthermathematics",
+      "unit": "FP2",
+      "level": "A2",
+      "code": "FP2.9",
+      "name": "Hyperbolic functions",
+      "zh": "双曲函数",
+      "keywords": [
+        "hyperbolic",
+        "sinh",
+        "cosh",
+        "tanh",
+        "arsinh",
+        "arcosh",
+        "artanh"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FP2.10",
+      "subject": "furthermathematics",
+      "unit": "FP2",
+      "level": "A2",
+      "code": "FP2.10",
+      "name": "Differential equations - first order",
+      "zh": "一阶微分方程",
+      "keywords": [
+        "first.order",
+        "integrating factor",
+        "linear differential equation"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FP2.11",
+      "subject": "furthermathematics",
+      "unit": "FP2",
+      "level": "A2",
+      "code": "FP2.11",
+      "name": "Differential equations - second order",
+      "zh": "二阶微分方程",
+      "keywords": [
+        "second.order",
+        "auxiliary equation",
+        "complementary function",
+        "particular integral",
+        "differential equation"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FP2.12",
+      "subject": "furthermathematics",
+      "unit": "FP2",
+      "level": "A2",
+      "code": "FP2.12",
+      "name": "Vectors and three-dimensional coordinate geometry",
+      "zh": "向量与三维坐标几何",
+      "keywords": [
+        "vector",
+        "scalar triple",
+        "vector product",
+        "cross product",
+        "plane",
+        "coplanar"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FP2.13",
+      "subject": "furthermathematics",
+      "unit": "FP2",
+      "level": "A2",
+      "code": "FP2.13",
+      "name": "Matrix algebra",
+      "zh": "矩阵代数",
+      "keywords": [
+        "matri",
+        "eigenvalue",
+        "eigenvector",
+        "characteristic equation",
+        "determinant",
+        "invariant",
+        "singular"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FP2.14",
+      "subject": "furthermathematics",
+      "unit": "FP2",
+      "level": "A2",
+      "code": "FP2.14",
+      "name": "Solution of linear equations",
+      "zh": "线性方程组",
+      "keywords": [
+        "linear equation",
+        "simultaneous",
+        "three unknowns",
+        "configuration of planes"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FS2.1",
+      "subject": "furthermathematics",
+      "unit": "FS2",
+      "level": "A2",
+      "code": "FS2.1",
+      "name": "Moment generating functions",
+      "zh": "矩生成函数",
+      "keywords": [
+        "moment generating",
+        "mgf",
+        "m.g.f"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FS2.2",
+      "subject": "furthermathematics",
+      "unit": "FS2",
+      "level": "A2",
+      "code": "FS2.2",
+      "name": "Estimators",
+      "zh": "估计量",
+      "keywords": [
+        "estimator",
+        "unbiased",
+        "consistent",
+        "efficiency",
+        "pooled"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FS2.3",
+      "subject": "furthermathematics",
+      "unit": "FS2",
+      "level": "A2",
+      "code": "FS2.3",
+      "name": "Estimation",
+      "zh": "区间估计",
+      "keywords": [
+        "confidence interval",
+        "sample size",
+        "confidence level"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FS2.4",
+      "subject": "furthermathematics",
+      "unit": "FS2",
+      "level": "A2",
+      "code": "FS2.4",
+      "name": "Further hypothesis testing",
+      "zh": "假设检验进阶",
+      "keywords": [
+        "hypothesis",
+        "hypotheses",
+        "chi.squared",
+        "goodness.of.fit",
+        "contingency",
+        "independence",
+        "type II",
+        "type 2",
+        "t.test",
+        "paired",
+        "variance"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FM2.1",
+      "subject": "furthermathematics",
+      "unit": "FM2",
+      "level": "A2",
+      "code": "FM2.1",
+      "name": "Vertical circular motion",
+      "zh": "竖直圆周运动",
+      "keywords": [
+        "vertical circle",
+        "vertical circular",
+        "complete.*circle",
+        "string.*slack",
+        "contact.*circle"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FM2.2",
+      "subject": "furthermathematics",
+      "unit": "FM2",
+      "level": "A2",
+      "code": "FM2.2",
+      "name": "Projectiles launched onto inclined planes",
+      "zh": "斜面抛体运动",
+      "keywords": [
+        "projectile",
+        "projected",
+        "projection",
+        "inclined plane",
+        "range"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FM2.3",
+      "subject": "furthermathematics",
+      "unit": "FM2",
+      "level": "A2",
+      "code": "FM2.3",
+      "name": "Elastic strings and springs",
+      "zh": "弹性绳与弹簧",
+      "keywords": [
+        "elastic string",
+        "elastic spring",
+        "elastic.*energy",
+        "hooke",
+        "modulus of elasticity",
+        "stiffness",
+        "natural length"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FM2.4",
+      "subject": "furthermathematics",
+      "unit": "FM2",
+      "level": "A2",
+      "code": "FM2.4",
+      "name": "Collisions in two dimensions",
+      "zh": "二维碰撞",
+      "keywords": [
+        "oblique collision",
+        "colli",
+        "restitution",
+        "line of centres",
+        "line of centers",
+        "impulse"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FM2.5",
+      "subject": "furthermathematics",
+      "unit": "FM2",
+      "level": "A2",
+      "code": "FM2.5",
+      "name": "Application of differential equations",
+      "zh": "微分方程的力学应用",
+      "keywords": [
+        "differential equation",
+        "resistance.*speed",
+        "resistive force",
+        "terminal velocity"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "furthermathematics-FM2.6",
+      "subject": "furthermathematics",
+      "unit": "FM2",
+      "level": "A2",
+      "code": "FM2.6",
+      "name": "Simple harmonic motion",
+      "zh": "简谐运动",
+      "keywords": [
+        "simple harmonic",
+        "shm",
+        "s.h.m",
+        "amplitude",
+        "angular frequency",
+        "period of oscillation"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-further-mathematics-specification.pdf"
+    },
+    {
+      "id": "physics-3.1",
+      "subject": "physics",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1",
+      "name": "Measurements and their errors",
+      "zh": "测量与误差",
+      "keywords": [
+        "uncertainty",
+        "percentage error",
+        "significant figure",
+        "SI unit",
+        "prefix",
+        "measurement",
+        "estimate"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/10/oxfordaqa-international-as-and-a-level-physics-specification.pdf"
+    },
+    {
+      "id": "physics-3.2",
+      "subject": "physics",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.2",
+      "name": "Mechanics and materials",
+      "zh": "力学与材料",
+      "keywords": [
+        "velocity",
+        "acceleration",
+        "projectile",
+        "newton",
+        "momentum",
+        "impulse",
+        "work done",
+        "kinetic energy",
+        "young",
+        "stress",
+        "strain",
+        "tensile",
+        "elastic",
+        "moment",
+        "equilibrium"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/10/oxfordaqa-international-as-and-a-level-physics-specification.pdf"
+    },
+    {
+      "id": "physics-3.3",
+      "subject": "physics",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.3",
+      "name": "Particles, radiation and radioactivity",
+      "zh": "粒子、辐射与放射性",
+      "keywords": [
+        "quark",
+        "lepton",
+        "hadron",
+        "baryon",
+        "meson",
+        "proton",
+        "neutron",
+        "isotope",
+        "radioactiv",
+        "alpha",
+        "beta",
+        "gamma",
+        "half.life",
+        "decay"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/10/oxfordaqa-international-as-and-a-level-physics-specification.pdf"
+    },
+    {
+      "id": "physics-3.4",
+      "subject": "physics",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.4",
+      "name": "Electricity",
+      "zh": "电学",
+      "keywords": [
+        "current",
+        "resistance",
+        "resistivity",
+        "circuit",
+        "potential divider",
+        "electromotive",
+        "internal resistance",
+        "emf",
+        "e.m.f",
+        "ohm"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/10/oxfordaqa-international-as-and-a-level-physics-specification.pdf"
+    },
+    {
+      "id": "physics-3.5",
+      "subject": "physics",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.5",
+      "name": "Oscillations and waves",
+      "zh": "振动与波及量子现象",
+      "keywords": [
+        "wave",
+        "interference",
+        "diffraction",
+        "refraction",
+        "superposition",
+        "stationary wave",
+        "polarisation",
+        "photoelectric",
+        "photon",
+        "de broglie",
+        "energy level",
+        "resonance",
+        "forced vibration"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/10/oxfordaqa-international-as-and-a-level-physics-specification.pdf"
+    },
+    {
+      "id": "physics-3.6",
+      "subject": "physics",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.6",
+      "name": "Circular and periodic motion",
+      "zh": "圆周运动与周期运动",
+      "keywords": [
+        "centripetal",
+        "circular motion",
+        "angular velocity",
+        "angular speed",
+        "simple harmonic",
+        "shm",
+        "s.h.m",
+        "pendulum"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/10/oxfordaqa-international-as-and-a-level-physics-specification.pdf"
+    },
+    {
+      "id": "physics-3.7",
+      "subject": "physics",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.7",
+      "name": "Gravitational fields and satellites",
+      "zh": "引力场与卫星",
+      "keywords": [
+        "gravitational field",
+        "gravitational potential",
+        "satellite",
+        "orbital",
+        "escape speed",
+        "planet",
+        "geostationary"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/10/oxfordaqa-international-as-and-a-level-physics-specification.pdf"
+    },
+    {
+      "id": "physics-3.8",
+      "subject": "physics",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.8",
+      "name": "Electric fields and capacitance",
+      "zh": "电场与电容",
+      "keywords": [
+        "electric field",
+        "electric potential",
+        "coulomb",
+        "point charge",
+        "capacitan",
+        "capacitor",
+        "permittivity"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/10/oxfordaqa-international-as-and-a-level-physics-specification.pdf"
+    },
+    {
+      "id": "physics-3.9",
+      "subject": "physics",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.9",
+      "name": "Exponential change",
+      "zh": "指数变化",
+      "keywords": [
+        "exponential decay",
+        "time constant",
+        "half.life",
+        "decay constant",
+        "capacitor.*discharg",
+        "capacitor.*charg",
+        "activity"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/10/oxfordaqa-international-as-and-a-level-physics-specification.pdf"
+    },
+    {
+      "id": "physics-3.10",
+      "subject": "physics",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.10",
+      "name": "Magnetic fields",
+      "zh": "磁场与电磁感应",
+      "keywords": [
+        "magnetic",
+        "flux",
+        "induction",
+        "induced emf",
+        "faraday",
+        "lenz",
+        "transformer",
+        "alternating current",
+        "tesla"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/10/oxfordaqa-international-as-and-a-level-physics-specification.pdf"
+    },
+    {
+      "id": "physics-3.11",
+      "subject": "physics",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.11",
+      "name": "Thermal physics",
+      "zh": "热学",
+      "keywords": [
+        "specific heat",
+        "specific latent",
+        "thermal",
+        "temperature",
+        "ideal gas",
+        "kinetic theory",
+        "boltzmann",
+        "internal energy",
+        "conduction",
+        "stefan",
+        "black body",
+        "blackbody"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/10/oxfordaqa-international-as-and-a-level-physics-specification.pdf"
+    },
+    {
+      "id": "physics-3.12",
+      "subject": "physics",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.12",
+      "name": "Nuclear energy",
+      "zh": "核能",
+      "keywords": [
+        "binding energy",
+        "mass defect",
+        "fission",
+        "fusion",
+        "nuclear reactor",
+        "nuclear radius",
+        "nucleon",
+        "uranium",
+        "energy.*mass"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/10/oxfordaqa-international-as-and-a-level-physics-specification.pdf"
+    },
+    {
+      "id": "physics-3.13",
+      "subject": "physics",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.13",
+      "name": "Energy sources",
+      "zh": "能源",
+      "keywords": [
+        "rotational",
+        "moment of inertia",
+        "torque",
+        "wind turbine",
+        "wind energy",
+        "solar",
+        "hydroelectric",
+        "pumped storage",
+        "renewable",
+        "efficiency"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/10/oxfordaqa-international-as-and-a-level-physics-specification.pdf"
+    },
+    {
+      "id": "physics-3.14",
+      "subject": "physics",
+      "unit": "Unit 5",
+      "level": "A2",
+      "code": "3.14",
+      "name": "Practical and analytical skills",
+      "zh": "实验与数据分析技能",
+      "keywords": [
+        "practical",
+        "experiment",
+        "gradient",
+        "best.fit",
+        "error bar",
+        "uncertainty",
+        "measurement",
+        "data analysis",
+        "logarithmic graph"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/10/oxfordaqa-international-as-and-a-level-physics-specification.pdf",
+      "note": "官方规格PDF评估摘要将本项列为3.14，技能细节在6.2。Unit 5可考3.1–3.13全部内容；基础实验技能也在AS考查。"
+    }
+  ]
+}

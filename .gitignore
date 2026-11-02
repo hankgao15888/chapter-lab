@@ -1,0 +1,20 @@
+# Personal study data and licensed question assets stay local.
+private/
+questions/
+docs/questions/
+*.pdf
+*.webp
+*.png
+*.jpg
+*.jpeg
+*.zip
+*.tar.gz
+*backup*.json
+.release-state.json
+.env
+.env.*
+.openai/
+node_modules/
+__pycache__/
+.DS_Store
+Thumbs.db
