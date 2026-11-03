@@ -1,12 +1,31 @@
 /* MIT License · Chapter Lab contributors */
 (function(root){
 'use strict';
+function balancedCandidates(candidates,limit,getChapters){
+ if(candidates.length<=limit)return candidates;
+ const buckets=new Map();
+ for(const q of candidates){
+  const key=[q.board,q.year,q.difficulty,getChapters(q)[0]||''].join('|');
+  if(!buckets.has(key))buckets.set(key,[]);
+  buckets.get(key).push(q);
+ }
+ const groups=[...buckets.values()].map(group=>group.map(q=>({q,r:Math.random()})).sort((a,b)=>a.r-b.r).map(x=>x.q)).sort((a,b)=>a.length-b.length);
+ const result=[];
+ for(let round=0;result.length<limit;round++){
+  let added=0;
+  for(const group of groups)if(group[round]&&result.length<limit){result.push(group[round]);added++;}
+  if(!added)break;
+ }
+ return result;
+}
 function selectPaper(candidates,target,recipe,mix,options={}){
  const state={chapters:options.chapters||new Set()};
  const qCh=options.getChapters||((q)=>q.chapters||[]);
+ const fullPool=candidates.filter(q=>Number.isInteger(q.marks)&&q.marks>0&&q.marks<=target);
+ candidates=balancedCandidates(fullPool,options.candidateLimit??1200,qCh);
  const QM=new Map(candidates.map(q=>[q.id,q]));
  const total=rows=>rows.reduce((s,q)=>s+(q.marks||0),0);const ratios={balanced:[.3,.5,.2],foundation:[.7,.3,0],challenge:[0,.3,.7]}[recipe],ds=['foundation','standard','challenge'];const freqs=new Map();candidates.forEach(q=>qCh(q).forEach(c=>freqs.set(c,(freqs.get(c)||0)+1)));let best=null;
- for(let trial=0;trial<10;trial++){
+ for(let trial=0;trial<(options.trials||10);trial++){
   const means=ds.map(d=>{const group=candidates.filter(q=>q.difficulty===d);return group.length?total(group)/group.length:0;});
   const available=ratios.map((r,i)=>means[i]?r:0),ratioSum=available.reduce((a,b)=>a+b,0)||1;
   const adjusted=available.map(r=>r/ratioSum),average=adjusted.reduce((s,r,i)=>s+r*means[i],0)||5,expectedCount=target/average;
@@ -25,9 +44,13 @@ function selectPaper(candidates,target,recipe,mix,options={}){
   const quality=achieved*10000+covered*20-ratioError*40+(mix?diversity*12:0);
   if(!best||quality>best.quality)best={ids:qs.map(q=>q.id),achieved,quality,covered};
  }
+ if((!best||best.achieved<target)&&candidates.length<fullPool.length){
+  const complete=selectPaper(fullPool,target,recipe,mix,{...options,candidateLimit:Infinity,trials:1});
+  if(complete&&(!best||complete.achieved>best.achieved))return complete;
+ }
  return best;
 }
 
-const api={selectPaper};
+const api={selectPaper,balancedCandidates};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.ChapterLabSelection=api;
 })(typeof globalThis!=='undefined'?globalThis:this);
