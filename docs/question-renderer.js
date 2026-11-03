@@ -60,7 +60,7 @@
   return new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(new Error('Could not render question image')),'image/webp',.92));
  }
  async function renderPart(pdf,q,part){
-  const key=q.qp+'#'+part.page+':'+part.box.join(',');
+  const key=(q.renderQp||q.qp)+'#'+part.page+':'+part.box.join(',');
   if(images.has(key))return images.get(key);
   const page=await pdf.getPage(part.page),scale=1.75;
   const base=page.getViewport({scale:1});
@@ -74,7 +74,7 @@
  }
  async function render(q){
   notify(q,'loading');
-  const {entry,pdf}=await acquire(q.qp);
+  const {entry,pdf}=await acquire(q.renderQp||q.qp);
   try{
    const rendered=[];
    for(const part of q.parts)rendered.push(await renderPart(pdf,q,part));
@@ -87,6 +87,7 @@
   if(pending.has(q.id))return pending.get(q.id);
   notify(q,'loading');
   const request=schedule(()=>render(q)).catch(error=>{
+   console.warn('Question source PDF could not be rendered',q.id,error);
    notify(q,'error',error.name==='AbortError'?'原卷下载超时，请重试。':'暂时无法读取原卷，请重试或打开原卷检查。');
    throw error;
   }).finally(()=>pending.delete(q.id));

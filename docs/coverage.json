@@ -20669,7 +20669,8 @@
       "expectedBasis": "cover",
       "questionCount": 8,
       "issues": [],
-      "sourceNote": "原链接返回错误页面，已替换为考试局官方公开原卷。"
+      "sourceNote": "原链接失效；保留Pearson官方原卷链接，题图使用同一试卷的公开镜像以兼容跨域读取。镜像逐题分值与官方卷一致。",
+      "extraction": "native-with-verified-mirror-for-display"
     }
   ]
 }

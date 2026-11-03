@@ -20625,7 +20625,8 @@
       "ms": "https://www.alevelcopilot.com/whfile/0a/62/0d/ad/0c/34/8f/8c/40/91/01/7c/e0/8a/e9/ba.pdf",
       "source": "https://www.alevelcopilot.com/as-and-a-level-pastpapers/edexcel-ial/furthermathematics",
       "originalQp": "https://www.alevelcopilot.com/whfile/07/f7/37/a3/6a/8c/e2/38/c7/57/24/d9/2f/11/b1/f3.pdf",
-      "sourceNote": "原链接返回错误页面，已替换为考试局官方公开原卷。"
+      "sourceNote": "原链接失效；保留Pearson官方原卷链接，题图使用同一试卷的公开镜像以兼容跨域读取。镜像逐题分值与官方卷一致。",
+      "renderQp": "https://www.mymathscloud.com/api/download/modules/A-Level/Past-Papers/Edexcel-IAL/F3/F3%20OCTOBER%202020%20PAPER.pdf?id=19362896"
     }
   ],
   "importedPapers": [
@@ -700815,7 +700816,8 @@
       "text": "线性化图像 / 双曲函数。原卷 2020-10-WFM03-01 · Q1。原题将在查看或组卷时自动显示。",
       "qp": "https://qualifications.pearson.com/content/dam/pdf/International%20Advanced%20Level/Mathematics/2018/Exam-materials/wfm03-01-que-20201016.pdf",
       "ms": "https://www.alevelcopilot.com/whfile/0a/62/0d/ad/0c/34/8f/8c/40/91/01/7c/e0/8a/e9/ba.pdf",
-      "source": "https://www.alevelcopilot.com/as-and-a-level-pastpapers/edexcel-ial/furthermathematics"
+      "source": "https://www.alevelcopilot.com/as-and-a-level-pastpapers/edexcel-ial/furthermathematics",
+      "renderQp": "https://www.mymathscloud.com/api/download/modules/A-Level/Past-Papers/Edexcel-IAL/F3/F3%20OCTOBER%202020%20PAPER.pdf?id=19362896"
     },
     {
       "id": "edexcel-ial-furthermathematics-2020-10-WFM03-01-Q2",
@@ -700872,7 +700874,8 @@
       "text": "待归类。原卷 2020-10-WFM03-01 · Q2。原题将在查看或组卷时自动显示。",
       "qp": "https://qualifications.pearson.com/content/dam/pdf/International%20Advanced%20Level/Mathematics/2018/Exam-materials/wfm03-01-que-20201016.pdf",
       "ms": "https://www.alevelcopilot.com/whfile/0a/62/0d/ad/0c/34/8f/8c/40/91/01/7c/e0/8a/e9/ba.pdf",
-      "source": "https://www.alevelcopilot.com/as-and-a-level-pastpapers/edexcel-ial/furthermathematics"
+      "source": "https://www.alevelcopilot.com/as-and-a-level-pastpapers/edexcel-ial/furthermathematics",
+      "renderQp": "https://www.mymathscloud.com/api/download/modules/A-Level/Past-Papers/Edexcel-IAL/F3/F3%20OCTOBER%202020%20PAPER.pdf?id=19362896"
     },
     {
       "id": "edexcel-ial-furthermathematics-2020-10-WFM03-01-Q3",
@@ -700931,7 +700934,8 @@
       "text": "矩阵代数。原卷 2020-10-WFM03-01 · Q3。原题将在查看或组卷时自动显示。",
       "qp": "https://qualifications.pearson.com/content/dam/pdf/International%20Advanced%20Level/Mathematics/2018/Exam-materials/wfm03-01-que-20201016.pdf",
       "ms": "https://www.alevelcopilot.com/whfile/0a/62/0d/ad/0c/34/8f/8c/40/91/01/7c/e0/8a/e9/ba.pdf",
-      "source": "https://www.alevelcopilot.com/as-and-a-level-pastpapers/edexcel-ial/furthermathematics"
+      "source": "https://www.alevelcopilot.com/as-and-a-level-pastpapers/edexcel-ial/furthermathematics",
+      "renderQp": "https://www.mymathscloud.com/api/download/modules/A-Level/Past-Papers/Edexcel-IAL/F3/F3%20OCTOBER%202020%20PAPER.pdf?id=19362896"
     },
     {
       "id": "edexcel-ial-furthermathematics-2020-10-WFM03-01-Q4",
@@ -700990,7 +700994,8 @@
       "text": "三角学。原卷 2020-10-WFM03-01 · Q4。原题将在查看或组卷时自动显示。",
       "qp": "https://qualifications.pearson.com/content/dam/pdf/International%20Advanced%20Level/Mathematics/2018/Exam-materials/wfm03-01-que-20201016.pdf",
       "ms": "https://www.alevelcopilot.com/whfile/0a/62/0d/ad/0c/34/8f/8c/40/91/01/7c/e0/8a/e9/ba.pdf",
-      "source": "https://www.alevelcopilot.com/as-and-a-level-pastpapers/edexcel-ial/furthermathematics"
+      "source": "https://www.alevelcopilot.com/as-and-a-level-pastpapers/edexcel-ial/furthermathematics",
+      "renderQp": "https://www.mymathscloud.com/api/download/modules/A-Level/Past-Papers/Edexcel-IAL/F3/F3%20OCTOBER%202020%20PAPER.pdf?id=19362896"
     },
     {
       "id": "edexcel-ial-furthermathematics-2020-10-WFM03-01-Q5",
@@ -701049,7 +701054,8 @@
       "text": "代数与图像。原卷 2020-10-WFM03-01 · Q5。原题将在查看或组卷时自动显示。",
       "qp": "https://qualifications.pearson.com/content/dam/pdf/International%20Advanced%20Level/Mathematics/2018/Exam-materials/wfm03-01-que-20201016.pdf",
       "ms": "https://www.alevelcopilot.com/whfile/0a/62/0d/ad/0c/34/8f/8c/40/91/01/7c/e0/8a/e9/ba.pdf",
-      "source": "https://www.alevelcopilot.com/as-and-a-level-pastpapers/edexcel-ial/furthermathematics"
+      "source": "https://www.alevelcopilot.com/as-and-a-level-pastpapers/edexcel-ial/furthermathematics",
+      "renderQp": "https://www.mymathscloud.com/api/download/modules/A-Level/Past-Papers/Edexcel-IAL/F3/F3%20OCTOBER%202020%20PAPER.pdf?id=19362896"
     },
     {
       "id": "edexcel-ial-furthermathematics-2020-10-WFM03-01-Q6",
@@ -701108,7 +701114,8 @@
       "text": "矩阵与变换。原卷 2020-10-WFM03-01 · Q6。原题将在查看或组卷时自动显示。",
       "qp": "https://qualifications.pearson.com/content/dam/pdf/International%20Advanced%20Level/Mathematics/2018/Exam-materials/wfm03-01-que-20201016.pdf",
       "ms": "https://www.alevelcopilot.com/whfile/0a/62/0d/ad/0c/34/8f/8c/40/91/01/7c/e0/8a/e9/ba.pdf",
-      "source": "https://www.alevelcopilot.com/as-and-a-level-pastpapers/edexcel-ial/furthermathematics"
+      "source": "https://www.alevelcopilot.com/as-and-a-level-pastpapers/edexcel-ial/furthermathematics",
+      "renderQp": "https://www.mymathscloud.com/api/download/modules/A-Level/Past-Papers/Edexcel-IAL/F3/F3%20OCTOBER%202020%20PAPER.pdf?id=19362896"
     },
     {
       "id": "edexcel-ial-furthermathematics-2020-10-WFM03-01-Q7",
@@ -701167,7 +701174,8 @@
       "text": "双曲函数。原卷 2020-10-WFM03-01 · Q7。原题将在查看或组卷时自动显示。",
       "qp": "https://qualifications.pearson.com/content/dam/pdf/International%20Advanced%20Level/Mathematics/2018/Exam-materials/wfm03-01-que-20201016.pdf",
       "ms": "https://www.alevelcopilot.com/whfile/0a/62/0d/ad/0c/34/8f/8c/40/91/01/7c/e0/8a/e9/ba.pdf",
-      "source": "https://www.alevelcopilot.com/as-and-a-level-pastpapers/edexcel-ial/furthermathematics"
+      "source": "https://www.alevelcopilot.com/as-and-a-level-pastpapers/edexcel-ial/furthermathematics",
+      "renderQp": "https://www.mymathscloud.com/api/download/modules/A-Level/Past-Papers/Edexcel-IAL/F3/F3%20OCTOBER%202020%20PAPER.pdf?id=19362896"
     },
     {
       "id": "edexcel-ial-furthermathematics-2020-10-WFM03-01-Q8",
@@ -701227,7 +701235,7 @@
             34.9878,
             44.9878,
             543.9878,
-            760.5441
+            762.5241
           ]
         }
       ],
@@ -701235,7 +701243,8 @@
       "text": "向量与三维坐标几何。原卷 2020-10-WFM03-01 · Q8。原题将在查看或组卷时自动显示。",
       "qp": "https://qualifications.pearson.com/content/dam/pdf/International%20Advanced%20Level/Mathematics/2018/Exam-materials/wfm03-01-que-20201016.pdf",
       "ms": "https://www.alevelcopilot.com/whfile/0a/62/0d/ad/0c/34/8f/8c/40/91/01/7c/e0/8a/e9/ba.pdf",
-      "source": "https://www.alevelcopilot.com/as-and-a-level-pastpapers/edexcel-ial/furthermathematics"
+      "source": "https://www.alevelcopilot.com/as-and-a-level-pastpapers/edexcel-ial/furthermathematics",
+      "renderQp": "https://www.mymathscloud.com/api/download/modules/A-Level/Past-Papers/Edexcel-IAL/F3/F3%20OCTOBER%202020%20PAPER.pdf?id=19362896"
     }
   ],
   "updated": "2026-11-03",

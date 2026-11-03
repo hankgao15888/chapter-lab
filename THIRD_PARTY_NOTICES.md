@@ -15,5 +15,6 @@
 数据来源：
 
 - 真题目录：<https://www.alevelcopilot.com/as-and-a-level-pastpapers>
+- 2020年10月Edexcel IAL WFM03/01：保留Pearson官方原卷链接，浏览器题图使用MyMathsCloud同卷公开镜像；具体地址与替换说明保存在该卷索引和覆盖记录中。镜像的附带标识属于其提供方。
 - OxfordAQA课程资料：<https://www.oxfordaqa.com/>
 - 具体课程文档链接见 `data/curriculum.json` 的 `source` 字段。
