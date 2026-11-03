@@ -7,6 +7,7 @@ const BOARD={'oxford-aqa-international':'OxfordAQA','cie-international':'CIE Int
 const DIFF={foundation:'基础',standard:'标准',challenge:'挑战',unknown:'待核分'};
 const CH=new Map(DB.chapters.map(c=>[c.id,c])), QM=new Map(DB.questions.map(q=>[q.id,q]));
 const catalog=ChapterLabCatalogLoader.createCatalog(DB),subjectErrors=new Map();
+const answers=ChapterLabAnswers.create({getQuestion:id=>QM.get(id),onChange:()=>{if($('#previewDialog').open)updatePreviewStatus();}});
 const originalParts=q=>q.parts.filter(part=>part.role!=='source');
 async function loadSubjects(subjects){
  const groups=await catalog.loadMany(subjects);
@@ -67,7 +68,7 @@ function renderBank(){if(!catalog.isLoaded(state.subject)){renderSubjectStatus()
  $('#unmappedBtn').textContent=state.unmapped?'返回全部题目':'查看待归类';
  $('#questionList').innerHTML=qs.slice((state.page-1)*12,state.page*12).map(q=>card(q)).join('')||`<div class="empty-state"><strong>当前条件下还没有题目</strong>试试减少章节或考试局限制，也可到整卷档案查看原卷。<br>章节显示 0 表示当前题库尚未匹配到该章节。</div>`;
  $('#pagination').innerHTML=pagination(state.page,pageCount,'question');bindCards();}
-function card(q){const ch=qCh(q),done=saved.practice[q.id],added=state.basket.includes(q.id);return `<article class="question-card" data-id="${q.id}"><div class="card-top">${badge(q.board)}<span>${q.year} · ${esc(q.sourceUnit)}</span><span>原题 Q${q.number}</span>${done?`<span class="tag">${done==='wrong'?'↺ 错题':'✓ 已练'}</span>`:''}<span class="difficulty">${DIFF[q.difficulty]}（估计） · ${q.marks??'?'} 分</span></div><h3>${ch.length?ch.map(c=>esc(CH.get(c).zh)).join(' / '):'待归类 · 请对照原题核对'} <span class="tag">${saved.overrides[q.id]?'已调整':'自动匹配建议'}</span></h3><p class="snippet">${esc(q.text.slice(0,240))}</p>${q.materialNote?`<p class="material-note">${esc(q.materialNote)}</p>`:''}<div class="tags">${ch.map(c=>`<span class="tag">${esc(CH.get(c).code)}</span>`).join('')}<span class="tag">${q.images.length?q.images.length+' 张原题图':'可直接加载原题'} · 原卷第 ${[...new Set(originalParts(q).map(p=>p.page))].join('、')} 页</span></div><div class="card-bottom"><button class="text-button" data-action="expand">查看原题 ▾</button><a class="text-button" href="${q.qp}#page=${originalParts(q)[0]?.page||1}" target="_blank" rel="noopener">原卷 ↗</a>${q.ms?`<a class="text-button" href="${q.ms}" target="_blank" rel="noopener">评分标准 ↗</a>`:''}<button class="text-button" data-action="map">调整章节</button><button class="add ${added?'added':''}" data-action="add" ${q.autoSelectable===false?'disabled':''}>${q.autoSelectable===false?'缺配套材料':added?'✓ 已加入':'＋ 加入练习卷'}</button></div><div class="expand-slot"></div><div class="mapping-slot"></div></article>`;}
+function card(q){const ch=qCh(q),done=saved.practice[q.id],added=state.basket.includes(q.id);return `<article class="question-card" data-id="${q.id}"><div class="card-top">${badge(q.board)}<span>${q.year} · ${esc(q.sourceUnit)}</span><span>原题 Q${q.number}</span>${done?`<span class="tag">${done==='wrong'?'↺ 错题':'✓ 已练'}</span>`:''}<span class="difficulty">${DIFF[q.difficulty]}（估计） · ${q.marks??'?'} 分</span></div><h3>${ch.length?ch.map(c=>esc(CH.get(c).zh)).join(' / '):'待归类 · 请对照原题核对'} <span class="tag">${saved.overrides[q.id]?'已调整':'自动匹配建议'}</span></h3><p class="snippet">${esc(q.text.slice(0,240))}</p>${q.materialNote?`<p class="material-note">${esc(q.materialNote)}</p>`:''}${q.withdrawn?`<p class="material-note">${esc(q.answerNote)}</p>`:''}<div class="tags">${ch.map(c=>`<span class="tag">${esc(CH.get(c).code)}</span>`).join('')}<span class="tag">${q.images.length?q.images.length+' 张原题图':'可直接加载原题'} · 原卷第 ${[...new Set(originalParts(q).map(p=>p.page))].join('、')} 页</span></div><div class="card-bottom"><button class="text-button" data-action="expand">查看原题 ▾</button><a class="text-button" href="${q.qp}#page=${originalParts(q)[0]?.page||1}" target="_blank" rel="noopener">原卷 ↗</a>${q.ms?`<a class="text-button" href="${q.ms}" target="_blank" rel="noopener">评分标准 ↗</a>`:''}<button class="text-button" data-action="map">调整章节</button><button class="add ${added?'added':''}" data-action="add" ${q.autoSelectable===false||q.withdrawn?'disabled':''}>${q.withdrawn?'官方已作废':q.autoSelectable===false?'缺配套材料':added?'✓ 已加入':'＋ 加入练习卷'}</button></div><div class="expand-slot"></div><div class="mapping-slot"></div>${answers.content(q)}</article>`;}
 function bindCards(){$$('#questionList article').forEach(el=>{const q=QM.get(el.dataset.id);el.querySelectorAll('[data-action]').forEach(b=>b.onclick=()=>{
  if(b.dataset.action==='add'){const i=state.basket.indexOf(q.id);i>=0?state.basket.splice(i,1):state.basket.push(q.id);b.classList.toggle('added',i<0);b.textContent=i<0?'✓ 已加入':'＋ 加入练习卷';updateBasket();}
  if(b.dataset.action==='expand'){const slot=el.querySelector('.expand-slot');if(slot.innerHTML){slot.innerHTML='';b.textContent='查看原题 ▾';return;}slot.innerHTML=`<div class="question-images">${questionContent(q)}<div class="actions"><button class="quiet" data-result="correct">✓ 我已掌握</button><button class="quiet" data-result="wrong">↺ 加入错题</button><button class="quiet" data-result="clear">清除状态</button></div></div>`;slot.querySelectorAll('[data-result]').forEach(bt=>bt.onclick=()=>{bt.dataset.result==='clear'?delete saved.practice[q.id]:saved.practice[q.id]=bt.dataset.result;persist();toast(bt.dataset.result==='wrong'?'已加入错题，可筛选后再组卷。':'已更新练习状态。');});b.textContent='收起原题 ▴';ChapterLabQuestions.load(q).catch(()=>{});}
@@ -86,36 +87,39 @@ $('#clearChapters').onclick=()=>{state.chapters.clear();state.unmapped=false;ren
 // A bounded subset-sum search approaches the score target without repeating a question.
 // Preference scoring encourages chosen chapter coverage and requested difficulty proportions.
 const selectPaper=(candidates,target,recipe,mix)=>ChapterLabSelection.selectPaper(candidates,target,recipe,mix,{chapters:state.chapters,getChapters:qCh});
-function smartInfo(){let qs=pool().filter(q=>q.autoSelectable!==false&&q.marks&&qCh(q).length);if($('#avoidDone').checked)qs=qs.filter(q=>!saved.practice[q.id]);$('#smartInfo').textContent=`当前可自动组卷：${qs.length} 道 / ${total(qs)} 分。未知分值或待归类题不参与自动选题；组卷会替换当前选题篮。难度配比按题数尽量匹配。`;}
+function smartInfo(){let qs=pool().filter(q=>!q.withdrawn&&q.autoSelectable!==false&&q.marks&&qCh(q).length);if($('#avoidDone').checked)qs=qs.filter(q=>!saved.practice[q.id]);$('#smartInfo').textContent=`当前可自动组卷：${qs.length} 道 / ${total(qs)} 分。未知分值或待归类题不参与自动选题；组卷会替换当前选题篮。难度配比按题数尽量匹配。`;}
 $('#smartBtn').onclick=()=>{smartInfo();$('#smartDialog').showModal();};$('#avoidDone').onchange=smartInfo;$('#targetMarks').oninput=()=>{if(Number($('#targetMarks').value)>0)$('#minutes').value=Math.round(Number($('#targetMarks').value)*1.5);};
 $('#generateBtn').onclick=()=>{
  const target=Number($('#targetMarks').value),mins=Number($('#minutes').value);if(!Number.isInteger(target)||target<5||target>300||!Number.isFinite(mins)||mins<5||mins>600){toast('请输入5–300的整数目标分值与5–600分钟时长。');return;}
- let qs=pool().filter(q=>q.autoSelectable!==false&&Number.isInteger(q.marks)&&q.marks>0&&q.marks<=target&&qCh(q).length);if($('#avoidDone').checked)qs=qs.filter(q=>!saved.practice[q.id]);const result=selectPaper(qs,target,$('#recipe').value,$('#freshYears').checked);
+ let qs=pool().filter(q=>!q.withdrawn&&q.autoSelectable!==false&&Number.isInteger(q.marks)&&q.marks>0&&q.marks<=target&&qCh(q).length);if($('#avoidDone').checked)qs=qs.filter(q=>!saved.practice[q.id]);const result=selectPaper(qs,target,$('#recipe').value,$('#freshYears').checked);
  if(!result){$('#smartInfo').textContent='当前题池无法生成。请增加来源或章节、降低难度限制，或取消避开已练题。';return;}
  state.basket=result.ids;state.minutes=mins;state.title=$('#paperTitle').value.trim()||`${SUBJECT[state.subject]} · ${state.chapters.size?state.chapters.size+'章专题':'综合'}练习`;state.target=target;updateBasket();renderBank();$('#smartDialog').close();openPreview();if(result.achieved<target)toast(`已生成 ${result.achieved} 分，距目标差 ${target-result.achieved} 分。`);
 };
-function paperHtml(qs,answers){
+function paperHtml(qs,includeAnswers,forPrint=false){
  const contexts=new Set();
  const body=qs.map((q,i)=>{
   const omit=q.contextKey&&contexts.has(q.contextKey);
   if(q.contextKey)contexts.add(q.contextKey);
-  return `<section class="paper-question"><div class="qhead"><strong>${i+1}. ${qCh(q).map(c=>esc(CH.get(c).zh)).join(' / ')||'待归类'}</strong><span>${q.marks??'?'} 分</span></div><div class="qsource">${BOARD[q.board]} · ${esc(q.title)} · 原题 Q${q.number} · 原卷页 ${originalParts(q).map(p=>p.page).join('、')}</div>${q.contextPartsCount?`<p class="print-note">${omit?'阅读材料见本卷前题。':'本题所需阅读材料与图表列于下方。'}</p>`:''}${questionContent(q,omit)}</section>`;
+  return `<section class="paper-question"><div class="qhead"><strong>${i+1}. ${qCh(q).map(c=>esc(CH.get(c).zh)).join(' / ')||'待归类'}</strong><span>${q.marks??'?'} 分</span></div><div class="qsource">${BOARD[q.board]} · ${esc(q.title)} · 原题 Q${q.number} · 原卷页 ${originalParts(q).map(p=>p.page).join('、')}</div>${q.contextPartsCount?`<p class="print-note">${omit?'阅读材料见本卷前题。':'本题所需阅读材料与图表列于下方。'}</p>`:''}${questionContent(q,omit)}${!includeAnswers&&!forPrint?answers.content(q):''}</section>`;
  }).join('');
- const index=answers?`<section class="answer-section"><h2>答案出处与原题索引</h2><p class="print-note">按下表的「原题号」查阅原卷评分标准；跨页的子问属于同一道原题。</p><table class="answer-table"><thead><tr><th>本卷</th><th>出处 / 原题</th><th>评分标准</th></tr></thead><tbody>${qs.map((q,i)=>`<tr><td>${i+1}</td><td>${BOARD[q.board]} · ${esc(q.title)} · Q${q.number}</td><td>${q.ms?`<a href="${q.ms}" target="_blank" rel="noopener">原卷评分标准 · Q${q.number}</a>`:'暂无公开链接'}</td></tr>`).join('')}</tbody></table></section>`:'';
+ const index=includeAnswers?`<section class="answer-section"><h2>官方答案与解析</h2><p class="print-note">按本卷题目顺序列出对应官方答案、计算过程和评分细则。选择题若官方只给出选项，会单独说明。</p>${qs.map((q,i)=>`<section class="paper-answer"><h3>${i+1}. 原题 Q${esc(q.number)}</h3>${answers.content(q,false)}</section>`).join('')}</section>`:'';
  return body+index;
 }
 function updatePreviewStatus(){
  const ready=previewQuestions.filter(q=>q.images.length).length;
  const failures=previewQuestions.filter(q=>!q.images.length&&ChapterLabQuestions.state(q.id).status==='error').length;
  const missingMaterials=previewQuestions.filter(q=>q.autoSelectable===false).length;
- const complete=ready===previewQuestions.length&&ready>0&&!missingMaterials;
- $('#previewProgress').textContent=missingMaterials?`${missingMaterials} 道题缺少配套阅读材料，请移除后再打印。`:complete?`${ready} 道真实题目已加载，可打印完整练习卷。`:`正在加载真实题目：${ready} / ${previewQuestions.length}${failures?`，${failures} 道暂未加载，请重试。`:'。'}`;
+ const answersIncluded=$('#includeAnswers').checked,answerReady=previewQuestions.filter(q=>['ready','unavailable'].includes(answers.state(q.id).status)).length;
+ const unavailableAnswers=answersIncluded?previewQuestions.filter(q=>answers.state(q.id).status==='unavailable').length:0;
+ const answerFailures=answersIncluded?previewQuestions.filter(q=>answers.state(q.id).status==='error').length:0;
+ const complete=ready===previewQuestions.length&&ready>0&&!missingMaterials&&(!answersIncluded||answerReady===previewQuestions.length);
+ $('#previewProgress').textContent=missingMaterials?`${missingMaterials} 道题缺少配套阅读材料，请移除后再打印。`:complete?`${ready} 道真实题目${answersIncluded?'及解答内容':''}已加载，可打印${unavailableAnswers?'。其中 '+unavailableAnswers+' 道题的官方解答未公开，答案部分已注明。':'完整练习卷。'}`:answersIncluded&&ready===previewQuestions.length?`正在加载官方解答：${answerReady} / ${previewQuestions.length}${answerFailures?'，部分解答暂未加载，请重试。':'。'}`:`正在加载真实题目：${ready} / ${previewQuestions.length}${failures?`，${failures} 道暂未加载，请重试。`:'。'}`;
  $('#printPaper').disabled=!complete;
- $('#printPaper').textContent=complete?'打印 / 存为 PDF':`题目加载中 ${ready}/${previewQuestions.length}`;
- $('#retryPaper').classList.toggle('hidden',!failures);
+ $('#printPaper').textContent=complete?'打印 / 存为 PDF':answersIncluded&&ready===previewQuestions.length?`解答加载中 ${answerReady}/${previewQuestions.length}`:`题目加载中 ${ready}/${previewQuestions.length}`;
+ $('#retryPaper').classList.toggle('hidden',!failures&&!answerFailures);
 }
 function loadPreviewQuestions(){
- for(const q of previewQuestions)ChapterLabQuestions.load(q).catch(()=>{});
+ for(const q of previewQuestions){ChapterLabQuestions.load(q).catch(()=>{});if($('#includeAnswers').checked)answers.load(q).catch(()=>{});}
  updatePreviewStatus();
 }
 function openPreview(){
@@ -130,11 +134,12 @@ function openPreview(){
 }
 $('#previewBtn').onclick=openPreview;
 $('#retryPaper').onclick=loadPreviewQuestions;
-$('#includeAnswers').onchange=()=>{$('#paperPreview').innerHTML=paperHtml(previewQuestions,$('#includeAnswers').checked);};
+$('#includeAnswers').onchange=()=>{$('#paperPreview').innerHTML=paperHtml(previewQuestions,$('#includeAnswers').checked);loadPreviewQuestions();};
 $('#printPaper').onclick=async()=>{
  if(previewQuestions.some(q=>q.autoSelectable===false)){toast('请先移除缺少阅读材料的题目。');return;}
  if(previewQuestions.some(q=>!q.images.length)){loadPreviewQuestions();toast('正在加载题目，全部加载后即可打印。');return;}
- $('#printArea').innerHTML=`<h1 class="print-title">${esc($('#previewTitle').textContent)}</h1><div class="print-meta">${esc($('#previewMeta').textContent)} · 姓名 __________ · 日期 __________</div><p class="print-note">本卷按 OxfordAQA 官方课程单元归类；保留原题图像、共享题干与原题号便于核对。</p>`+paperHtml(previewQuestions,$('#includeAnswers').checked);
+ if($('#includeAnswers').checked&&previewQuestions.some(q=>!['ready','unavailable'].includes(answers.state(q.id).status))){loadPreviewQuestions();toast('正在加载官方解答，全部准备完成后即可附答案打印。');return;}
+ $('#printArea').innerHTML=`<h1 class="print-title">${esc($('#previewTitle').textContent)}</h1><div class="print-meta">${esc($('#previewMeta').textContent)} · 姓名 __________ · 日期 __________</div><p class="print-note">本卷按 OxfordAQA 官方课程单元归类；保留原题图像、共享题干与原题号便于核对。</p>`+paperHtml(previewQuestions,$('#includeAnswers').checked,true);
  try{await Promise.all($$('#printArea img').map(img=>img.decode()));}
  catch{toast('部分题图尚未准备完成，请稍后重试打印。');return;}
  $('#previewDialog').close();window.print();
@@ -154,7 +159,7 @@ function coverageTable(){
  return `<table class="answer-table"><thead><tr><th>考试局</th><th>年份</th><th>已拆试卷</th><th>题目</th></tr></thead><tbody>${rows}</tbody></table><p><a href="coverage.json" target="_blank" rel="noopener">查看逐科逐卷覆盖与分值核对记录 ↗</a></p>`;
 }
 $('#aboutBtn').onclick=()=>{
- $('#coverage').innerHTML=`<div class="coverage-grid"><div><strong>${DB.coverage.questionCount}</strong><small>道已拆分题目 · ${DB.importedPapers.length}套试卷</small></div><div><strong>${Object.keys(DB.subjectIndex).length}</strong><small>门科目 · ${DB.papers.length}条整卷目录记录</small></div><div><strong>${DB.coverage.chaptersCovered} / ${DB.chapters.length}</strong><small>个分类有匹配建议</small></div><div><strong>${DB.coverage.unmappedQuestionCount}</strong><small>道待归类题目</small></div></div><p>已拆题范围：按来源网站全部年份、考季与变体整理。各科的实际收录年份随科目和考试局显示；不代表网站之外的全部历史试卷。外链可用性随来源网站变化。</p>${coverageTable()}${DB.coverage.materialIncompleteQuestions?`<p class="material-note">${DB.coverage.materialIncompleteQuestions} 道题的配套阅读材料暂不可用，已标注并排除组卷。</p>`:''}`;
+ $('#coverage').innerHTML=`<div class="coverage-grid"><div><strong>${DB.coverage.questionCount}</strong><small>道已拆分题目 · ${DB.importedPapers.length}套试卷</small></div><div><strong>${Object.keys(DB.subjectIndex).length}</strong><small>门科目 · ${DB.papers.length}条整卷目录记录</small></div><div><strong>${DB.coverage.chaptersCovered} / ${DB.chapters.length}</strong><small>个分类有匹配建议</small></div><div><strong>${DB.coverage.unmappedQuestionCount}</strong><small>道待归类题目</small></div></div><p>已拆题范围：按来源网站全部年份、考季与变体整理。各科的实际收录年份随科目和考试局显示；不代表网站之外的全部历史试卷。外链可用性随来源网站变化。</p>${coverageTable()}${DB.answerCoverage?`<p>官方答案已定位 ${DB.answerCoverage.locatedQuestionCount} 道，可在题目下直接展开。${DB.answerCoverage.unavailable.length?DB.answerCoverage.unavailable.length+' 道题的公开评分标准缺少解答，已逐题说明。':''}</p>`:''}${DB.coverage.materialIncompleteQuestions?`<p class="material-note">${DB.coverage.materialIncompleteQuestions} 道题的配套阅读材料暂不可用，已标注并排除组卷。</p>`:''}`;
  $('#aboutDialog').showModal();
 };
 $$('[data-close]').forEach(b=>b.onclick=()=>$('#'+b.dataset.close).close());$$('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d)d.close();}));

@@ -73,6 +73,7 @@ for(const subject of [...new Set(db.chapters.map(c=>c.subject))])
     selectionChecks++;
    }
 assert.equal(selectPaper([],60,'balanced',false),null);
+assert.equal(selectPaper([{id:'withdrawn',marks:1,difficulty:'foundation',chapters:[],withdrawn:true}],5,'balanced',false),null,'Officially withdrawn questions must not enter a generated paper');
 assert.equal(selectPaper([{id:'incomplete',marks:20,difficulty:'challenge',chapters:[],autoSelectable:false}],20,'challenge',false),null,'Missing reading materials must not enter a generated paper');
 const constrained=questions.filter(q=>q.subject==='physics'&&q.chapters.includes('physics-3.2'));
 const result=selectPaper(constrained,40,'balanced',true,{chapters:new Set(['physics-3.2'])});

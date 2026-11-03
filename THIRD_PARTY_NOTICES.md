@@ -18,3 +18,7 @@
 - 2020年10月Edexcel IAL WFM03/01：保留Pearson官方原卷链接，浏览器题图使用MyMathsCloud同卷公开镜像；具体地址与替换说明保存在该卷索引和覆盖记录中。镜像的附带标识属于其提供方。
 - OxfordAQA课程资料：<https://www.oxfordaqa.com/>
 - 具体课程文档链接见 `data/curriculum.json` 的 `source` 字段。
+
+## 官方解答内嵌
+
+网页按原题号直接显示评分标准的对应区域，保留官方公式、图示、评分说明与来源。`data/answers.json` 和 `docs/answers/` 包含题号、页码、裁切坐标、选择题正确选项及来源限制；另有25道题的答案数值、公式及简要知识要点整理，保留原评分标准供核对。不打包评分标准PDF、图片或完整解答正文。替换来源与已知限制见 [答案来源核对](data/ANSWER_SOURCES.md)。

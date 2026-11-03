@@ -1,6 +1,6 @@
 {
   "name": "chapter-lab",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "private": true,
   "description": "A-Level chapter practice and rule-based paper selection",
   "license": "MIT",
@@ -10,6 +10,6 @@
   },
   "scripts": {
     "build": "node scripts/build.mjs",
-    "test": "node tests/verify.mjs && node tests/geometry.mjs && node tests/years.mjs && node tests/catalog-loader.mjs"
+    "test": "node tests/verify.mjs && node tests/geometry.mjs && node tests/years.mjs && node tests/catalog-loader.mjs && node tests/answers.mjs"
   }
 }

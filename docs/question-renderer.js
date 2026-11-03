@@ -64,7 +64,7 @@
   if(images.has(key))return images.get(key);
   const page=await pdf.getPage(part.page),scale=1.75;
   const base=page.getViewport({scale:1});
-  const geometry=root.ChapterLabGeometry.cropGeometry(root.ChapterLabGeometry.expandPageStart(part.box),base.width,base.height,scale);
+  const geometry=root.ChapterLabGeometry.cropGeometry(part.exact?part.box:root.ChapterLabGeometry.expandPageStart(part.box),base.width,base.height,scale);
   const canvas=document.createElement('canvas');
   canvas.width=geometry.width;canvas.height=geometry.height;
   try{

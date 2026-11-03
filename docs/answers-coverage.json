@@ -1,0 +1,20 @@
+{
+  "complete": true,
+  "paperCount": 3447,
+  "questionCount": 39182,
+  "locatedQuestionCount": 39180,
+  "unavailable": [
+    {
+      "id": "cie-international-mathematics-2024_06_33-Q11",
+      "note": "该卷公开的官方评分标准止于第10题，未提供第11题解答。已核对来源文件与公开同卷副本。",
+      "reason": "not-published-in-source"
+    },
+    {
+      "id": "cie-international-chemistry-2024_06_22-Q5",
+      "note": "该卷公开的官方评分标准止于第4题，未提供第5题解答。已核对来源文件与公开同卷副本。",
+      "reason": "not-published-in-source"
+    }
+  ],
+  "unresolved": [],
+  "updated": "2026-11-03"
+}
