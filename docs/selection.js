@@ -21,7 +21,7 @@ function balancedCandidates(candidates,limit,getChapters){
 function selectPaper(candidates,target,recipe,mix,options={}){
  const state={chapters:options.chapters||new Set()};
  const qCh=options.getChapters||((q)=>q.chapters||[]);
- const fullPool=candidates.filter(q=>Number.isInteger(q.marks)&&q.marks>0&&q.marks<=target);
+ const fullPool=candidates.filter(q=>q.autoSelectable!==false&&Number.isInteger(q.marks)&&q.marks>0&&q.marks<=target);
  candidates=balancedCandidates(fullPool,options.candidateLimit??1200,qCh);
  const QM=new Map(candidates.map(q=>[q.id,q]));
  const total=rows=>rows.reduce((s,q)=>s+(q.marks||0),0);const ratios={balanced:[.3,.5,.2],foundation:[.7,.3,0],challenge:[0,.3,.7]}[recipe],ds=['foundation','standard','challenge'];const freqs=new Map();candidates.forEach(q=>qCh(q).forEach(c=>freqs.set(c,(freqs.get(c)||0)+1)));let best=null;

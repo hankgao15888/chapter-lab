@@ -9,7 +9,7 @@ for(const [board,start] of [['oxford-aqa-international',2018],['cie-internationa
  const rows=db.questions.filter(q=>q.board===board);
  assert.equal(Math.min(...rows.map(q=>q.year)),start);
  assert.equal(Math.max(...rows.map(q=>q.year)),2026);
- for(const subject of ['physics','mathematics','furthermathematics']){
+ for(const subject of [...new Set(db.chapters.map(c=>c.subject))]){
   const years=availableYears(db.questions,subject,[board]);
   assert.deepEqual(years,[...new Set(rows.filter(q=>q.subject===subject).map(q=>q.year))].sort((a,b)=>b-a));
   for(const year of years){
@@ -32,7 +32,7 @@ const fallback=selectPaper([
 ],12,'challenge',false,{candidateLimit:1,trials:1});
 assert.equal(fallback.achieved,12);
 const started=performance.now();
-for(const subject of ['physics','mathematics','furthermathematics']){
+for(const subject of [...new Set(db.chapters.map(c=>c.subject))]){
  const result=selectPaper(db.questions.filter(q=>q.subject===subject&&q.chapters.length),300,'balanced',true);
  assert.equal(result.achieved,300);
 }

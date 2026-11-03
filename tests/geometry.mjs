@@ -12,8 +12,9 @@ assert.deepEqual(expandPageStart([63,86,572,815]),[63,73,572,815],'Keep the extr
 assert.deepEqual(expandPageStart([35,320,544,500]),[35,320,544,500],'Do not include the previous question in a mid-page crop');
 let checked=0;
 for(const q of db.questions)for(const part of q.parts){
- const geometry=cropGeometry(part.box,700,950);
- assert(geometry.width>0&&geometry.height>0&&geometry.width<=1225&&geometry.height<=1663,q.id);
+ const width=part.pageWidth||700,height=part.pageHeight||950;
+ const geometry=cropGeometry(part.box,width,height);
+ assert(geometry.width>0&&geometry.height>0&&geometry.width<=Math.ceil(width*1.75)&&geometry.height<=Math.ceil(height*1.75),q.id);
  assert.equal(geometry.transform[4],-Math.max(0,part.box[0])*1.75);
  assert.equal(geometry.transform[5],-Math.max(0,part.box[1])*1.75);
  checked++;

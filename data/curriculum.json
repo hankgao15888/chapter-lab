@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-11-02",
-  "basis": "OxfordAQA current specifications 9630, 9660 and 9665; Mathematics/Further Mathematics Version 5.2. Excludes revised 9760/9765 first teaching 2027.",
-  "classificationNote": "Keywords are heuristic hints, not sufficient evidence for confirmed question classification. Cross-board questions may exceed or only partially overlap OxfordAQA scope; retain uncertain or out-of-scope status. AS/A2 is target syllabus level, not source paper level.",
+  "generatedAt": "2026-11-03",
+  "basis": "Current OxfordAQA specifications: Physics9630, Mathematics9660, Further Mathematics9665, Chemistry9620 v5.3, Biology9610 v5.1, Economics9640 v2.0. Excludes revised9760/9765 first teaching2027.",
+  "classificationNote": "Use the most specific supported official content topic. Keywords are heuristics, not official tags or proof of correct mapping. Target curriculum unit is different from source paper unit; synoptic and assumed prior knowledge may cross unit boundaries. Shared skill entries use unit='All units', units=[...], level='AS/A2'. Do not force these to Unit 5. Do not infer missing marks from current specification totals.",
   "chapters": [
     {
       "id": "mathematics-P1.1",
@@ -1683,6 +1683,5213 @@
       ],
       "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/10/oxfordaqa-international-as-and-a-level-physics-specification.pdf",
       "note": "官方规格PDF评估摘要将本项列为3.14，技能细节在6.2。Unit 5可考3.1–3.13全部内容；基础实验技能也在AS考查。"
+    },
+    {
+      "id": "chemistry-3.1.1.1",
+      "subject": "chemistry",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.1.1",
+      "name": "Fundamental particles",
+      "zh": "基本粒子与原子结构",
+      "keywords": [
+        "proton",
+        "neutron",
+        "electron",
+        "subatomic",
+        "fundamental particle"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.1.2",
+      "subject": "chemistry",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.1.2",
+      "name": "Mass number and isotopes",
+      "zh": "质量数、同位素与质谱",
+      "keywords": [
+        "isotop",
+        "mass number",
+        "atomic number",
+        "time.of.flight",
+        "mass spectromet",
+        "isotopic abundance"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.1.3",
+      "subject": "chemistry",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.1.3",
+      "name": "Electron configuration",
+      "zh": "电子排布与电离能",
+      "keywords": [
+        "electron configuration",
+        "electronic configuration",
+        "ionisation energ",
+        "ionization energ",
+        "sub.shell",
+        "orbital"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.2.1",
+      "subject": "chemistry",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.2.1",
+      "name": "Relative atomic mass and relative molecular mass",
+      "zh": "相对原子质量与相对分子质量",
+      "keywords": [
+        "relative atomic mass",
+        "relative molecular mass",
+        "relative formula mass",
+        "carbon.12"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.2.2",
+      "subject": "chemistry",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.2.2",
+      "name": "The mole and the Avogadro constant",
+      "zh": "物质的量与阿伏伽德罗常量",
+      "keywords": [
+        "avogadro",
+        "amount of substance",
+        "amount.*mol",
+        "concentration.*mol"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.2.3",
+      "subject": "chemistry",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.2.3",
+      "name": "The ideal gas equation",
+      "zh": "理想气体方程",
+      "keywords": [
+        "ideal gas",
+        "pV.*nRT",
+        "molar gas"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.2.4",
+      "subject": "chemistry",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.2.4",
+      "name": "Empirical and molecular formula",
+      "zh": "最简式与分子式",
+      "keywords": [
+        "empirical formula",
+        "molecular formula",
+        "percentage.*mass"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.2.5",
+      "subject": "chemistry",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.2.5",
+      "name": "Balanced equations and associated calculations",
+      "zh": "配平方程与化学计量计算",
+      "keywords": [
+        "balanced equation",
+        "ionic equation",
+        "stoichiometr",
+        "percentage yield",
+        "atom economy",
+        "titration",
+        "volumetric"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.3.1",
+      "subject": "chemistry",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.3.1",
+      "name": "Ionic bonding",
+      "zh": "离子键",
+      "keywords": [
+        "ionic bond",
+        "ionic lattice",
+        "ionic compound",
+        "compound ion"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.3.2",
+      "subject": "chemistry",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.3.2",
+      "name": "Nature of covalent and dative covalent bonds",
+      "zh": "共价键与配位键",
+      "keywords": [
+        "covalent bond",
+        "dative",
+        "co.ordinate bond",
+        "shared pair"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.3.3",
+      "subject": "chemistry",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.3.3",
+      "name": "Metallic bonding",
+      "zh": "金属键",
+      "keywords": [
+        "metallic bond",
+        "delocalised electron",
+        "delocalized electron"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.3.4",
+      "subject": "chemistry",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.3.4",
+      "name": "Bonding and physical properties",
+      "zh": "结构、化学键与物理性质",
+      "keywords": [
+        "crystal structure",
+        "giant covalent",
+        "macromolecular",
+        "melting point",
+        "conductivity",
+        "diamond",
+        "graphite"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.3.5",
+      "subject": "chemistry",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.3.5",
+      "name": "Shapes of simple molecules and ions",
+      "zh": "分子与离子的形状",
+      "keywords": [
+        "bond angle",
+        "electron pair repulsion",
+        "lone pair",
+        "shape.*molecule",
+        "trigonal",
+        "tetrahedral",
+        "octahedral"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.3.6",
+      "subject": "chemistry",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.3.6",
+      "name": "Bond polarity",
+      "zh": "键的极性",
+      "keywords": [
+        "electronegativ",
+        "bond polarity",
+        "polar bond",
+        "dipole"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.3.7",
+      "subject": "chemistry",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.3.7",
+      "name": "Forces between molecules",
+      "zh": "分子间作用力",
+      "keywords": [
+        "intermolecular",
+        "van der waals",
+        "hydrogen bond",
+        "boiling point",
+        "permanent dipole"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.4.1",
+      "subject": "chemistry",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.4.1",
+      "name": "Enthalpy change",
+      "zh": "焓变",
+      "keywords": [
+        "enthalpy change",
+        "standard enthalpy",
+        "enthalpy of formation",
+        "enthalpy of combustion"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.4.2",
+      "subject": "chemistry",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.4.2",
+      "name": "Calorimetry",
+      "zh": "量热法",
+      "keywords": [
+        "calorimetr",
+        "specific heat capacity",
+        "temperature rise",
+        "heat loss"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.4.3",
+      "subject": "chemistry",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.4.3",
+      "name": "Applications of Hess’s law",
+      "zh": "赫斯定律",
+      "keywords": [
+        "hess",
+        "enthalpy cycle"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.4.4",
+      "subject": "chemistry",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.4.4",
+      "name": "Bond enthalpies",
+      "zh": "键焓",
+      "keywords": [
+        "bond enthalp",
+        "bond dissociation",
+        "mean bond"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.5.1",
+      "subject": "chemistry",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.5.1",
+      "name": "Oxidation, reduction and redox equations",
+      "zh": "氧化、还原与氧化还原方程",
+      "keywords": [
+        "oxidation state",
+        "oxidation number",
+        "oxidising agent",
+        "oxidizing agent",
+        "reducing agent",
+        "redox",
+        "half.equation"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.6.1",
+      "subject": "chemistry",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.1.6.1",
+      "name": "Collision theory",
+      "zh": "碰撞理论",
+      "keywords": [
+        "collision theory",
+        "successful collision",
+        "activation energy"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.6.2",
+      "subject": "chemistry",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.1.6.2",
+      "name": "Maxwell–Boltzmann distribution",
+      "zh": "麦克斯韦—玻尔兹曼分布",
+      "keywords": [
+        "maxwell",
+        "boltzmann",
+        "distribution.*energ"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.6.3",
+      "subject": "chemistry",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.1.6.3",
+      "name": "Effect of temperature on reaction rate",
+      "zh": "温度对反应速率的影响",
+      "keywords": [
+        "temperature.*rate",
+        "rate.*temperature"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.6.4",
+      "subject": "chemistry",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.1.6.4",
+      "name": "Effect of concentration and pressure",
+      "zh": "浓度与压强对反应速率的影响",
+      "keywords": [
+        "concentration.*rate",
+        "pressure.*rate",
+        "collision frequency"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.6.5",
+      "subject": "chemistry",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.1.6.5",
+      "name": "Catalysts",
+      "zh": "催化剂与反应速率",
+      "keywords": [
+        "catalyst",
+        "alternative route",
+        "activation energy"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.7.1",
+      "subject": "chemistry",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.1.7.1",
+      "name": "Chemical equilibria and Le Chatelier’s principle",
+      "zh": "化学平衡与勒夏特列原理",
+      "keywords": [
+        "le chatelier",
+        "dynamic equilibrium",
+        "equilibrium.*shift",
+        "position of equilibrium"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.7.2",
+      "subject": "chemistry",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.1.7.2",
+      "name": "Equilibrium constant Kc for homogeneous systems",
+      "zh": "均相体系的平衡常数Kc",
+      "keywords": [
+        "equilibrium constant.*Kc",
+        "\\bKc\\b",
+        "equilibrium concentration"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.8.1",
+      "subject": "chemistry",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.1.8.1",
+      "name": "Born–Haber cycles",
+      "zh": "玻恩—哈伯循环",
+      "keywords": [
+        "born.haber",
+        "lattice enthalp",
+        "electron affinity",
+        "enthalpy of solution",
+        "enthalpy of hydration"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.8.2",
+      "subject": "chemistry",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.1.8.2",
+      "name": "Gibbs free-energy change, ∆G, and entropy change, ∆S",
+      "zh": "吉布斯自由能与熵变",
+      "keywords": [
+        "gibbs",
+        "free.energy",
+        "entropy",
+        "feasib",
+        "spontaneous"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.9.1",
+      "subject": "chemistry",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.1.9.1",
+      "name": "Electrode potentials and cells",
+      "zh": "电极电势与电化学电池",
+      "keywords": [
+        "electrode potential",
+        "electrochemical cell",
+        "standard hydrogen electrode",
+        "salt bridge",
+        "cell emf"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.9.2",
+      "subject": "chemistry",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.1.9.2",
+      "name": "Commercial applications of electrochemical cells",
+      "zh": "电化学电池的商业应用",
+      "keywords": [
+        "fuel cell",
+        "rechargeable",
+        "battery",
+        "electrochemical.*commercial"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.10.1",
+      "subject": "chemistry",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.1.10.1",
+      "name": "Brønsted–Lowry acid–base equilibria in aqueous solution",
+      "zh": "布朗斯特—劳里酸碱平衡",
+      "keywords": [
+        "br.nsted",
+        "lowry",
+        "proton donor",
+        "proton acceptor",
+        "conjugate acid",
+        "conjugate base"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.10.2",
+      "subject": "chemistry",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.1.10.2",
+      "name": "Definition and determination of pH",
+      "zh": "pH的定义与计算",
+      "keywords": [
+        "hydrogen ion concentration",
+        "\\bpH\\b",
+        "strong acid",
+        "strong base"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.10.3",
+      "subject": "chemistry",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.1.10.3",
+      "name": "The ionic product of water, Kw",
+      "zh": "水的离子积Kw",
+      "keywords": [
+        "ionic product of water",
+        "\\bKw\\b",
+        "neutral.*pH"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.10.4",
+      "subject": "chemistry",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.1.10.4",
+      "name": "Weak acids and bases; Ka for weak acids",
+      "zh": "弱酸、弱碱与酸解离常数Ka",
+      "keywords": [
+        "weak acid",
+        "weak base",
+        "acid dissociation",
+        "\\bKa\\b",
+        "\\bpKa\\b"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.10.5",
+      "subject": "chemistry",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.1.10.5",
+      "name": "pH curves, titrations and indicators",
+      "zh": "pH曲线、滴定与指示剂",
+      "keywords": [
+        "pH curve",
+        "titration curve",
+        "indicator",
+        "equivalence point",
+        "end.point"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.10.6",
+      "subject": "chemistry",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.1.10.6",
+      "name": "Buffer action",
+      "zh": "缓冲作用",
+      "keywords": [
+        "buffer",
+        "buffering"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.11.1",
+      "subject": "chemistry",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.1.11.1",
+      "name": "Rate equations",
+      "zh": "速率方程",
+      "keywords": [
+        "rate equation",
+        "rate constant",
+        "order of reaction",
+        "rate.determining",
+        "arrhenius"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.11.2",
+      "subject": "chemistry",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.1.11.2",
+      "name": "Determination of rate equation",
+      "zh": "速率方程的实验测定",
+      "keywords": [
+        "initial rate",
+        "continuous monitoring",
+        "half.life",
+        "clock reaction",
+        "rate.*experiment"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.1.12.1",
+      "subject": "chemistry",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.1.12.1",
+      "name": "Equilibrium constant Kp for homogeneous systems",
+      "zh": "均相体系的平衡常数Kp",
+      "keywords": [
+        "partial pressure",
+        "\\bKp\\b"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.2.1.1",
+      "subject": "chemistry",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.2.1.1",
+      "name": "Classification",
+      "zh": "元素的周期分类",
+      "keywords": [
+        "periodic table",
+        "s.block",
+        "p.block",
+        "d.block",
+        "periodicity"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.2.1.2",
+      "subject": "chemistry",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.2.1.2",
+      "name": "Physical properties of Period 3 elements",
+      "zh": "第三周期元素的物理性质",
+      "keywords": [
+        "period 3",
+        "period three",
+        "atomic radius",
+        "melting point",
+        "ionisation energy"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.2.2.1",
+      "subject": "chemistry",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.2.2.1",
+      "name": "Group 2, the alkaline earth metals",
+      "zh": "第二族碱土金属",
+      "keywords": [
+        "group 2",
+        "alkaline earth",
+        "magnesium",
+        "calcium",
+        "barium",
+        "strontium",
+        "hydroxide.*solubility",
+        "sulfate.*solubility"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.2.3.1",
+      "subject": "chemistry",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.2.3.1",
+      "name": "Trends in properties",
+      "zh": "卤素的性质变化规律",
+      "keywords": [
+        "halogen",
+        "group 7",
+        "group 17",
+        "halide",
+        "chlorine",
+        "bromine",
+        "iodine",
+        "silver nitrate",
+        "displacement"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.2.3.2",
+      "subject": "chemistry",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.2.3.2",
+      "name": "Uses of chlorine and chlorate(I)",
+      "zh": "氯与次氯酸盐的用途",
+      "keywords": [
+        "chlorate",
+        "hypochlorite",
+        "bleach",
+        "water treatment",
+        "chlorine.*water"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.2.4.1",
+      "subject": "chemistry",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.2.4.1",
+      "name": "Properties of Period 3 elements and their oxides and chlorides",
+      "zh": "第三周期元素及其氧化物、氯化物",
+      "keywords": [
+        "period 3.*oxide",
+        "period 3.*chloride",
+        "amphoteric",
+        "silicon dioxide",
+        "phosphorus.*oxide",
+        "sulfur.*oxide"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.2.5.1",
+      "subject": "chemistry",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.2.5.1",
+      "name": "General properties of transition metals",
+      "zh": "过渡金属的一般性质",
+      "keywords": [
+        "transition metal",
+        "transition element",
+        "incomplete d",
+        "ligand",
+        "complex ion",
+        "co.ordination number"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.2.5.2",
+      "subject": "chemistry",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.2.5.2",
+      "name": "Substitution reactions",
+      "zh": "配体取代反应",
+      "keywords": [
+        "ligand substitution",
+        "ligand exchange",
+        "chelat",
+        "multidentate",
+        "haemoglobin",
+        "hemoglobin"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.2.5.3",
+      "subject": "chemistry",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.2.5.3",
+      "name": "Shapes of complex ions",
+      "zh": "配离子的形状与异构",
+      "keywords": [
+        "complex.*shape",
+        "octahedral",
+        "tetrahedral",
+        "square.planar",
+        "cis.trans",
+        "complex.*isomer"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.2.5.4",
+      "subject": "chemistry",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.2.5.4",
+      "name": "Formation of coloured ions",
+      "zh": "有色离子的形成",
+      "keywords": [
+        "coloured ion",
+        "colored ion",
+        "d.d",
+        "split.*d orbital",
+        "absor.*visible",
+        "complementary colour"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.2.5.5",
+      "subject": "chemistry",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.2.5.5",
+      "name": "Variable oxidation states",
+      "zh": "可变氧化态",
+      "keywords": [
+        "variable oxidation",
+        "vanadium",
+        "manganate",
+        "dichromate",
+        "oxidation state"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.2.5.6",
+      "subject": "chemistry",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.2.5.6",
+      "name": "Catalysts",
+      "zh": "过渡金属催化",
+      "keywords": [
+        "heterogeneous catal",
+        "homogeneous catal",
+        "autocatal",
+        "surface adsorption",
+        "contact process",
+        "haber process"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.2.6.1",
+      "subject": "chemistry",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.2.6.1",
+      "name": "Reactions of ions in aqueous solution",
+      "zh": "水溶液中离子的反应",
+      "keywords": [
+        "aqueous ion",
+        "metal.aqua",
+        "hydroxide precipitate",
+        "ammonia.*excess",
+        "hexaaqua",
+        "carbonate.*precipitate"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.3.1.1",
+      "subject": "chemistry",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.3.1.1",
+      "name": "Nomenclature",
+      "zh": "有机物命名与结构表示",
+      "keywords": [
+        "nomenclature",
+        "\\bIUPAC\\b",
+        "displayed formula",
+        "structural formula",
+        "skeletal formula",
+        "homologous"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.3.1.2",
+      "subject": "chemistry",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.3.1.2",
+      "name": "Reaction mechanisms",
+      "zh": "有机反应机理",
+      "keywords": [
+        "reaction mechanism",
+        "curly arrow",
+        "curved arrow",
+        "homolytic",
+        "heterolytic",
+        "electrophile",
+        "nucleophile",
+        "free radical"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.3.1.3",
+      "subject": "chemistry",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.3.1.3",
+      "name": "Isomerism",
+      "zh": "结构异构与几何异构",
+      "keywords": [
+        "structural isomer",
+        "chain isomer",
+        "position isomer",
+        "functional group isomer",
+        "E.Z",
+        "stereoisomer"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.3.2.1",
+      "subject": "chemistry",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.3.2.1",
+      "name": "Fractional distillation of crude oil",
+      "zh": "原油的分馏",
+      "keywords": [
+        "fractional distillation",
+        "crude oil",
+        "petroleum"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.3.2.2",
+      "subject": "chemistry",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.3.2.2",
+      "name": "Modification of alkanes by cracking",
+      "zh": "烷烃裂化",
+      "keywords": [
+        "cracking",
+        "thermal cracking",
+        "catalytic cracking"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.3.2.3",
+      "subject": "chemistry",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.3.2.3",
+      "name": "Combustion of alkanes",
+      "zh": "烷烃燃烧",
+      "keywords": [
+        "combustion",
+        "carbon monoxide",
+        "sulfur dioxide",
+        "pollutant",
+        "catalytic converter"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.3.2.4",
+      "subject": "chemistry",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.3.2.4",
+      "name": "Chlorination of alkanes",
+      "zh": "烷烃氯化",
+      "keywords": [
+        "chlorination",
+        "methane.*chlorine",
+        "free.radical substitution",
+        "initiation",
+        "propagation",
+        "termination"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.3.3.1",
+      "subject": "chemistry",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.3.3.1",
+      "name": "Nucleophilic substitution",
+      "zh": "卤代烷的亲核取代",
+      "keywords": [
+        "halogenoalkane",
+        "nucleophilic substitution",
+        "hydrolysis.*hal",
+        "cyanide.*hal",
+        "bond enthalpy.*hal"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.3.3.2",
+      "subject": "chemistry",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.3.3.2",
+      "name": "Elimination",
+      "zh": "卤代烷的消去反应",
+      "keywords": [
+        "halogenoalkane.*elimination",
+        "ethanolic.*hydroxide",
+        "elimination.*hal"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.3.4.1",
+      "subject": "chemistry",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.3.4.1",
+      "name": "Structure, bonding and reactivity",
+      "zh": "烯烃的结构、成键与反应性",
+      "keywords": [
+        "alkene",
+        "double bond",
+        "pi bond",
+        "planar.*carbon"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.3.4.2",
+      "subject": "chemistry",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.3.4.2",
+      "name": "Addition reactions of alkenes",
+      "zh": "烯烃的加成反应",
+      "keywords": [
+        "electrophilic addition",
+        "bromine water",
+        "hydrogen halide",
+        "carbocation",
+        "addition.*alkene"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.3.4.3",
+      "subject": "chemistry",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.3.4.3",
+      "name": "Addition polymers",
+      "zh": "加聚物",
+      "keywords": [
+        "addition polymer",
+        "polyalkene",
+        "repeat unit",
+        "monomer"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.3.4.4",
+      "subject": "chemistry",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.3.4.4",
+      "name": "Epoxyethane",
+      "zh": "环氧乙烷",
+      "keywords": [
+        "epoxyethane",
+        "ethylene oxide",
+        "ethane.1.2.diol"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.3.5.1",
+      "subject": "chemistry",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.3.5.1",
+      "name": "Oxidation of alcohols",
+      "zh": "醇的氧化",
+      "keywords": [
+        "oxidation.*alcohol",
+        "primary alcohol",
+        "secondary alcohol",
+        "tertiary alcohol",
+        "acidified dichromate",
+        "reflux",
+        "distil"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.3.5.2",
+      "subject": "chemistry",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.3.5.2",
+      "name": "Elimination",
+      "zh": "醇的消去反应",
+      "keywords": [
+        "dehydration.*alcohol",
+        "elimination.*alcohol",
+        "concentrated.*phosphoric",
+        "concentrated.*sulfuric"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.3.6.1",
+      "subject": "chemistry",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.3.6.1",
+      "name": "Identification of functional groups by test tube reactions",
+      "zh": "试管反应鉴别官能团",
+      "keywords": [
+        "functional group.*test",
+        "test.tube",
+        "silver mirror",
+        "tollens",
+        "fehling",
+        "sodium carbonate",
+        "bromine water"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.3.6.2",
+      "subject": "chemistry",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.3.6.2",
+      "name": "Mass spectrometry",
+      "zh": "有机质谱",
+      "keywords": [
+        "mass spectr",
+        "fragmentation",
+        "molecular ion",
+        "base peak"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.3.6.3",
+      "subject": "chemistry",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.3.6.3",
+      "name": "Infrared spectroscopy",
+      "zh": "红外光谱",
+      "keywords": [
+        "infrared",
+        "infra.red",
+        "absorption.*wavenumber",
+        "fingerprint region"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.3.7.1",
+      "subject": "chemistry",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.3.7.1",
+      "name": "Optical isomerism",
+      "zh": "光学异构",
+      "keywords": [
+        "optical isomer",
+        "enantiomer",
+        "chiral",
+        "plane.polarised",
+        "racem"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.3.8.1",
+      "subject": "chemistry",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.3.8.1",
+      "name": "Aldehydes and ketones",
+      "zh": "醛与酮",
+      "keywords": [
+        "aldehyde",
+        "ketone",
+        "carbonyl",
+        "nucleophilic addition",
+        "sodium borohydride",
+        "\\bNaBH4\\b",
+        "hydrogen cyanide"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.3.9.1",
+      "subject": "chemistry",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.3.9.1",
+      "name": "Carboxylic acids and esters",
+      "zh": "羧酸与酯",
+      "keywords": [
+        "carboxylic acid",
+        "ester",
+        "esterification",
+        "hydrolysis.*ester"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.3.9.2",
+      "subject": "chemistry",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.3.9.2",
+      "name": "Acylation",
+      "zh": "酰化反应",
+      "keywords": [
+        "acylation",
+        "acyl chloride",
+        "acid anhydride",
+        "addition.elimination"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.3.10.1",
+      "subject": "chemistry",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.3.10.1",
+      "name": "Bonding",
+      "zh": "芳香化合物的成键",
+      "keywords": [
+        "benzene",
+        "aromatic",
+        "delocalis",
+        "delocaliz",
+        "kekul",
+        "enthalpy of hydrogenation"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.3.10.2",
+      "subject": "chemistry",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.3.10.2",
+      "name": "Electrophilic substitution",
+      "zh": "亲电取代反应",
+      "keywords": [
+        "electrophilic substitution",
+        "nitration",
+        "friedel.crafts",
+        "nitronium",
+        "acylation.*benzene"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.3.11.1",
+      "subject": "chemistry",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.3.11.1",
+      "name": "Preparation",
+      "zh": "胺的制备",
+      "keywords": [
+        "preparation.*amine",
+        "reduction.*nitrile",
+        "reduction.*nitro",
+        "halogenoalkane.*ammonia"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.3.11.2",
+      "subject": "chemistry",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.3.11.2",
+      "name": "Base properties",
+      "zh": "胺的碱性",
+      "keywords": [
+        "amine.*base",
+        "basicity.*amine",
+        "phenylamine",
+        "ethylamine"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.3.11.3",
+      "subject": "chemistry",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.3.11.3",
+      "name": "Nucleophilic properties",
+      "zh": "胺的亲核性质",
+      "keywords": [
+        "amine.*nucleophil",
+        "quaternary ammonium",
+        "amine.*acyl",
+        "alkylation"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.3.12.1",
+      "subject": "chemistry",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.3.12.1",
+      "name": "Condensation polymers",
+      "zh": "缩聚物",
+      "keywords": [
+        "condensation polymer",
+        "polyester",
+        "polyamide",
+        "nylon",
+        "terylene"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.3.12.2",
+      "subject": "chemistry",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.3.12.2",
+      "name": "Biodegradability and disposal of polymers",
+      "zh": "聚合物的生物降解与处置",
+      "keywords": [
+        "biodegrad",
+        "polymer.*disposal",
+        "landfill",
+        "recycling",
+        "polymer.*hydrolysis"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.3.13.1",
+      "subject": "chemistry",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.3.13.1",
+      "name": "Amino acids",
+      "zh": "氨基酸",
+      "keywords": [
+        "amino acid",
+        "zwitterion",
+        "isoelectric",
+        "amphoteric"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.3.13.2",
+      "subject": "chemistry",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.3.13.2",
+      "name": "Proteins",
+      "zh": "蛋白质的化学",
+      "keywords": [
+        "protein",
+        "peptide bond",
+        "polypeptide",
+        "primary structure",
+        "secondary structure",
+        "tertiary structure"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.3.13.3",
+      "subject": "chemistry",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.3.13.3",
+      "name": "Action of anticancer drugs",
+      "zh": "抗癌药物的作用",
+      "keywords": [
+        "anticancer",
+        "cisplatin",
+        "DNA replication",
+        "platinum"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.3.14",
+      "subject": "chemistry",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.3.14",
+      "name": "Organic synthesis",
+      "zh": "有机合成",
+      "keywords": [
+        "organic synthesis",
+        "synthetic route",
+        "reaction sequence",
+        "reagent.*condition",
+        "purif",
+        "recrystallis",
+        "melting.point.*purity"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.3.15.1",
+      "subject": "chemistry",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.3.15.1",
+      "name": "Nuclear magnetic resonance spectroscopy",
+      "zh": "核磁共振光谱",
+      "keywords": [
+        "nuclear magnetic",
+        "\\bNMR\\b",
+        "chemical shift",
+        "spin.spin",
+        "integration trace",
+        "tetramethylsilane",
+        "\\bTMS\\b"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "chemistry-3.3.16.1",
+      "subject": "chemistry",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.3.16.1",
+      "name": "Chromatography",
+      "zh": "色谱法",
+      "keywords": [
+        "chromatograph",
+        "retention time",
+        "\\bRf\\b",
+        "mobile phase",
+        "stationary phase",
+        "thin.layer"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf"
+    },
+    {
+      "id": "biology-3.1.1.1",
+      "subject": "biology",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.1.1",
+      "name": "Monomers and polymers",
+      "zh": "单体与聚合物",
+      "keywords": [
+        "monomer",
+        "polymer",
+        "condensation",
+        "hydrolysis"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.1.1.2",
+      "subject": "biology",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.1.2",
+      "name": "Carbohydrates",
+      "zh": "糖类",
+      "keywords": [
+        "carbohydrate",
+        "glucose",
+        "fructose",
+        "glycosidic",
+        "starch",
+        "cellulose",
+        "amylose",
+        "amylopectin",
+        "benedict",
+        "maltose",
+        "sucrose"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.1.1.3",
+      "subject": "biology",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.1.3",
+      "name": "Lipids",
+      "zh": "脂质",
+      "keywords": [
+        "lipid",
+        "triglyceride",
+        "phospholipid",
+        "fatty acid",
+        "glycerol",
+        "emulsion test",
+        "ester bond"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.1.1.4",
+      "subject": "biology",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.1.4",
+      "name": "Proteins",
+      "zh": "蛋白质",
+      "keywords": [
+        "protein",
+        "amino acid",
+        "peptide",
+        "biuret",
+        "disulfide",
+        "disulphide",
+        "tertiary structure",
+        "quaternary structure"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.1.2.1",
+      "subject": "biology",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.2.1",
+      "name": "The structure of eukaryotic cells",
+      "zh": "真核细胞结构与显微技术",
+      "keywords": [
+        "eukaryot",
+        "organelle",
+        "mitochondri",
+        "chloroplast",
+        "golgi",
+        "lysosome",
+        "endoplasmic",
+        "microscop",
+        "magnification",
+        "resolution",
+        "ultracentrifug"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.1.2.2",
+      "subject": "biology",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.2.2",
+      "name": "The structure of prokaryotic cells",
+      "zh": "原核细胞结构",
+      "keywords": [
+        "prokaryot",
+        "murein",
+        "plasmid",
+        "capsule",
+        "flagell",
+        "bacterial.*structure"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.1.3.1",
+      "subject": "biology",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.3.1",
+      "name": "Enzymes and enzyme action",
+      "zh": "酶与酶的作用",
+      "keywords": [
+        "enzyme.substrate",
+        "active site",
+        "induced.fit",
+        "activation energy",
+        "enzyme action"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.1.3.2",
+      "subject": "biology",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.3.2",
+      "name": "The properties of enzymes",
+      "zh": "酶的性质与影响因素",
+      "keywords": [
+        "enzyme.*temperature",
+        "enzyme.*pH",
+        "enzyme.*concentration",
+        "competitive inhibitor",
+        "non.competitive",
+        "denatur",
+        "enzyme.*rate"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.1.4.1",
+      "subject": "biology",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.4.1",
+      "name": "Plasma membranes",
+      "zh": "细胞膜",
+      "keywords": [
+        "plasma membrane",
+        "cell.surface membrane",
+        "fluid mosaic",
+        "phospholipid bilayer",
+        "membrane protein",
+        "cholesterol"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.1.4.2",
+      "subject": "biology",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.4.2",
+      "name": "Diffusion",
+      "zh": "扩散与渗透",
+      "keywords": [
+        "diffusion",
+        "osmosis",
+        "water potential",
+        "facilitated",
+        "concentration gradient"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.1.4.3",
+      "subject": "biology",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.4.3",
+      "name": "Active transport",
+      "zh": "主动运输",
+      "keywords": [
+        "active transport",
+        "carrier protein",
+        "ATP.*transport",
+        "co.transport"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.1.5.1",
+      "subject": "biology",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.5.1",
+      "name": "Surface area to volume relationship",
+      "zh": "表面积与体积比",
+      "keywords": [
+        "surface area.*volume",
+        "surface.area.to.volume",
+        "surface area:volume",
+        "diffusion distance",
+        "exchange surface"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.1.5.2",
+      "subject": "biology",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.5.2",
+      "name": "Gas exchange systems",
+      "zh": "气体交换系统",
+      "keywords": [
+        "gas exchange",
+        "alveol",
+        "tracheal",
+        "spiracle",
+        "gill",
+        "counter.current",
+        "stoma",
+        "stomata",
+        "ventilation"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.1.5.3",
+      "subject": "biology",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.5.3",
+      "name": "Haemoglobin and the transport of oxygen",
+      "zh": "血红蛋白与氧运输",
+      "keywords": [
+        "haemoglobin",
+        "hemoglobin",
+        "oxygen dissociation",
+        "bohr",
+        "oxyhaemoglobin",
+        "oxyhemoglobin",
+        "oxygen affinity"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.1.6",
+      "subject": "biology",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.6",
+      "name": "Living organisms vary",
+      "zh": "生物个体的变异",
+      "keywords": [
+        "intraspecific variation",
+        "interspecific variation",
+        "continuous variation",
+        "discontinuous variation",
+        "genetic.*environmental",
+        "standard deviation"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.1.7.1",
+      "subject": "biology",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.7.1",
+      "name": "The structure of nucleic acids",
+      "zh": "核酸结构",
+      "keywords": [
+        "nucleic acid",
+        "nucleotide",
+        "deoxyribose",
+        "ribose",
+        "phosphodiester",
+        "purine",
+        "pyrimidine",
+        "double helix"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.1.7.2",
+      "subject": "biology",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.7.2",
+      "name": "DNA, genes and chromosomes",
+      "zh": "DNA、基因与染色体",
+      "keywords": [
+        "chromosome",
+        "histone",
+        "gene.*locus",
+        "genome",
+        "homologous chromosome"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.1.7.3",
+      "subject": "biology",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.7.3",
+      "name": "DNA replication",
+      "zh": "DNA复制",
+      "keywords": [
+        "DNA replication",
+        "semi.conservative",
+        "DNA polymerase",
+        "DNA helicase",
+        "leading strand",
+        "lagging strand"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.1.8.1",
+      "subject": "biology",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.8.1",
+      "name": "The genetic code",
+      "zh": "遗传密码",
+      "keywords": [
+        "genetic code",
+        "codon",
+        "triplet",
+        "degenerate",
+        "universal code",
+        "non.overlapping"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.1.8.2",
+      "subject": "biology",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.8.2",
+      "name": "Polypeptide synthesis",
+      "zh": "多肽合成",
+      "keywords": [
+        "transcription",
+        "translation",
+        "messenger RNA",
+        "transfer RNA",
+        "\\bmRNA\\b",
+        "\\btRNA\\b",
+        "anticodon",
+        "polypeptide synthesis"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.1.8.3",
+      "subject": "biology",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.8.3",
+      "name": "Protein folding",
+      "zh": "蛋白质折叠",
+      "keywords": [
+        "protein folding",
+        "post.translational",
+        "fold.*protein",
+        "tertiary structure"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.1.9.1",
+      "subject": "biology",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.9.1",
+      "name": "Meiosis",
+      "zh": "减数分裂与遗传多样性",
+      "keywords": [
+        "meiosis",
+        "crossing over",
+        "independent assortment",
+        "homologous pair",
+        "haploid",
+        "diploid",
+        "recombination"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.1.10.1",
+      "subject": "biology",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.10.1",
+      "name": "The concept of a species",
+      "zh": "物种的概念",
+      "keywords": [
+        "species.*definition",
+        "fertile offspring",
+        "reproductive isolation",
+        "interbreed"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.1.10.2",
+      "subject": "biology",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.10.2",
+      "name": "Biological classification",
+      "zh": "生物分类",
+      "keywords": [
+        "taxonom",
+        "classification",
+        "binomial",
+        "phylogen",
+        "kingdom",
+        "domain",
+        "genus"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.1.11.1",
+      "subject": "biology",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.11.1",
+      "name": "Genetic diversity",
+      "zh": "遗传多样性",
+      "keywords": [
+        "genetic diversity",
+        "allele.*diversity",
+        "DNA.*comparison",
+        "amino acid sequence",
+        "immunological"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.1.11.2",
+      "subject": "biology",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.11.2",
+      "name": "Species diversity",
+      "zh": "群落中的物种多样性",
+      "keywords": [
+        "species diversity",
+        "species richness",
+        "index of diversity",
+        "simpson",
+        "quadrat",
+        "sampling.*habitat"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.2.1.1",
+      "subject": "biology",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.1.1",
+      "name": "Pathogens",
+      "zh": "病原体",
+      "keywords": [
+        "pathogen",
+        "bacteri.*disease",
+        "fung.*disease",
+        "infectious",
+        "transmission"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.2.1.2",
+      "subject": "biology",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.1.2",
+      "name": "Lifestyle, coronary heart disease and cancer",
+      "zh": "生活方式、冠心病与癌症",
+      "keywords": [
+        "lifestyle",
+        "smoking",
+        "coronary heart disease",
+        "cancer risk",
+        "correlation.*causation"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.2.2.1",
+      "subject": "biology",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.2.1",
+      "name": "The human digestive system",
+      "zh": "人体消化系统",
+      "keywords": [
+        "digestive system",
+        "oesophagus",
+        "esophagus",
+        "stomach",
+        "small intestine",
+        "large intestine",
+        "pancreas"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.2.2.2",
+      "subject": "biology",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.2.2",
+      "name": "Digestion",
+      "zh": "消化过程",
+      "keywords": [
+        "digestion",
+        "amylase",
+        "protease",
+        "lipase",
+        "trypsin",
+        "peptidase",
+        "membrane.bound enzyme",
+        "bile"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.2.2.3",
+      "subject": "biology",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.2.3",
+      "name": "Absorption",
+      "zh": "消化产物的吸收",
+      "keywords": [
+        "absorption",
+        "ileum",
+        "villus",
+        "villi",
+        "microvilli",
+        "co.transport",
+        "glucose.*sodium"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.2.3.1",
+      "subject": "biology",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.3.1",
+      "name": "Cholera and its symptoms",
+      "zh": "霍乱与症状",
+      "keywords": [
+        "cholera",
+        "vibrio",
+        "toxin",
+        "diarrhoea",
+        "diarrhea",
+        "chloride ion"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.2.3.2",
+      "subject": "biology",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.3.2",
+      "name": "Oral rehydration",
+      "zh": "口服补液",
+      "keywords": [
+        "oral rehydration",
+        "\\bORS\\b",
+        "rehydration solution"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.2.4.1",
+      "subject": "biology",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.4.1",
+      "name": "The structure of HIV",
+      "zh": "HIV的结构",
+      "keywords": [
+        "HIV.*structure",
+        "retrovirus",
+        "reverse transcriptase",
+        "viral envelope",
+        "capsid"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.2.4.2",
+      "subject": "biology",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.4.2",
+      "name": "The replication cycle of HIV",
+      "zh": "HIV的复制周期",
+      "keywords": [
+        "HIV.*replicat",
+        "\\bAIDS\\b",
+        "helper T cell",
+        "reverse transcription",
+        "provirus"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.2.5.1",
+      "subject": "biology",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.5.1",
+      "name": "The principles of immunology",
+      "zh": "免疫学原理",
+      "keywords": [
+        "antigen",
+        "phagocyt",
+        "lymphocyte",
+        "immune response",
+        "cell.mediated",
+        "T cell",
+        "non.self"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.2.5.2",
+      "subject": "biology",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.5.2",
+      "name": "The response of B cells to a foreign antigen",
+      "zh": "B细胞对抗原的应答",
+      "keywords": [
+        "B cell",
+        "plasma cell",
+        "antibody",
+        "clonal selection",
+        "clonal expansion",
+        "humoral",
+        "memory cell"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.2.5.3",
+      "subject": "biology",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.5.3",
+      "name": "Vaccination",
+      "zh": "疫苗接种",
+      "keywords": [
+        "vaccin",
+        "immunisation",
+        "immunization",
+        "herd immunity",
+        "primary response",
+        "secondary response"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.2.6.1",
+      "subject": "biology",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.6.1",
+      "name": "The mammalian blood system",
+      "zh": "哺乳动物血液循环系统",
+      "keywords": [
+        "artery",
+        "arteries",
+        "vein",
+        "capillar",
+        "double circulation",
+        "blood vessel",
+        "tissue fluid"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.2.6.2",
+      "subject": "biology",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.6.2",
+      "name": "Heart structure and function",
+      "zh": "心脏结构与功能",
+      "keywords": [
+        "heart.*structure",
+        "atrium",
+        "atria",
+        "ventricle",
+        "valve",
+        "cardiac cycle",
+        "blood pressure"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.2.7.1",
+      "subject": "biology",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.7.1",
+      "name": "The biological basis of heart disease",
+      "zh": "心脏病的生物学基础",
+      "keywords": [
+        "atheroma",
+        "atherosclerosis",
+        "thrombosis",
+        "myocardial infarction",
+        "coronary arter"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.2.7.2",
+      "subject": "biology",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.7.2",
+      "name": "Risk factors associated with coronary heart disease",
+      "zh": "冠心病的风险因素",
+      "keywords": [
+        "coronary.*risk",
+        "cholesterol",
+        "high blood pressure",
+        "obesity",
+        "smoking",
+        "relative risk"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.2.8.1",
+      "subject": "biology",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.8.1",
+      "name": "Xylem and the passage of water and mineral ions through a plant",
+      "zh": "木质部与水、无机盐运输",
+      "keywords": [
+        "xylem",
+        "transpiration",
+        "cohesion.tension",
+        "potometer",
+        "root hair",
+        "water.*uptake",
+        "root pressure"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.2.8.2",
+      "subject": "biology",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.8.2",
+      "name": "Phloem and the passage of organic substances through a plant",
+      "zh": "韧皮部与有机物运输",
+      "keywords": [
+        "phloem",
+        "translocation",
+        "mass flow",
+        "sieve tube",
+        "companion cell",
+        "source.*sink",
+        "sucrose.*transport"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.2.9.1",
+      "subject": "biology",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.9.1",
+      "name": "Plant virus diseases",
+      "zh": "植物病毒病",
+      "keywords": [
+        "plant virus",
+        "plant viral",
+        "tobacco mosaic",
+        "\\bTMV\\b"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.2.9.2",
+      "subject": "biology",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.9.2",
+      "name": "Aphids as feeders on phloem sap",
+      "zh": "蚜虫取食韧皮部汁液",
+      "keywords": [
+        "aphid",
+        "stylet",
+        "phloem sap"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.2.10.1",
+      "subject": "biology",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.10.1",
+      "name": "The cell cycle",
+      "zh": "细胞周期",
+      "keywords": [
+        "cell cycle",
+        "interphase",
+        "\\bG1\\b",
+        "\\bG2\\b",
+        "S phase",
+        "DNA.*content"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.2.10.2",
+      "subject": "biology",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.10.2",
+      "name": "Mitosis",
+      "zh": "有丝分裂",
+      "keywords": [
+        "mitosis",
+        "prophase",
+        "metaphase",
+        "anaphase",
+        "telophase",
+        "spindle",
+        "centromere",
+        "mitotic index"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.2.10.3",
+      "subject": "biology",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.10.3",
+      "name": "Binary fission",
+      "zh": "二分裂",
+      "keywords": [
+        "binary fission",
+        "bacterial.*division"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.2.11.1",
+      "subject": "biology",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.11.1",
+      "name": "Gene mutations",
+      "zh": "基因突变",
+      "keywords": [
+        "gene mutation",
+        "base substitution",
+        "insertion",
+        "deletion",
+        "frameshift",
+        "mutagen"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.2.11.2",
+      "subject": "biology",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.11.2",
+      "name": "Mutations and cancers",
+      "zh": "突变与癌症",
+      "keywords": [
+        "oncogene",
+        "tumour suppressor",
+        "tumor suppressor",
+        "benign",
+        "malignant",
+        "metastasis",
+        "cancer"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.3.1.1",
+      "subject": "biology",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.1.1",
+      "name": "Populations, communities and ecosystems",
+      "zh": "种群、群落与生态系统",
+      "keywords": [
+        "population",
+        "community",
+        "ecosystem",
+        "habitat",
+        "ecological niche",
+        "abiotic",
+        "biotic"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.3.1.2",
+      "subject": "biology",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.1.2",
+      "name": "Variation in population size",
+      "zh": "种群数量变化",
+      "keywords": [
+        "population size",
+        "carrying capacity",
+        "intraspecific competition",
+        "interspecific competition",
+        "predat",
+        "mark.release.recapture",
+        "capture.recapture"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.3.1.3",
+      "subject": "biology",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.1.3",
+      "name": "Ecological succession",
+      "zh": "生态演替",
+      "keywords": [
+        "succession",
+        "pioneer species",
+        "climax community",
+        "colonis",
+        "coloniz"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.3.2.1",
+      "subject": "biology",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.2.1",
+      "name": "The light-dependent reaction",
+      "zh": "光合作用的光依赖反应",
+      "keywords": [
+        "light.dependent",
+        "photolysis",
+        "photosystem",
+        "photophosphorylation",
+        "thylakoid",
+        "reduced NADP",
+        "\\bNADPH\\b"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.3.2.2",
+      "subject": "biology",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.2.2",
+      "name": "The light-independent reaction",
+      "zh": "光合作用的光非依赖反应",
+      "keywords": [
+        "calvin",
+        "light.independent",
+        "\\bRuBP\\b",
+        "rubisco",
+        "glycerate",
+        "triose phosphate",
+        "carbon fixation"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.3.2.3",
+      "subject": "biology",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.2.3",
+      "name": "Limiting factors",
+      "zh": "光合作用的限制因素",
+      "keywords": [
+        "photosynthesis.*rate",
+        "limiting factor",
+        "light intensity",
+        "carbon dioxide concentration",
+        "photosynthesis.*temperature"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.3.3.1",
+      "subject": "biology",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.3.1",
+      "name": "Glycolysis",
+      "zh": "糖酵解",
+      "keywords": [
+        "glycolysis",
+        "pyruvate",
+        "hexose",
+        "substrate.level phosphorylation"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.3.3.2",
+      "subject": "biology",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.3.2",
+      "name": "Anaerobic respiration",
+      "zh": "无氧呼吸",
+      "keywords": [
+        "anaerobic",
+        "lactate",
+        "lactic acid",
+        "ethanol",
+        "fermentation"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.3.3.3",
+      "subject": "biology",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.3.3",
+      "name": "Aerobic respiration",
+      "zh": "有氧呼吸",
+      "keywords": [
+        "aerobic respiration",
+        "krebs",
+        "link reaction",
+        "acetyl",
+        "oxidative phosphorylation",
+        "electron transport",
+        "chemiosmosis",
+        "reduced NAD",
+        "\\bFAD\\b"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.3.3.4",
+      "subject": "biology",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.3.4",
+      "name": "Respiratory substrates",
+      "zh": "呼吸底物",
+      "keywords": [
+        "respiratory substrate",
+        "respiratory quotient",
+        "\\bRQ\\b",
+        "respirometer"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.3.4.1",
+      "subject": "biology",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.4.1",
+      "name": "Energy transfer",
+      "zh": "生态系统中的能量传递",
+      "keywords": [
+        "trophic",
+        "food chain",
+        "food web",
+        "biomass",
+        "net primary productivity",
+        "gross primary productivity",
+        "ecological efficiency"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.3.4.2",
+      "subject": "biology",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.4.2",
+      "name": "Energy and human food production",
+      "zh": "能量与人类粮食生产",
+      "keywords": [
+        "food production",
+        "agricultur",
+        "farming",
+        "pesticide",
+        "biological control",
+        "intensive",
+        "conservation"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.3.5.1",
+      "subject": "biology",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.5.1",
+      "name": "Principles of nutrient cycling",
+      "zh": "物质循环的原理",
+      "keywords": [
+        "nutrient cycl",
+        "decomposer",
+        "saprobiont",
+        "extracellular digestion"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.3.5.2",
+      "subject": "biology",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.5.2",
+      "name": "The carbon cycle",
+      "zh": "碳循环",
+      "keywords": [
+        "carbon cycle",
+        "carbon dioxide.*ecosystem",
+        "carbon sink",
+        "global warming",
+        "greenhouse"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.3.5.3",
+      "subject": "biology",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.5.3",
+      "name": "The nitrogen cycle",
+      "zh": "氮循环",
+      "keywords": [
+        "nitrogen cycle",
+        "nitrogen fixation",
+        "nitrification",
+        "denitrification",
+        "ammonification",
+        "rhizobium"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.3.6.1",
+      "subject": "biology",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.6.1",
+      "name": "Principles",
+      "zh": "遗传学基本原理",
+      "keywords": [
+        "allele",
+        "genotype",
+        "phenotype",
+        "dominant",
+        "recessive",
+        "homozygous",
+        "heterozygous",
+        "genetic cross"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.3.6.2",
+      "subject": "biology",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.6.2",
+      "name": "Patterns of inheritance",
+      "zh": "遗传模式",
+      "keywords": [
+        "monohybrid",
+        "dihybrid",
+        "codominan",
+        "sex.link",
+        "autosomal link",
+        "epistasis",
+        "chi.squared",
+        "pedigree"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.3.7.1",
+      "subject": "biology",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.7.1",
+      "name": "Principles and applications",
+      "zh": "种群中的等位基因频率",
+      "keywords": [
+        "allele frequenc",
+        "gene pool",
+        "genetic drift",
+        "selection pressure"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.3.7.2",
+      "subject": "biology",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.7.2",
+      "name": "The Hardy-Weinberg principle and the Hardy-Weinberg equation",
+      "zh": "哈迪—温伯格原理与方程",
+      "keywords": [
+        "hardy.weinberg",
+        "p2",
+        "2pq",
+        "allele.*equilibrium"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.3.8.1",
+      "subject": "biology",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.8.1",
+      "name": "The theory of evolution",
+      "zh": "进化论",
+      "keywords": [
+        "evolution",
+        "natural selection",
+        "adaptation",
+        "fitness",
+        "selection advantage"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.3.8.2",
+      "subject": "biology",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.8.2",
+      "name": "Selection and speciation",
+      "zh": "选择与物种形成",
+      "keywords": [
+        "speciation",
+        "allopatric",
+        "sympatric",
+        "geographic isolation",
+        "directional selection",
+        "stabilising selection",
+        "disruptive selection"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.4.1",
+      "subject": "biology",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.4.1",
+      "name": "Control systems involve stimulus and response",
+      "zh": "刺激与应答控制系统",
+      "keywords": [
+        "stimulus",
+        "response",
+        "receptor",
+        "effector",
+        "reflex arc"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.4.2.1",
+      "subject": "biology",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.4.2.1",
+      "name": "The Pacinian corpuscle",
+      "zh": "帕西尼小体",
+      "keywords": [
+        "pacinian",
+        "mechanoreceptor",
+        "generator potential",
+        "pressure receptor"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.4.2.2",
+      "subject": "biology",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.4.2.2",
+      "name": "The human retina",
+      "zh": "人类视网膜",
+      "keywords": [
+        "retina",
+        "rod cell",
+        "cone cell",
+        "rhodopsin",
+        "fovea",
+        "visual acuity",
+        "optic"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.4.3.1",
+      "subject": "biology",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.4.3.1",
+      "name": "Nerve impulses",
+      "zh": "神经冲动",
+      "keywords": [
+        "action potential",
+        "resting potential",
+        "depolarisation",
+        "repolarisation",
+        "voltage.gated",
+        "myelin",
+        "saltatory",
+        "refractory"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.4.3.2",
+      "subject": "biology",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.4.3.2",
+      "name": "Synaptic transmission",
+      "zh": "突触传递",
+      "keywords": [
+        "synapse",
+        "synaptic",
+        "acetylcholine",
+        "neurotransmitter",
+        "summation",
+        "excitatory",
+        "inhibitory"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.4.4.1",
+      "subject": "biology",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.4.4.1",
+      "name": "The sliding filament theory of muscle contraction",
+      "zh": "肌肉收缩的滑行丝理论",
+      "keywords": [
+        "sliding filament",
+        "actin",
+        "myosin",
+        "sarcomere",
+        "troponin",
+        "tropomyosin",
+        "cross.bridge"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.4.4.2",
+      "subject": "biology",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.4.4.2",
+      "name": "Muscles as effectors",
+      "zh": "肌肉作为效应器",
+      "keywords": [
+        "skeletal muscle",
+        "antagonistic muscle",
+        "fast.twitch",
+        "slow.twitch",
+        "muscle fibre"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.4.5.1",
+      "subject": "biology",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.4.5.1",
+      "name": "Principles",
+      "zh": "植物控制系统原理",
+      "keywords": [
+        "plant.*growth regulator",
+        "plant hormone",
+        "plant.*response"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.4.5.2",
+      "subject": "biology",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.4.5.2",
+      "name": "Auxins and tropisms",
+      "zh": "生长素与向性",
+      "keywords": [
+        "auxin",
+        "\\bIAA\\b",
+        "phototropism",
+        "gravitropism",
+        "geotropism",
+        "cell elongation"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.4.5.3",
+      "subject": "biology",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.4.5.3",
+      "name": "Ethene and abscisic acid (ABA)",
+      "zh": "乙烯与脱落酸",
+      "keywords": [
+        "ethene",
+        "ethylene",
+        "abscisic",
+        "\\bABA\\b",
+        "fruit ripening",
+        "stomatal closure"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.4.6.1",
+      "subject": "biology",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.4.6.1",
+      "name": "The principles of homeostasis",
+      "zh": "内稳态原理",
+      "keywords": [
+        "homeostasis",
+        "internal environment",
+        "optimum.*condition"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.4.6.2",
+      "subject": "biology",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.4.6.2",
+      "name": "Feedback",
+      "zh": "反馈调节",
+      "keywords": [
+        "negative feedback",
+        "positive feedback",
+        "set point",
+        "control system"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.4.7.1",
+      "subject": "biology",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.4.7.1",
+      "name": "Glucose concentration and its control",
+      "zh": "血糖浓度及其控制",
+      "keywords": [
+        "blood glucose",
+        "glycogenesis",
+        "glycogenolysis",
+        "gluconeogenesis"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.4.7.2",
+      "subject": "biology",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.4.7.2",
+      "name": "The role of insulin",
+      "zh": "胰岛素的作用",
+      "keywords": [
+        "insulin",
+        "beta cell",
+        "diabetes",
+        "glucose transporter"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.4.7.3",
+      "subject": "biology",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.4.7.3",
+      "name": "The role of glucagon",
+      "zh": "胰高血糖素的作用",
+      "keywords": [
+        "glucagon",
+        "alpha cell",
+        "adenylate cyclase",
+        "cyclic AMP",
+        "\\bcAMP\\b"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.4.7.4",
+      "subject": "biology",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.4.7.4",
+      "name": "The role of adrenaline",
+      "zh": "肾上腺素的作用",
+      "keywords": [
+        "adrenaline",
+        "epinephrine",
+        "fight.or.flight"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.4.8",
+      "subject": "biology",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.4.8",
+      "name": "Control of heart rate",
+      "zh": "心率调节",
+      "keywords": [
+        "heart rate",
+        "sinoatrial",
+        "\\bSAN\\b",
+        "atrioventricular",
+        "\\bAVN\\b",
+        "chemoreceptor",
+        "baroreceptor",
+        "medulla",
+        "parasympathetic"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.4.9.1",
+      "subject": "biology",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.4.9.1",
+      "name": "Epigenetic control of gene expression",
+      "zh": "基因表达的表观遗传控制",
+      "keywords": [
+        "epigenetic",
+        "methylation",
+        "histone acetylation",
+        "transcription factor"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.4.9.2",
+      "subject": "biology",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.4.9.2",
+      "name": "RNA interference",
+      "zh": "RNA干扰",
+      "keywords": [
+        "RNA interference",
+        "\\bRNAi\\b",
+        "\\bsiRNA\\b",
+        "small interfering RNA"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.4.9.3",
+      "subject": "biology",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.4.9.3",
+      "name": "Most of a cell’s DNA is not translated",
+      "zh": "不被翻译的DNA序列",
+      "keywords": [
+        "non.coding",
+        "intron",
+        "exon",
+        "splicing",
+        "DNA.*not translated"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.4.10.1",
+      "subject": "biology",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.4.10.1",
+      "name": "Principles",
+      "zh": "重组DNA技术原理",
+      "keywords": [
+        "recombinant DNA",
+        "genetic engineering",
+        "transgenic",
+        "gene transfer"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.4.10.2",
+      "subject": "biology",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.4.10.2",
+      "name": "Production of fragments of DNA",
+      "zh": "DNA片段的制备",
+      "keywords": [
+        "restriction endonuclease",
+        "restriction enzyme",
+        "reverse transcriptase",
+        "sticky end",
+        "DNA fragment"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.4.10.3",
+      "subject": "biology",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.4.10.3",
+      "name": "In vitro amplification of DNA fragments",
+      "zh": "DNA片段的体外扩增",
+      "keywords": [
+        "polymerase chain reaction",
+        "\\bPCR\\b",
+        "primer",
+        "taq",
+        "thermocycl"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "biology-3.4.10.4",
+      "subject": "biology",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.4.10.4",
+      "name": "In vivo amplification of DNA fragments",
+      "zh": "DNA片段的体内扩增",
+      "keywords": [
+        "DNA ligase",
+        "vector",
+        "plasmid",
+        "transformation",
+        "antibiotic resistance",
+        "marker gene",
+        "in vivo"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf"
+    },
+    {
+      "id": "economics-3.1.1.1",
+      "subject": "economics",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.1.1",
+      "name": "The nature and purpose of economic activity",
+      "zh": "经济活动的性质与目的",
+      "keywords": [
+        "needs and wants",
+        "economic welfare",
+        "what to produce",
+        "how to produce",
+        "for whom"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.1.1.2",
+      "subject": "economics",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.1.2",
+      "name": "Economic resources",
+      "zh": "经济资源",
+      "keywords": [
+        "factors of production",
+        "land.*labour.*capital",
+        "enterprise",
+        "renewable resource",
+        "non.renewable resource"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.1.1.3",
+      "subject": "economics",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.1.3",
+      "name": "Scarcity, choice and the allocation of resources",
+      "zh": "稀缺、选择与资源配置",
+      "keywords": [
+        "scarcity",
+        "scarce resource",
+        "opportunity cost",
+        "resource allocation",
+        "centrally planned",
+        "mixed economy",
+        "free.market economy"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.1.1.4",
+      "subject": "economics",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.1.4",
+      "name": "Production possibility diagrams",
+      "zh": "生产可能性图",
+      "keywords": [
+        "production possibilit",
+        "\\bPPF\\b",
+        "\\bPPC\\b",
+        "production frontier",
+        "productive efficiency",
+        "trade.off"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.1.1.5",
+      "subject": "economics",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.1.5",
+      "name": "Economic methodology",
+      "zh": "经济学方法",
+      "keywords": [
+        "positive statement",
+        "normative statement",
+        "value judgement",
+        "value judgment",
+        "ceteris paribus",
+        "economic model",
+        "social science"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.1.2.1",
+      "subject": "economics",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.2.1",
+      "name": "The demand for goods and services",
+      "zh": "商品与服务的需求",
+      "keywords": [
+        "quantity demanded",
+        "demand curve",
+        "demand schedule",
+        "consumer preference",
+        "substitute good",
+        "complementary good"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.1.2.2",
+      "subject": "economics",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.2.2",
+      "name": "Price, income and cross elasticities of demand",
+      "zh": "需求价格、收入与交叉弹性",
+      "keywords": [
+        "price elasticity of demand",
+        "income elasticity",
+        "cross elasticity",
+        "\\bPED\\b",
+        "\\bYED\\b",
+        "\\bXED\\b",
+        "inferior good",
+        "normal good",
+        "price.inelastic"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.1.2.3",
+      "subject": "economics",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.2.3",
+      "name": "The supply of goods and services",
+      "zh": "商品与服务的供给",
+      "keywords": [
+        "quantity supplied",
+        "supply curve",
+        "supply schedule",
+        "shift.*supply",
+        "determinants of supply"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.1.2.4",
+      "subject": "economics",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.2.4",
+      "name": "Price elasticity of supply",
+      "zh": "供给价格弹性",
+      "keywords": [
+        "price elasticity of supply",
+        "\\bPES\\b",
+        "elasticity.*supply",
+        "price.elastic supply"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.1.2.5",
+      "subject": "economics",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.2.5",
+      "name": "The determination of market prices",
+      "zh": "市场价格的决定",
+      "keywords": [
+        "market equilibrium",
+        "equilibrium price",
+        "excess demand",
+        "excess supply",
+        "market clearing",
+        "commodity price"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.1.2.6",
+      "subject": "economics",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.2.6",
+      "name": "The interrelationship between markets",
+      "zh": "市场之间的联系",
+      "keywords": [
+        "joint demand",
+        "joint supply",
+        "derived demand",
+        "composite demand",
+        "competitive demand",
+        "interrelated market"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.1.2.7",
+      "subject": "economics",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.2.7",
+      "name": "How markets and prices allocate resources",
+      "zh": "价格机制与资源配置",
+      "keywords": [
+        "price mechanism",
+        "signalling",
+        "signaling",
+        "rationing",
+        "incentive function",
+        "allocation.*price"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.1.3.1",
+      "subject": "economics",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.3.1",
+      "name": "Production and productivity",
+      "zh": "生产与生产率",
+      "keywords": [
+        "productivity",
+        "output per worker",
+        "labour productivity",
+        "labor productivity",
+        "production.*input"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.1.3.2",
+      "subject": "economics",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.3.2",
+      "name": "Specialisation, division of labour and exchange",
+      "zh": "专业化、劳动分工与交换",
+      "keywords": [
+        "specialisation",
+        "specialization",
+        "division of labour",
+        "division of labor",
+        "medium of exchange",
+        "barter"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.1.3.3",
+      "subject": "economics",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.3.3",
+      "name": "Costs of production",
+      "zh": "生产成本",
+      "keywords": [
+        "fixed cost",
+        "variable cost",
+        "total cost",
+        "average cost",
+        "short.run cost",
+        "long.run cost"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.1.3.4",
+      "subject": "economics",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.3.4",
+      "name": "Economies and diseconomies of scale",
+      "zh": "规模经济与规模不经济",
+      "keywords": [
+        "economies of scale",
+        "diseconomies of scale",
+        "internal econom",
+        "external econom"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.1.3.5",
+      "subject": "economics",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.3.5",
+      "name": "Average revenue, total revenue and profit",
+      "zh": "平均收益、总收益与利润",
+      "keywords": [
+        "average revenue",
+        "total revenue",
+        "profit",
+        "total expenditure"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.1.4.1",
+      "subject": "economics",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.4.1",
+      "name": "Market structures",
+      "zh": "市场结构",
+      "keywords": [
+        "market structure",
+        "product differentiation",
+        "barrier.*entry",
+        "number of firms",
+        "market concentration"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.1.4.2",
+      "subject": "economics",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.4.2",
+      "name": "The objectives of firms",
+      "zh": "企业目标",
+      "keywords": [
+        "profit maximi",
+        "revenue maximi",
+        "sales maximi",
+        "business objective",
+        "satisfic"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.1.4.3",
+      "subject": "economics",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.4.3",
+      "name": "Competitive markets",
+      "zh": "竞争市场",
+      "keywords": [
+        "competitive market",
+        "price taker",
+        "entry and exit",
+        "competition.*price"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.1.4.4",
+      "subject": "economics",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.4.4",
+      "name": "Monopoly and monopoly power",
+      "zh": "垄断与垄断势力",
+      "keywords": [
+        "monopoly",
+        "monopolist",
+        "monopoly power",
+        "concentration ratio",
+        "dominant firm"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.1.4.5",
+      "subject": "economics",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.4.5",
+      "name": "The competitive market process",
+      "zh": "竞争市场过程",
+      "keywords": [
+        "competitive process",
+        "innovation",
+        "creative destruction",
+        "competition.*quality",
+        "new entran"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.1.5.1",
+      "subject": "economics",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.5.1",
+      "name": "The meaning of market failure",
+      "zh": "市场失灵的含义",
+      "keywords": [
+        "market failure",
+        "misallocation",
+        "allocative inefficien"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.1.5.2",
+      "subject": "economics",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.5.2",
+      "name": "Private goods, public goods and quasi-public goods",
+      "zh": "私人物品、公共物品与准公共物品",
+      "keywords": [
+        "public good",
+        "private good",
+        "quasi.public",
+        "non.rival",
+        "non.excludab",
+        "free.rider"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.1.5.3",
+      "subject": "economics",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.5.3",
+      "name": "Positive and negative externalities in consumption and production",
+      "zh": "生产与消费的正、负外部性",
+      "keywords": [
+        "externalit",
+        "external cost",
+        "external benefit",
+        "social cost",
+        "social benefit",
+        "third part"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.1.5.4",
+      "subject": "economics",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.5.4",
+      "name": "Merit and demerit goods",
+      "zh": "优值品与劣值品",
+      "keywords": [
+        "merit good",
+        "demerit good",
+        "under.consumption",
+        "over.consumption"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.1.5.5",
+      "subject": "economics",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.5.5",
+      "name": "Market imperfections",
+      "zh": "市场不完善",
+      "keywords": [
+        "imperfect information",
+        "asymmetric information",
+        "information failure",
+        "factor immobility",
+        "immobilit"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.1.5.6",
+      "subject": "economics",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.5.6",
+      "name": "An inequitable distribution of income and wealth",
+      "zh": "收入与财富分配不公",
+      "keywords": [
+        "inequitable distribution",
+        "income inequality",
+        "wealth inequality",
+        "unequal.*income",
+        "unequal.*wealth"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.1.5.7",
+      "subject": "economics",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.5.7",
+      "name": "Government intervention in markets",
+      "zh": "政府干预市场",
+      "keywords": [
+        "indirect tax",
+        "subsid",
+        "maximum price",
+        "minimum price",
+        "price ceiling",
+        "price floor",
+        "state provision",
+        "regulation",
+        "pollution permit"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.1.5.8",
+      "subject": "economics",
+      "unit": "Unit 1",
+      "level": "AS",
+      "code": "3.1.5.8",
+      "name": "Government failure",
+      "zh": "政府失灵",
+      "keywords": [
+        "government failure",
+        "unintended consequence",
+        "regulatory capture",
+        "policy.*distortion",
+        "administrative cost"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.2.1.1",
+      "subject": "economics",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.1.1",
+      "name": "The objectives of government economic policy",
+      "zh": "政府经济政策目标",
+      "keywords": [
+        "macroeconomic objective",
+        "economic policy objective",
+        "price stability",
+        "full employment",
+        "stable growth"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.2.1.2",
+      "subject": "economics",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.1.2",
+      "name": "Macroeconomic indicators",
+      "zh": "宏观经济指标",
+      "keywords": [
+        "gross domestic product",
+        "\\bGDP\\b",
+        "real national income",
+        "nominal.*real",
+        "consumer price index",
+        "\\bCPI\\b",
+        "index number"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.2.2.1",
+      "subject": "economics",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.2.1",
+      "name": "The circular flow of income",
+      "zh": "收入循环流动",
+      "keywords": [
+        "circular flow",
+        "injection",
+        "withdrawal",
+        "leakage",
+        "national income.*expenditure",
+        "household.*firm"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.2.2.2",
+      "subject": "economics",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.2.2",
+      "name": "Aggregate demand and aggregate supply analysis",
+      "zh": "总需求与总供给分析",
+      "keywords": [
+        "aggregate demand",
+        "aggregate supply",
+        "AD.AS",
+        "macroeconomic equilibrium",
+        "price level.*output"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.2.2.3",
+      "subject": "economics",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.2.3",
+      "name": "Determinants of aggregate demand",
+      "zh": "总需求的决定因素",
+      "keywords": [
+        "consumption",
+        "investment",
+        "government expenditure",
+        "net export",
+        "consumer confidence",
+        "accelerator"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.2.2.4",
+      "subject": "economics",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.2.4",
+      "name": "Aggregate demand and the level of economic activity",
+      "zh": "总需求与经济活动水平",
+      "keywords": [
+        "multiplier",
+        "marginal propensity",
+        "\\bMPC\\b",
+        "\\bMPS\\b",
+        "\\bMPM\\b",
+        "equilibrium.*national income"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.2.2.5",
+      "subject": "economics",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.2.5",
+      "name": "Determinants of short-run aggregate supply",
+      "zh": "短期总供给的决定因素",
+      "keywords": [
+        "short.run aggregate supply",
+        "\\bSRAS\\b",
+        "unit labour cost",
+        "unit labor cost",
+        "commodity.*cost",
+        "cost shock"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.2.2.6",
+      "subject": "economics",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.2.6",
+      "name": "Determinants of long-run aggregate supply",
+      "zh": "长期总供给的决定因素",
+      "keywords": [
+        "long.run aggregate supply",
+        "\\bLRAS\\b",
+        "productive capacity",
+        "potential output",
+        "potential growth"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.2.3.1",
+      "subject": "economics",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.3.1",
+      "name": "Economic growth and the economic cycle",
+      "zh": "经济增长与经济周期",
+      "keywords": [
+        "economic growth",
+        "economic cycle",
+        "business cycle",
+        "\\bboom\\b",
+        "recession",
+        "output gap",
+        "trend growth"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.2.3.2",
+      "subject": "economics",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.3.2",
+      "name": "Employment and unemployment",
+      "zh": "就业与失业",
+      "keywords": [
+        "unemployment",
+        "employment",
+        "labour force",
+        "labor force",
+        "structural unemploy",
+        "cyclical unemploy",
+        "frictional unemploy"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.2.3.3",
+      "subject": "economics",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.3.3",
+      "name": "Inflation and deflation",
+      "zh": "通货膨胀与通货紧缩",
+      "keywords": [
+        "inflation",
+        "deflation",
+        "disinflation",
+        "demand.pull",
+        "cost.push",
+        "price level"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.2.3.4",
+      "subject": "economics",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.3.4",
+      "name": "The balance of payments on current account",
+      "zh": "国际收支经常账户",
+      "keywords": [
+        "current account",
+        "trade deficit",
+        "trade surplus",
+        "balance of trade",
+        "trade in goods",
+        "trade in services"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.2.3.5",
+      "subject": "economics",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.3.5",
+      "name": "Possible conflicts between macroeconomic policy objectives",
+      "zh": "宏观经济政策目标冲突",
+      "keywords": [
+        "policy conflict",
+        "trade.off.*inflation",
+        "phillips curve",
+        "growth.*inflation",
+        "unemployment.*inflation"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.2.4.1",
+      "subject": "economics",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.4.1",
+      "name": "Monetary policy",
+      "zh": "货币政策",
+      "keywords": [
+        "monetary policy",
+        "interest rate",
+        "central bank",
+        "money supply",
+        "quantitative easing",
+        "monetary transmission"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.2.4.2",
+      "subject": "economics",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.4.2",
+      "name": "Fiscal policy",
+      "zh": "财政政策",
+      "keywords": [
+        "fiscal policy",
+        "budget deficit",
+        "budget surplus",
+        "national debt",
+        "government spending",
+        "taxation",
+        "automatic stabilis",
+        "automatic stabiliz"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.2.4.3",
+      "subject": "economics",
+      "unit": "Unit 2",
+      "level": "AS",
+      "code": "3.2.4.3",
+      "name": "Supply-side policies",
+      "zh": "供给侧政策",
+      "keywords": [
+        "supply.side polic",
+        "labour market reform",
+        "labor market reform",
+        "education.*training",
+        "productivity.*policy",
+        "infrastructure"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.3.1.1",
+      "subject": "economics",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.1.1",
+      "name": "The individual as a rational economic decision maker",
+      "zh": "理性经济决策者",
+      "keywords": [
+        "rational decision",
+        "utility maximi",
+        "marginal utility",
+        "diminishing marginal utility",
+        "economic man"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.3.1.2",
+      "subject": "economics",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.1.2",
+      "name": "Behavioural influences on individual economic decision making",
+      "zh": "行为经济学与个体决策",
+      "keywords": [
+        "behavioural",
+        "behavioral",
+        "bounded rationality",
+        "bounded self.control",
+        "heuristic",
+        "anchoring",
+        "framing",
+        "social norm",
+        "nudge",
+        "choice architecture"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.3.1.3",
+      "subject": "economics",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.1.3",
+      "name": "The objectives of firms",
+      "zh": "企业目标进阶",
+      "keywords": [
+        "profit maximi",
+        "revenue maximi",
+        "sales maximi",
+        "profit satisfic",
+        "principal.agent",
+        "divorce.*ownership",
+        "stakeholder"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.3.1.4",
+      "subject": "economics",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.1.4",
+      "name": "The growth of firms",
+      "zh": "企业成长",
+      "keywords": [
+        "merger",
+        "takeover",
+        "horizontal integration",
+        "vertical integration",
+        "conglomerate",
+        "organic growth",
+        "de.merger"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.3.2.1",
+      "subject": "economics",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.2.1",
+      "name": "The law of diminishing returns and returns to scale",
+      "zh": "边际收益递减与规模报酬",
+      "keywords": [
+        "diminishing returns",
+        "returns to scale",
+        "marginal product",
+        "average product",
+        "total product"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.3.2.2",
+      "subject": "economics",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.2.2",
+      "name": "Short-run cost curves",
+      "zh": "短期成本曲线",
+      "keywords": [
+        "marginal cost",
+        "average variable cost",
+        "average fixed cost",
+        "short.run average cost",
+        "\\bMC\\b",
+        "\\bAVC\\b",
+        "\\bAFC\\b",
+        "\\bSRAC\\b"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.3.2.3",
+      "subject": "economics",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.2.3",
+      "name": "Long-run cost curves",
+      "zh": "长期成本曲线",
+      "keywords": [
+        "long.run average cost",
+        "\\bLRAC\\b",
+        "minimum efficient scale",
+        "\\bMES\\b",
+        "economies of scale",
+        "diseconomies of scale"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.3.2.4",
+      "subject": "economics",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.2.4",
+      "name": "Marginal, average and total revenue curves",
+      "zh": "边际、平均与总收益曲线",
+      "keywords": [
+        "marginal revenue",
+        "average revenue",
+        "total revenue",
+        "\\bMR\\b",
+        "\\bAR\\b",
+        "\\bTR\\b"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.3.2.5",
+      "subject": "economics",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.2.5",
+      "name": "Profit",
+      "zh": "利润进阶",
+      "keywords": [
+        "normal profit",
+        "abnormal profit",
+        "supernormal profit",
+        "MC.*MR",
+        "MR.*MC",
+        "profit maximi"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.3.2.6",
+      "subject": "economics",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.2.6",
+      "name": "Technological change",
+      "zh": "技术变革",
+      "keywords": [
+        "technological change",
+        "innovation",
+        "invention",
+        "research and development",
+        "R.D",
+        "creative destruction"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.3.3.1",
+      "subject": "economics",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.3.1",
+      "name": "Market structures",
+      "zh": "市场结构进阶",
+      "keywords": [
+        "market structure",
+        "product differentiation",
+        "barrier.*entry",
+        "barrier.*exit"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.3.3.2",
+      "subject": "economics",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.3.2",
+      "name": "Perfect competition",
+      "zh": "完全竞争",
+      "keywords": [
+        "perfect competition",
+        "perfectly competitive",
+        "price.taker",
+        "shut.down",
+        "shutdown",
+        "normal profit"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.3.3.3",
+      "subject": "economics",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.3.3",
+      "name": "Monopolistic competition",
+      "zh": "垄断竞争",
+      "keywords": [
+        "monopolistic competition",
+        "monopolistically competitive",
+        "differentiated product"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.3.3.4",
+      "subject": "economics",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.3.4",
+      "name": "Oligopoly",
+      "zh": "寡头垄断",
+      "keywords": [
+        "oligopoly",
+        "oligopolist",
+        "collusion",
+        "collusive",
+        "cartel",
+        "game theory",
+        "pay.off",
+        "payoff",
+        "prisoner",
+        "price leadership",
+        "kinked demand",
+        "interdependence"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.3.3.5",
+      "subject": "economics",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.3.5",
+      "name": "Monopoly and monopoly power",
+      "zh": "垄断与垄断势力进阶",
+      "keywords": [
+        "monopoly",
+        "monopolist",
+        "monopoly power",
+        "monopoly.*diagram"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.3.3.6",
+      "subject": "economics",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.3.6",
+      "name": "Price discrimination",
+      "zh": "价格歧视",
+      "keywords": [
+        "price discrimination",
+        "price discriminat",
+        "different.*prices.*same",
+        "third.degree"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.3.3.7",
+      "subject": "economics",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.3.7",
+      "name": "Contestable markets",
+      "zh": "可竞争市场",
+      "keywords": [
+        "contestable",
+        "contestability",
+        "hit.and.run",
+        "sunk cost"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.3.3.8",
+      "subject": "economics",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.3.8",
+      "name": "The dynamics of competition and competitive market processes",
+      "zh": "竞争动态与竞争市场过程",
+      "keywords": [
+        "dynamic competition",
+        "competitive process",
+        "market process",
+        "creative destruction",
+        "innovation.*competition"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.3.3.9",
+      "subject": "economics",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.3.9",
+      "name": "Static efficiency, dynamic efficiency and resource allocation",
+      "zh": "静态效率、动态效率与资源配置",
+      "keywords": [
+        "allocative efficien",
+        "productive efficien",
+        "dynamic efficien",
+        "static efficien",
+        "X.inefficien",
+        "\\bPareto\\b"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.3.3.10",
+      "subject": "economics",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.3.10",
+      "name": "Consumer and producer surplus",
+      "zh": "消费者剩余与生产者剩余",
+      "keywords": [
+        "consumer surplus",
+        "producer surplus",
+        "deadweight",
+        "welfare loss"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.3.3.11",
+      "subject": "economics",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.3.11",
+      "name": "Competition policy",
+      "zh": "竞争政策",
+      "keywords": [
+        "competition polic",
+        "anti.trust",
+        "antitrust",
+        "competition authority",
+        "merger.*regulat",
+        "anti.competitive"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.3.3.12",
+      "subject": "economics",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.3.12",
+      "name": "Public ownership, privatisation, regulation and deregulation of markets",
+      "zh": "公有制、私有化与市场监管",
+      "keywords": [
+        "public ownership",
+        "nationalisation",
+        "nationalization",
+        "privatisation",
+        "privatization",
+        "deregulation",
+        "price.cap",
+        "rate.of.return regulation"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.3.4.1",
+      "subject": "economics",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.4.1",
+      "name": "The demand for labour, marginal productivity theory",
+      "zh": "劳动需求与边际生产力理论",
+      "keywords": [
+        "demand for labour",
+        "demand for labor",
+        "marginal revenue product",
+        "\\bMRP\\b",
+        "derived demand",
+        "labour productivity",
+        "labor productivity"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.3.4.2",
+      "subject": "economics",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.4.2",
+      "name": "The supply of labour to different labour markets",
+      "zh": "不同劳动市场的劳动供给",
+      "keywords": [
+        "supply of labour",
+        "supply of labor",
+        "labour supply",
+        "labor supply",
+        "backward.bending",
+        "occupational mobility",
+        "geographical mobility"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.3.4.3",
+      "subject": "economics",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.4.3",
+      "name": "The determination of relative wage rates and levels of employment in perfectly competitive labour markets",
+      "zh": "完全竞争劳动市场的工资与就业",
+      "keywords": [
+        "competitive labour market",
+        "competitive labor market",
+        "equilibrium wage",
+        "relative wage",
+        "wage differential"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.3.4.4",
+      "subject": "economics",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.4.4",
+      "name": "The determination of relative wage rates and levels of employment in imperfectly competitive labour markets",
+      "zh": "不完全竞争劳动市场的工资与就业",
+      "keywords": [
+        "monopsony",
+        "monopsonist",
+        "trade union",
+        "collective bargaining",
+        "bilateral monopoly",
+        "imperfect.*labour market",
+        "imperfect.*labor market"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.3.4.5",
+      "subject": "economics",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.4.5",
+      "name": "Discrimination in the labour market",
+      "zh": "劳动市场歧视",
+      "keywords": [
+        "labour.*discrimination",
+        "labor.*discrimination",
+        "gender pay",
+        "equal pay",
+        "wage gap",
+        "discriminat"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.3.4.6",
+      "subject": "economics",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.4.6",
+      "name": "Minimum wage laws",
+      "zh": "最低工资法",
+      "keywords": [
+        "minimum wage",
+        "national living wage",
+        "wage floor"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.3.5.1",
+      "subject": "economics",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.5.1",
+      "name": "The distribution of income and wealth within an economy",
+      "zh": "经济体内的收入与财富分配",
+      "keywords": [
+        "income distribution",
+        "wealth distribution",
+        "\\bLorenz\\b",
+        "\\bGini\\b",
+        "absolute poverty",
+        "relative poverty",
+        "income inequality"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.3.5.2",
+      "subject": "economics",
+      "unit": "Unit 3",
+      "level": "A2",
+      "code": "3.3.5.2",
+      "name": "Government policies to alleviate poverty and to influence the distribution of income and wealth",
+      "zh": "缓解贫困与调整收入、财富分配的政策",
+      "keywords": [
+        "poverty.*polic",
+        "redistribut",
+        "progressive tax",
+        "means.tested",
+        "welfare benefit",
+        "universal benefit"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.4.1.1",
+      "subject": "economics",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.4.1.1",
+      "name": "Globalisation",
+      "zh": "全球化",
+      "keywords": [
+        "globalisation",
+        "globalization",
+        "multinational",
+        "transnational",
+        "\\bMNC\\b",
+        "\\bTNC\\b",
+        "foreign direct investment",
+        "\\bFDI\\b"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.4.1.2",
+      "subject": "economics",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.4.1.2",
+      "name": "Trade",
+      "zh": "国际贸易",
+      "keywords": [
+        "comparative advantage",
+        "absolute advantage",
+        "free trade",
+        "protectionis",
+        "tariff",
+        "quota",
+        "customs union",
+        "trading bloc",
+        "terms of trade",
+        "\\bWTO\\b"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.4.2.1",
+      "subject": "economics",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.4.2.1",
+      "name": "The balance of payments",
+      "zh": "国际收支",
+      "keywords": [
+        "balance of payments",
+        "current account",
+        "capital account",
+        "financial account",
+        "balance.*deficit",
+        "balance.*surplus"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.4.2.2",
+      "subject": "economics",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.4.2.2",
+      "name": "Exchange rates",
+      "zh": "汇率",
+      "keywords": [
+        "exchange rate",
+        "appreciation",
+        "depreciation",
+        "devaluation",
+        "revaluation",
+        "floating exchange",
+        "fixed exchange",
+        "J.curve",
+        "Marshall.Lerner"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.4.2.3",
+      "subject": "economics",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.4.2.3",
+      "name": "Financial markets",
+      "zh": "金融市场",
+      "keywords": [
+        "financial market",
+        "commercial bank",
+        "central bank",
+        "money market",
+        "capital market",
+        "bond yield",
+        "liquidity",
+        "financial regulat",
+        "financial crisis",
+        "credit creation"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.4.3.1",
+      "subject": "economics",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.4.3.1",
+      "name": "Measuring economic growth, development and living standards",
+      "zh": "经济增长、发展与生活水平的衡量",
+      "keywords": [
+        "economic development",
+        "living standard",
+        "\\bHDI\\b",
+        "human development index",
+        "\\bGNI\\b",
+        "GDP per capita",
+        "purchasing power parity",
+        "\\bPPP\\b",
+        "multidimensional poverty"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.4.3.2",
+      "subject": "economics",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.4.3.2",
+      "name": "Factors that affect economic development",
+      "zh": "影响经济发展的因素",
+      "keywords": [
+        "development.*barrier",
+        "development.*constraint",
+        "primary product dependence",
+        "\\bdebt\\b",
+        "capital flight",
+        "corruption",
+        "savings gap",
+        "foreign exchange gap",
+        "human capital",
+        "population growth"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "economics-3.4.3.3",
+      "subject": "economics",
+      "unit": "Unit 4",
+      "level": "A2",
+      "code": "3.4.3.3",
+      "name": "Policies to promote development",
+      "zh": "促进发展的政策",
+      "keywords": [
+        "development.*polic",
+        "\\baid\\b",
+        "debt relief",
+        "export.led growth",
+        "import substitution",
+        "microfinance",
+        "development bank",
+        "\\bIMF\\b",
+        "World Bank",
+        "market.based strateg",
+        "interventionist strateg"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf"
+    },
+    {
+      "id": "chemistry-6",
+      "subject": "chemistry",
+      "unit": "All units",
+      "units": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5"
+      ],
+      "level": "AS/A2",
+      "code": "6",
+      "name": "Practical assessment",
+      "zh": "实验技能与实验评估",
+      "keywords": [
+        "experimental method",
+        "experimental procedure",
+        "uncertainty",
+        "percentage error",
+        "apparatus",
+        "control variable",
+        "repeat.*measurement",
+        "best.fit",
+        "anomalous result",
+        "risk assessment"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf",
+      "note": "官方第6节：实践技能在所有单元考查；Unit 5有30分实践题。此条为跨单元技能标签，不能据此将所有实验题归为Unit 5。"
+    },
+    {
+      "id": "biology-6",
+      "subject": "biology",
+      "unit": "All units",
+      "units": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5"
+      ],
+      "level": "AS/A2",
+      "code": "6",
+      "name": "Practical assessment",
+      "zh": "实验技能与实验评估",
+      "keywords": [
+        "experimental design",
+        "control variable",
+        "controlled variable",
+        "independent variable",
+        "dependent variable",
+        "reliability",
+        "validity",
+        "uncertainty",
+        "statistical test",
+        "null hypothesis",
+        "significant difference",
+        "repeat.*measurement"
+      ],
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf",
+      "note": "官方第6节：实践技能在所有单元考查；Unit 5有55分与实践相关短答题，覆盖Units 1–4。此条为跨单元技能标签。"
+    },
+    {
+      "id": "economics-3.5",
+      "subject": "economics",
+      "unit": "All units",
+      "units": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4"
+      ],
+      "level": "AS/A2",
+      "code": "3.5",
+      "name": "Quantitative skills",
+      "zh": "定量技能",
+      "keywords": [
+        "percentage change",
+        "index number",
+        "weighted index",
+        "real terms",
+        "nominal.*real",
+        "ratio",
+        "calculate.*elasticity",
+        "calculate.*revenue",
+        "calculate.*profit",
+        "median",
+        "quantile"
+      ],
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf",
+      "note": "官方第3.5节适用于所有单元；quantiles和marginal values的相关技能属A2。定量标签应与经济主题并列，不应替代主题分类。"
     }
-  ]
+  ],
+  "assessments": {
+    "chemistry": {
+      "specification": "9620",
+      "version": "5.3",
+      "teachingFrom": "2019-09",
+      "ASExamsFrom": "2020-06",
+      "ALevelExamsFrom": "2020-06",
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-chemistry-specification.pdf",
+      "units": [
+        {
+          "unit": "Unit 1",
+          "entryCode": "CH01",
+          "level": "AS",
+          "name": "Inorganic 1 and Physical 1",
+          "rawMarks": 70,
+          "durationMinutes": 90,
+          "content": [
+            "3.1.1–3.1.5",
+            "3.2.1–3.2.3"
+          ],
+          "choiceRule": "No optional-section rule is listed in specification section 2.2; confirm each source paper's cover.",
+          "format": "Mixture of short and longer answer questions."
+        },
+        {
+          "unit": "Unit 2",
+          "entryCode": "CH02",
+          "level": "AS",
+          "name": "Organic 1 and Physical 1",
+          "rawMarks": 70,
+          "durationMinutes": 90,
+          "content": [
+            "3.1.6–3.1.7",
+            "3.3.1–3.3.6"
+          ],
+          "assumedContent": [
+            "3.1.2 amount of substance",
+            "3.1.3 bonding"
+          ],
+          "choiceRule": "No optional-section rule is listed in specification section 2.2; confirm each source paper's cover.",
+          "format": "Mixture of short and longer answer questions."
+        },
+        {
+          "unit": "Unit 3",
+          "entryCode": "CH03",
+          "level": "A2",
+          "name": "Inorganic 2 and Physical 2",
+          "rawMarks": 80,
+          "durationMinutes": 90,
+          "content": [
+            "3.1.8–3.1.10",
+            "3.2.4–3.2.6"
+          ],
+          "assumedUnits": [
+            "Unit 1",
+            "Unit 2"
+          ],
+          "choiceRule": "No optional-section rule is listed in specification section 2.3; confirm each source paper's cover.",
+          "format": "Mixture of short and longer answer questions."
+        },
+        {
+          "unit": "Unit 4",
+          "entryCode": "CH04",
+          "level": "A2",
+          "name": "Organic 2 and Physical 2",
+          "rawMarks": 80,
+          "durationMinutes": 90,
+          "content": [
+            "3.1.11–3.1.12",
+            "3.3.7–3.3.16"
+          ],
+          "assumedUnits": [
+            "Unit 1",
+            "Unit 2"
+          ],
+          "choiceRule": "No optional-section rule is listed in specification section 2.3; confirm each source paper's cover.",
+          "format": "Mixture of short and longer answer questions."
+        },
+        {
+          "unit": "Unit 5",
+          "entryCode": "CH05",
+          "level": "A2",
+          "name": "Practical and synoptic",
+          "rawMarks": 60,
+          "durationMinutes": 85,
+          "content": [
+            "All content"
+          ],
+          "choiceRule": "No optional-section rule is listed in specification section 2.3; confirm each source paper's cover.",
+          "sections": [
+            {
+              "type": "practical",
+              "marks": 30
+            },
+            {
+              "type": "multiple_choice",
+              "marks": 30
+            }
+          ]
+        }
+      ]
+    },
+    "biology": {
+      "specification": "9610",
+      "version": "5.1",
+      "teachingFrom": "2016-09",
+      "ASExamsFrom": "2017-06",
+      "ALevelExamsFrom": "2018-06",
+      "source": "https://www.oxfordaqa.com/aqadownloads/other/oxfordaqa-a-level-biology-specification.pdf",
+      "units": [
+        {
+          "unit": "Unit 1",
+          "entryCode": "BL01",
+          "level": "AS",
+          "name": "The diversity of living organisms",
+          "rawMarks": 75,
+          "durationMinutes": 90,
+          "content": [
+            "3.1"
+          ],
+          "sections": [
+            {
+              "type": "short_answer",
+              "marks": 65
+            },
+            {
+              "type": "comprehension",
+              "marks": 10
+            }
+          ],
+          "choiceRule": "No optional-section rule is listed in specification section 2.2; confirm source cover."
+        },
+        {
+          "unit": "Unit 2",
+          "entryCode": "BL02",
+          "level": "AS",
+          "name": "Biological systems and disease",
+          "rawMarks": 75,
+          "durationMinutes": 90,
+          "content": [
+            "3.2"
+          ],
+          "assumedUnits": [
+            "Unit 1"
+          ],
+          "sections": [
+            {
+              "type": "short_answer",
+              "marks": 65
+            },
+            {
+              "type": "continuous_prose",
+              "marks": 10
+            }
+          ],
+          "choiceRule": "No optional-section rule is listed in specification section 2.2; confirm source cover."
+        },
+        {
+          "unit": "Unit 3",
+          "entryCode": "BL03",
+          "level": "A2",
+          "name": "Populations and genes",
+          "rawMarks": 75,
+          "durationMinutes": 90,
+          "content": [
+            "3.3"
+          ],
+          "assumedUnits": [
+            "Unit 1",
+            "Unit 2"
+          ],
+          "sections": [
+            {
+              "type": "short_and_long_answer",
+              "marks": 60
+            },
+            {
+              "type": "continuous_prose",
+              "marks": 15
+            }
+          ],
+          "choiceRule": "No optional-section rule is listed in specification section 2.3; confirm source cover."
+        },
+        {
+          "unit": "Unit 4",
+          "entryCode": "BL04",
+          "level": "A2",
+          "name": "Control",
+          "rawMarks": 75,
+          "durationMinutes": 90,
+          "content": [
+            "3.4"
+          ],
+          "assumedUnits": [
+            "Unit 1",
+            "Unit 2",
+            "Unit 3"
+          ],
+          "sections": [
+            {
+              "type": "short_and_long_answer",
+              "marks": 60
+            },
+            {
+              "type": "critical_data_analysis",
+              "marks": 15
+            }
+          ],
+          "choiceRule": "No optional-section rule is listed in specification section 2.3; confirm source cover."
+        },
+        {
+          "unit": "Unit 5",
+          "entryCode": "BL05",
+          "level": "A2",
+          "name": "Synoptic paper",
+          "rawMarks": 75,
+          "durationMinutes": 90,
+          "content": [
+            "Units 1–4"
+          ],
+          "sections": [
+            {
+              "type": "practical_short_answer",
+              "marks": 55
+            },
+            {
+              "type": "synoptic_continuous_prose",
+              "marks": 20
+            }
+          ],
+          "choiceRule": "No optional-section rule is listed in specification section 2.3; confirm source cover."
+        }
+      ]
+    },
+    "economics": {
+      "specification": "9640",
+      "version": "2.0",
+      "teachingFrom": "2020-09",
+      "ASExamsFrom": "2021-06",
+      "ALevelExamsFrom": "2022-06",
+      "source": "https://www.oxfordaqa.com/wp-content/uploads/2026/07/oxfordaqa-a-level-economics-specification.pdf",
+      "units": [
+        {
+          "unit": "Unit 1",
+          "entryCode": "EC01",
+          "level": "AS",
+          "name": "The operation of markets, market failure and the role of government",
+          "rawMarks": 80,
+          "durationMinutes": 105,
+          "content": [
+            "3.1",
+            "3.5"
+          ],
+          "sections": [
+            {
+              "section": "A",
+              "type": "multiple_choice",
+              "marks": 15,
+              "choice": "all"
+            },
+            {
+              "section": "B",
+              "type": "data_response",
+              "marks": 65,
+              "choice": "all",
+              "contextCount": 1
+            }
+          ],
+          "candidateTotalMarks": 80,
+          "offeredMarksUnderCurrentStructure": 80,
+          "offeredMarksNote": "All sections compulsory.",
+          "choiceRule": "Both sections compulsory."
+        },
+        {
+          "unit": "Unit 2",
+          "entryCode": "EC02",
+          "level": "AS",
+          "name": "The national economy in a global environment",
+          "rawMarks": 80,
+          "durationMinutes": 105,
+          "content": [
+            "3.2",
+            "3.5"
+          ],
+          "sections": [
+            {
+              "section": "A",
+              "type": "multiple_choice",
+              "marks": 15,
+              "choice": "all"
+            },
+            {
+              "section": "B",
+              "type": "data_response",
+              "marks": 65,
+              "choice": "all",
+              "contextCount": 1
+            }
+          ],
+          "candidateTotalMarks": 80,
+          "offeredMarksUnderCurrentStructure": 80,
+          "offeredMarksNote": "All sections compulsory.",
+          "choiceRule": "Both sections compulsory."
+        },
+        {
+          "unit": "Unit 3",
+          "entryCode": "EC03",
+          "level": "A2",
+          "name": "The economics of business behaviour and the distribution of income",
+          "rawMarks": 90,
+          "durationMinutes": 120,
+          "content": [
+            "3.3",
+            "3.5"
+          ],
+          "assumedUnits": [
+            "Unit 1"
+          ],
+          "sections": [
+            {
+              "section": "A",
+              "type": "multiple_choice",
+              "marks": 10,
+              "choice": "all"
+            },
+            {
+              "section": "B",
+              "type": "short_answer",
+              "marks": 10,
+              "choice": "all"
+            },
+            {
+              "section": "C",
+              "type": "data_response",
+              "marks": 45,
+              "choice": "all",
+              "contextCount": 1
+            },
+            {
+              "section": "D",
+              "type": "essay",
+              "marks": 25,
+              "offeredQuestions": 2,
+              "answerQuestions": 1
+            }
+          ],
+          "candidateTotalMarks": 90,
+          "offeredMarksUnderCurrentStructure": 115,
+          "offeredMarksNote": "115 is arithmetic from the current published 10+10+45+2×25 structure, not a separate exam total; cover remains authoritative.",
+          "choiceRule": "Sections A, B and C compulsory; answer one of two 25-mark questions in Section D."
+        },
+        {
+          "unit": "Unit 4",
+          "entryCode": "EC04",
+          "level": "A2",
+          "name": "Economic development and the global economy",
+          "rawMarks": 90,
+          "durationMinutes": 120,
+          "content": [
+            "3.4",
+            "3.5"
+          ],
+          "assumedUnits": [
+            "Unit 1",
+            "Unit 2"
+          ],
+          "sections": [
+            {
+              "section": "A",
+              "type": "multiple_choice",
+              "marks": 10,
+              "choice": "all"
+            },
+            {
+              "section": "B",
+              "type": "short_answer",
+              "marks": 10,
+              "choice": "all"
+            },
+            {
+              "section": "C",
+              "type": "data_response",
+              "marks": 45,
+              "choice": "all",
+              "contextCount": 1
+            },
+            {
+              "section": "D",
+              "type": "essay",
+              "marks": 25,
+              "offeredQuestions": 2,
+              "answerQuestions": 1
+            }
+          ],
+          "candidateTotalMarks": 90,
+          "offeredMarksUnderCurrentStructure": 115,
+          "offeredMarksNote": "115 is arithmetic from the current published 10+10+45+2×25 structure, not a separate exam total; cover remains authoritative.",
+          "choiceRule": "Sections A, B and C compulsory; answer one of two 25-mark questions in Section D."
+        }
+      ]
+    }
+  }
 }

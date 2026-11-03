@@ -16,6 +16,12 @@ for(const q of questions){
  assert(q.parts.length>0);
  assert(q.chapters.every(id=>chapters.get(id)?.subject===q.subject));
  assert(Number.isInteger(q.marks)&&q.marks>0);
+ if(q.autoSelectable===false){assert.equal(q.materialStatus,'unavailable');assert(q.materialNote);}
+ if(q.contextPartsCount){
+  assert(q.contextKey&&q.contextPartsCount<q.parts.length);
+  assert(q.parts.slice(0,q.contextPartsCount).every(part=>part.role==='source'));
+  assert(q.parts.slice(q.contextPartsCount).every(part=>part.role!=='source'));
+ }
  for(const p of q.parts)assert(p.page>0&&p.box[2]>p.box[0]&&p.box[3]>p.box[1]);
  if(!papers.has(q.paperId))papers.set(q.paperId,[]);
  papers.get(q.paperId).push(q);
@@ -37,14 +43,21 @@ for(const [id,rows] of papers){
   assert.equal(alternatives[0].marks,alternatives[1].marks);
   assert.notDeepEqual(alternatives[0].parts,alternatives[1].parts);
  }
+ for(const rule of audit.choiceRules||[]){
+  assert(rule.required>0&&rule.required<rule.options.length);
+  assert(rule.options.every(id=>questionMap.get(id)?.choiceGroup===rule.id));
+  assert(rule.options.every(id=>questionMap.get(id).marks===rule.marksPerOption));
+ }
 }
 assert.equal(papers.size,db.importedPapers.length);
 assert.equal(coverage.sourcePaperCount,db.papers.length);
 assert.equal(coverage.importedPaperCount,papers.size);
 assert.equal(coverage.questionCount,questions.length);
 assert.equal(coverage.unavailable.length,0);
+assert.equal(coverage.complete,true,'Only publish a complete source audit');
+assert.equal(coverage.materialIncompleteQuestions,questions.filter(q=>q.autoSelectable===false).length);
 let selectionChecks=0;
-for(const subject of ['physics','mathematics','furthermathematics'])
+for(const subject of [...new Set(db.chapters.map(c=>c.subject))])
  for(const board of ['','oxford-aqa-international','cie-international','edexcel-ial'])
   for(const target of [30,60,100])
    for(const recipe of ['balanced','foundation','challenge']){
@@ -60,6 +73,7 @@ for(const subject of ['physics','mathematics','furthermathematics'])
     selectionChecks++;
    }
 assert.equal(selectPaper([],60,'balanced',false),null);
+assert.equal(selectPaper([{id:'incomplete',marks:20,difficulty:'challenge',chapters:[],autoSelectable:false}],20,'challenge',false),null,'Missing reading materials must not enter a generated paper');
 const constrained=questions.filter(q=>q.subject==='physics'&&q.chapters.includes('physics-3.2'));
 const result=selectPaper(constrained,40,'balanced',true,{chapters:new Set(['physics-3.2'])});
 assert(result&&result.achieved<=40&&result.ids.every(id=>questionMap.get(id).chapters.includes('physics-3.2')));
