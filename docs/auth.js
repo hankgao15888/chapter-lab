@@ -16,7 +16,7 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function (root) {
   'use strict';
 
-  const VERSION = '1.6.0';
+  const VERSION = '1.7.0';
   const ACCOUNTS_KEY = 'chapterlab-device-accounts-v1';
   const SESSION_KEY = 'chapterlab-student-session-v1';
   const ITERATIONS = 310000;
