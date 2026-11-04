@@ -1,5 +1,8 @@
 /* Chapter Lab: buildless, browser-local practice. No API keys or server storage. */
 'use strict';
+if (!window.ChapterLabAuth || !window.ChapterLabAuth.isAuthenticated()) {
+  throw new Error('Student login is required before loading Chapter Lab.');
+}
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const SUBJECT={physics:'物理',mathematics:'数学',furthermathematics:'进阶数学',chemistry:'化学',biology:'生物',economics:'经济'};
