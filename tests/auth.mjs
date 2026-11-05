@@ -8,6 +8,7 @@ const {
   validateStudentName,
   validateRegistration,
   accountNameHash,
+  credentialFingerprint,
   validRegistryRecord,
   parseRegistryIndex,
   derivePasswordHash
@@ -51,11 +52,26 @@ const record = {
 };
 assert.equal(validRegistryRecord(record), true);
 assert.equal(validRegistryRecord({...record, nameHash: 'short'}), false);
-const parsedIndex = parseRegistryIndex({version: 1, updatedAt: null, accounts: {[nameHash]: [record]}});
+const fingerprint = await credentialFingerprint(record);
+assert.match(fingerprint, /^[a-f0-9]{64}$/);
+assert.equal(fingerprint, await credentialFingerprint(record));
+const parsedIndex = parseRegistryIndex({
+  version: 1,
+  updatedAt: null,
+  accounts: {[nameHash]: [record]},
+  access: {
+    disabledAccounts: [nameHash, nameHash, 'invalid'],
+    revokedCredentials: [fingerprint, fingerprint, 'invalid']
+  }
+});
 assert.deepEqual(parsedIndex.accounts[nameHash], [record]);
+assert.deepEqual(parsedIndex.access, {
+  disabledAccounts: [nameHash],
+  revokedCredentials: [fingerprint]
+});
 
 function bytesToBase64ForTest(bytes) {
   return Buffer.from(bytes).toString('base64');
 }
 
-console.log('Student-name validation, PBKDF2 derivation and cross-device index parsing passed.');
+console.log('Student-name validation, PBKDF2 derivation, credential fingerprints and account access controls passed.');

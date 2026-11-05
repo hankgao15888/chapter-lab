@@ -84,6 +84,14 @@ GitHub Actions 工作流需要仓库允许工作流写入内容。若 Actions �
 
 `account-service/` 保留了可选的自托管 Worker + D1 实现及测试，用于未来切换为真正的服务端账号验证；当前 GitHub Pages 前端不调用该服务。
 
+## 本机账户管理中心
+
+仓库根目录的 `private/account-admin/` 提供一个仅在本机运行的管理工具。双击 `private/account-admin/启动账户管理中心.cmd`，服务只监听 `127.0.0.1:8787`，同一局域网中的其他设备无法访问。
+
+首次启动需要设置管理员密码。管理页面可以同步账号中继、查看全部跨设备账号、导入本地学员名册、停用或恢复账号、撤销旧密码以及为学员生成新的临时密码。管理员密码使用 scrypt 加盐保存；名册和操作日志只保存在 `private/account-admin/data/`。
+
+`private/` 已由 `.gitignore` 排除，整个管理工具及其数据不会进入公开仓库。管理操作只修改 `docs/accounts-index.json` 中的停用和凭据撤销列表，点击「发布到网站」后才会提交并推送该索引。静态登录页会在登录和会话恢复时读取这些控制状态；已经打开且未刷新的页面，以及断网设备，无法即时收到管理变更。
+
 ## 可选：导入已有离线题库
 
 默认会自动加载来源PDF；需要离线显示或来源暂不可用时，也可以使用已有题图：
@@ -128,6 +136,7 @@ data/curriculum.json  官方章节及其来源
 account-service/      可选的自托管 Worker + D1 账号 API、迁移与测试
 scripts/build.mjs     验证并生成浏览器清单与六科索引
 scripts/sync-account-index.mjs 拉取 ntfy 记录并幂等合并账号索引
+private/account-admin/ 仅本机运行、不会提交的账号管理中心及私有名册
 tests/verify.mjs      索引完整性、整卷总分及组卷约束验证
 tests/geometry.mjs    PDF裁切边界与共享题干区域验证
 tests/years.mjs       历年筛选、各科各年组卷及大题库性能验证

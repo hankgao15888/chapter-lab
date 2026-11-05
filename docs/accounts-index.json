@@ -1,5 +1,20 @@
 {
   "version": 1,
-  "updatedAt": null,
-  "accounts": {}
+  "updatedAt": "2026-11-05T13:14:34.262Z",
+  "accounts": {
+    "612458061e97d2d838f1ef94616bc9b82dacb85bbbdb261dd0fb6350a4c364b7": [
+      {
+        "version": 1,
+        "nameHash": "612458061e97d2d838f1ef94616bc9b82dacb85bbbdb261dd0fb6350a4c364b7",
+        "salt": "YBuiexFZWd5fCmfbhyQmXA==",
+        "hash": "CKvnyMLXkJc9VlAqGxh5BlA9cQJfO+w5I88Es1gTBbc=",
+        "iterations": 310000,
+        "createdAt": "2026-11-04T00:25:20.091Z"
+      }
+    ]
+  },
+  "access": {
+    "disabledAccounts": [],
+    "revokedCredentials": []
+  }
 }

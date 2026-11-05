@@ -45,16 +45,50 @@ export function parseRegistryEvents(text) {
   return records;
 }
 
+function emptyAccessControls() {
+  return {disabledAccounts: [], revokedCredentials: []};
+}
+
+export function normalizeAccessControls(value) {
+  const access = value && typeof value === 'object' ? value : {};
+  const uniqueHashes = (items, predicate) => [
+    ...new Set(
+      (Array.isArray(items) ? items : [])
+        .map(item => String(item || '').toLowerCase())
+        .filter(item => predicate.test(item))
+    )
+  ].sort();
+  return {
+    disabledAccounts: uniqueHashes(access.disabledAccounts, /^[a-f0-9]{64}$/),
+    revokedCredentials: uniqueHashes(access.revokedCredentials, /^[a-f0-9]{64}$/)
+  };
+}
+
 function emptyIndex() {
-  return {version: 1, updatedAt: null, accounts: {}};
+  return {version: 1, updatedAt: null, accounts: {}, access: emptyAccessControls()};
 }
 
 export function mergeAccountIndex(existing, incoming, now = new Date().toISOString()) {
   const index = existing && existing.version === 1 && existing.accounts
     ? existing
     : emptyIndex();
-  const next = {version: 1, updatedAt: index.updatedAt || null, accounts: {}};
+  const access = normalizeAccessControls(index.access);
+  const rawAccess = index.access && typeof index.access === 'object' ? index.access : {};
+  const next = {
+    version: 1,
+    updatedAt: index.updatedAt || null,
+    accounts: {},
+    access
+  };
   let changed = false;
+
+  if (
+    JSON.stringify(normalizeAccessControls(rawAccess)) !== JSON.stringify(rawAccess)
+    || !Array.isArray(rawAccess.disabledAccounts)
+    || !Array.isArray(rawAccess.revokedCredentials)
+  ) {
+    changed = true;
+  }
 
   for (const [nameHash, records] of Object.entries(index.accounts)) {
     if (!/^[a-f0-9]{64}$/.test(nameHash) || !Array.isArray(records)) continue;
@@ -120,6 +154,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   console.log(JSON.stringify({
     changed: result.changed,
     incoming: result.incoming,
-    accounts: Object.keys(result.index.accounts).length
+    accounts: Object.keys(result.index.accounts).length,
+    disabled: result.index.access.disabledAccounts.length
   }));
 }

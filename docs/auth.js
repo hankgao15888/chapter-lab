@@ -16,9 +16,10 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function (root) {
   'use strict';
 
-  const VERSION = '1.8.0';
+  const VERSION = '1.9.0';
   const ACCOUNTS_KEY = 'chapterlab-device-accounts-v1';
   const SESSION_KEY = 'chapterlab-student-session-v1';
+  const ACCESS_CACHE_KEY = 'chapterlab-access-controls-v1';
   const ITERATIONS = 310000;
   const REGISTRY_TIMEOUT_MS = 8000;
   const REGISTRY_INDEX_URL = 'accounts-index.json';
@@ -139,7 +140,27 @@
   }
 
   function emptyRegistryIndex() {
-    return {version: 1, updatedAt: null, accounts: {}};
+    return {
+      version: 1,
+      updatedAt: null,
+      accounts: {},
+      access: {disabledAccounts: [], revokedCredentials: []}
+    };
+  }
+
+  function normalizeAccessControls(value) {
+    const access = value && typeof value === 'object' ? value : {};
+    const uniqueHashes = (items, predicate) => [
+      ...new Set(
+        (Array.isArray(items) ? items : [])
+          .map(item => String(item || '').toLowerCase())
+          .filter(item => predicate.test(item))
+      )
+    ].sort();
+    return {
+      disabledAccounts: uniqueHashes(access.disabledAccounts, /^[a-f0-9]{64}$/),
+      revokedCredentials: uniqueHashes(access.revokedCredentials, /^[a-f0-9]{64}$/)
+    };
   }
 
   function parseRegistryIndex(payload) {
@@ -152,7 +173,12 @@
       const valid = records.filter(validRegistryRecord);
       if (valid.length) accounts[nameHash] = valid;
     }
-    return {version: 1, updatedAt: payload.updatedAt || null, accounts};
+    return {
+      version: 1,
+      updatedAt: payload.updatedAt || null,
+      accounts,
+      access: normalizeAccessControls(payload.access)
+    };
   }
 
   async function fetchRegistryIndex() {
@@ -244,6 +270,13 @@
     };
   }
 
+  async function credentialFingerprint(record) {
+    if (!validRegistryRecord(record)) return '';
+    return sha256Hex(
+      'chapterlab-credential-v1\0' + record.salt + '\0' + record.hash
+    );
+  }
+
   function equalBytes(left, right) {
     if (!left || !right || left.length !== right.length) return false;
     let difference = 0;
@@ -267,6 +300,23 @@
     } catch {
       throw new Error('浏览器无法保存离线验证副本。请检查隐私设置或存储空间。');
     }
+  }
+
+  function readAccessCache(storage) {
+    try {
+      const parsed = JSON.parse(storage?.getItem(ACCESS_CACHE_KEY) || 'null');
+      return normalizeAccessControls(parsed);
+    } catch {
+      return normalizeAccessControls(null);
+    }
+  }
+
+  function writeAccessCache(storage, access) {
+    try {
+      if (storage) {
+        storage.setItem(ACCESS_CACHE_KEY, JSON.stringify(normalizeAccessControls(access)));
+      }
+    } catch {}
   }
 
   function sessionFor(storage, key) {
@@ -411,21 +461,36 @@
     const nameHash = await accountNameHash(name);
     let indexRecords = [];
     let relayRecords = [];
+    let access = normalizeAccessControls(null);
     let unavailable = 0;
     try {
       const index = await fetchRegistryIndex();
       indexRecords = index.accounts[nameHash] || [];
+      access = index.access;
+      writeAccessCache(browserStorage('localStorage'), access);
     } catch {
       unavailable += 1;
+      access = readAccessCache(browserStorage('localStorage'));
     }
     try {
       relayRecords = await queryRelayRecords(nameHash);
     } catch {
       unavailable += 1;
     }
+    const revokedCredentials = new Set(access.revokedCredentials);
+    const candidates = dedupeRegistryRecords([...indexRecords, ...relayRecords]);
+    const records = [];
+    for (const record of candidates) {
+      if (revokedCredentials.has(await credentialFingerprint(record))) continue;
+      records.push(record);
+    }
     return {
       nameHash,
-      records: dedupeRegistryRecords([...indexRecords, ...relayRecords]),
+      records,
+      rawRecordCount: candidates.length,
+      accountDisabled: access.disabledAccounts.includes(nameHash),
+      revokedCredentials,
+      access,
       networkError: unavailable === 2
     };
   }
@@ -438,10 +503,12 @@
       const accounts = readAccounts(localStore);
       accounts.accounts[key] = {
         name: displayStudentName(name),
+        nameHash: await accountNameHash(name),
         salt: record.salt,
         hash: record.hash,
         iterations: record.iterations,
         createdAt: record.createdAt,
+        credentialId: await credentialFingerprint(record),
         cloudVerifiedAt: new Date().toISOString()
       };
       writeAccounts(localStore, accounts);
@@ -556,6 +623,15 @@
           if (!localVerified) throw new Error('学员名或密码不正确。');
         }
         const registry = await registryRecordsFor(validation.value);
+        if (registry.accountDisabled) {
+          throw new Error('这个账号已被管理员停用，请联系管理员恢复。');
+        }
+        if (localAccount && localVerified) {
+          const localRecord = localRegistryRecord(localAccount, registry.nameHash);
+          if (registry.revokedCredentials.has(await credentialFingerprint(localRecord))) {
+            localVerified = false;
+          }
+        }
         let matchedRecord = null;
         for (const record of registry.records) {
           if (await verifyRegistryRecord(record, passwordInput.value)) {
@@ -597,7 +673,9 @@
           throw new Error(
             registry.records.length
               ? '学员名或密码不正确。'
-              : '没有找到这个跨设备账号。请先在「建立账号」中注册。'
+              : registry.rawRecordCount
+                ? '这个账号的现有密码已被管理员撤销，请向管理员获取新密码。'
+                : '没有找到这个跨设备账号。请先在「建立账号」中注册。'
           );
         }
         storeSession(sessionStore, {
@@ -642,7 +720,10 @@
         if (registry.networkError) {
           throw new Error('无法连接跨设备账号索引，请检查网络后重试。');
         }
-        if (registry.records.length) {
+        if (registry.accountDisabled) {
+          throw new Error('这个学员名已被管理员停用，不能重新注册。');
+        }
+        if (registry.rawRecordCount) {
           throw new Error('这个学员名已经有跨设备账号，请切换到「学员登录」。');
         }
         const record = await makeRegistryRecord(validation.name, passwordInput.value);
@@ -681,8 +762,35 @@
     } catch {}
     const restored = storedSession ? sessionFor(sessionStore, storedSession.key) : null;
     if (restored && accounts.accounts[restored.key]) {
-      finishUnlock(accounts.accounts[restored.key].name, restored.mode === 'cloud' ? 'cloud' : 'offline')
-        .catch(() => setMode('login'));
+      const localAccount = accounts.accounts[restored.key];
+      (async () => {
+        let access = normalizeAccessControls(null);
+        try {
+          const index = await fetchRegistryIndex();
+          access = index.access;
+          writeAccessCache(localStore, access);
+        } catch {
+          access = readAccessCache(localStore);
+        }
+        if (access.disabledAccounts.includes(restored.key)) {
+          throw new Error('这个账号已被管理员停用，请联系管理员恢复。');
+        }
+        const record = localRegistryRecord(
+          localAccount,
+          localAccount.nameHash || await accountNameHash(localAccount.name)
+        );
+        if (access.revokedCredentials.includes(await credentialFingerprint(record))) {
+          throw new Error('这个账号的旧密码已失效，请向管理员获取新密码。');
+        }
+        await finishUnlock(
+          localAccount.name,
+          restored.mode === 'cloud' ? 'cloud' : 'offline'
+        );
+      })().catch(error => {
+        removeStoredSession(sessionStore);
+        setMode('login');
+        setError(document.getElementById('loginError'), error.message || '登录会话已失效。');
+      });
     } else {
       removeStoredSession(sessionStore);
       setMode('login');
@@ -700,6 +808,7 @@
     validateStudentName,
     validateRegistration,
     accountNameHash,
+    credentialFingerprint,
     validRegistryRecord,
     parseRegistryIndex,
     derivePasswordHash,
