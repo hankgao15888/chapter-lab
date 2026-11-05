@@ -1,4 +1,4 @@
-/* Chapter Lab device-level student access gate. Passwords are never stored in plaintext. */
+/* Chapter Lab cross-device student access gate. Passwords are never stored in plaintext. */
 (function (root, factory) {
   const api = factory(root);
   if (typeof module === 'object' && module.exports) {
@@ -16,10 +16,14 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function (root) {
   'use strict';
 
-  const VERSION = '1.7.0';
+  const VERSION = '1.8.0';
   const ACCOUNTS_KEY = 'chapterlab-device-accounts-v1';
   const SESSION_KEY = 'chapterlab-student-session-v1';
   const ITERATIONS = 310000;
+  const REGISTRY_TIMEOUT_MS = 8000;
+  const REGISTRY_INDEX_URL = 'accounts-index.json';
+  const REGISTRY_RELAY_BASE = 'https://ntfy.sh';
+  const REGISTRY_TOPIC = 'chapterlab-account-registry-83f5c2a7';
   const APP_SCRIPTS = [
     'online.js',
     'data.js',
@@ -35,22 +39,20 @@
   let authenticated = false;
   let currentStudent = '';
   let applicationPromise = null;
+  let authMode = 'cloud';
 
   function normalizeStudentName(value) {
-    return String(value == null ? '' : value)
-      .normalize('NFKC')
-      .trim()
-      .replace(/\s+/g, ' ')
-      .toLocaleLowerCase('en-US');
+    return displayStudentName(value).toLocaleLowerCase('en-US');
   }
 
   function displayStudentName(value) {
-    return String(value == null ? '' : value)
-      .normalize('NFKC')
-      .replace(/[\u0000-\u001f\u007f<>]/g, '')
-      .trim()
-      .replace(/\s+/g, ' ')
-      .slice(0, 24);
+    return Array.from(
+      String(value == null ? '' : value)
+        .normalize('NFKC')
+        .replace(/[\u0000-\u001f\u007f<>]/g, '')
+        .trim()
+        .replace(/\s+/g, ' ')
+    ).slice(0, 24).join('');
   }
 
   function validateStudentName(value) {
@@ -87,6 +89,15 @@
     return bytes;
   }
 
+  function bytesToHex(bytes) {
+    return Array.from(bytes, byte => byte.toString(16).padStart(2, '0')).join('');
+  }
+
+  async function sha256Hex(value) {
+    const digest = await root.crypto.subtle.digest('SHA-256', new TextEncoder().encode(value));
+    return bytesToHex(new Uint8Array(digest));
+  }
+
   function randomBytes(length) {
     const bytes = new Uint8Array(length);
     root.crypto.getRandomValues(bytes);
@@ -103,6 +114,134 @@
       256
     );
     return new Uint8Array(hash);
+  }
+
+  async function accountNameHash(name) {
+    return sha256Hex('chapterlab-name-v1\0' + normalizeStudentName(name));
+  }
+
+  function validRegistryRecord(record) {
+    return Boolean(
+      record
+      && record.version === 1
+      && /^[a-f0-9]{64}$/.test(record.nameHash || '')
+      && typeof record.salt === 'string'
+      && record.salt.length >= 16
+      && record.salt.length <= 128
+      && typeof record.hash === 'string'
+      && record.hash.length >= 32
+      && record.hash.length <= 128
+      && Number.isInteger(record.iterations)
+      && record.iterations >= 100000
+      && record.iterations <= 1000000
+      && Number.isFinite(Date.parse(record.createdAt || ''))
+    );
+  }
+
+  function emptyRegistryIndex() {
+    return {version: 1, updatedAt: null, accounts: {}};
+  }
+
+  function parseRegistryIndex(payload) {
+    if (!payload || payload.version !== 1 || !payload.accounts || typeof payload.accounts !== 'object') {
+      throw new Error('本地账号索引格式不正确。');
+    }
+    const accounts = {};
+    for (const [nameHash, records] of Object.entries(payload.accounts)) {
+      if (!/^[a-f0-9]{64}$/.test(nameHash) || !Array.isArray(records)) continue;
+      const valid = records.filter(validRegistryRecord);
+      if (valid.length) accounts[nameHash] = valid;
+    }
+    return {version: 1, updatedAt: payload.updatedAt || null, accounts};
+  }
+
+  async function fetchRegistryIndex() {
+    const response = await fetch(REGISTRY_INDEX_URL + '?t=' + Date.now(), {
+      headers: {Accept: 'application/json'},
+      cache: 'no-store'
+    });
+    if (response.status === 404) return emptyRegistryIndex();
+    if (!response.ok) throw new Error('无法读取跨设备账号索引。');
+    return parseRegistryIndex(await response.json());
+  }
+
+  async function queryRelayRecords(nameHash) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), REGISTRY_TIMEOUT_MS);
+    try {
+      const response = await fetch(
+        REGISTRY_RELAY_BASE + '/' + REGISTRY_TOPIC + '/json?poll=1&since=all',
+        {headers: {Accept: 'application/x-ndjson'}, cache: 'no-store', signal: controller.signal}
+      );
+      if (!response.ok) throw new Error('relay_unavailable');
+      const text = await response.text();
+      const records = [];
+      for (const line of text.split(/\r?\n/)) {
+        if (!line.trim()) continue;
+        try {
+          const event = JSON.parse(line);
+          const record = event && event.event === 'message' && typeof event.message === 'string'
+            ? JSON.parse(event.message)
+            : null;
+          if (validRegistryRecord(record) && record.nameHash === nameHash) records.push(record);
+        } catch {}
+      }
+      return records;
+    } catch (error) {
+      if (error.name === 'AbortError') throw new Error('relay_timeout');
+      throw error;
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  async function publishRegistryRecord(record) {
+    if (!validRegistryRecord(record)) throw new Error('账号同步记录格式不正确。');
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), REGISTRY_TIMEOUT_MS);
+    try {
+      const response = await fetch(REGISTRY_RELAY_BASE + '/' + REGISTRY_TOPIC, {
+        method: 'POST',
+        headers: {'Content-Type': 'text/plain;charset=UTF-8', 'Cache': 'yes'},
+        body: JSON.stringify(record),
+        cache: 'no-store',
+        signal: controller.signal
+      });
+      if (!response.ok) throw new Error('无法发布跨设备账号。请稍后重试。');
+      const payload = await response.json();
+      if (!payload || payload.event !== 'message' || !payload.id) {
+        throw new Error('账号同步服务没有确认保存，请稍后重试。');
+      }
+      return payload;
+    } catch (error) {
+      if (error.name === 'AbortError') throw new Error('跨设备账号同步超时，请稍后重试。');
+      throw error;
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  async function verifyRegistryRecord(record, password) {
+    if (!validRegistryRecord(record)) return false;
+    const actual = await derivePasswordHash(
+      password,
+      base64ToBytes(record.salt),
+      record.iterations
+    );
+    return equalBytes(actual, base64ToBytes(record.hash));
+  }
+
+  async function makeRegistryRecord(name, password) {
+    const salt = randomBytes(16);
+    const hash = await derivePasswordHash(password, salt, ITERATIONS);
+    return {
+      version: 1,
+      nameHash: await accountNameHash(name),
+      salt: bytesToBase64(salt),
+      hash: bytesToBase64(hash),
+      iterations: ITERATIONS,
+      createdAt: new Date().toISOString()
+    };
   }
 
   function equalBytes(left, right) {
@@ -122,11 +261,11 @@
   }
 
   function writeAccounts(storage, store) {
-    if (!storage) throw new Error('浏览器禁止保存本地账号。请允许站点使用本地存储后重试。');
+    if (!storage) throw new Error('浏览器禁止保存离线验证副本。');
     try {
       storage.setItem(ACCOUNTS_KEY, JSON.stringify(store));
     } catch {
-      throw new Error('浏览器无法保存本地账号。请检查隐私设置或存储空间。');
+      throw new Error('浏览器无法保存离线验证副本。请检查隐私设置或存储空间。');
     }
   }
 
@@ -155,6 +294,12 @@
     } catch {
       throw new Error('浏览器无法保存登录会话。请检查隐私设置后重试。');
     }
+  }
+
+  function removeStoredSession(storage) {
+    try {
+      storage?.removeItem(SESSION_KEY);
+    } catch {}
   }
 
   function setError(element, message) {
@@ -187,9 +332,21 @@
     return applicationPromise;
   }
 
-  function finishUnlock(name) {
+  function updateSessionMode(mode) {
+    authMode = mode;
+    const element = document.getElementById('sessionMode');
+    if (!element) return;
+    element.textContent = mode === 'cloud' ? '跨设备' : '离线';
+    element.dataset.mode = mode;
+    element.title = mode === 'cloud'
+      ? '账号已在跨设备索引中匹配，可在其他设备使用同一学员名和密码'
+      : '当前设备正在离线使用已保存的账号验证副本';
+  }
+
+  function finishUnlock(name, mode) {
     currentStudent = name;
     authenticated = true;
+    updateSessionMode(mode);
     const student = document.getElementById('sessionStudent');
     if (student) student.textContent = name;
     const boot = document.getElementById('authBoot');
@@ -214,22 +371,117 @@
     });
   }
 
+  async function verifyLocalAccount(account, password) {
+    const iterations = Number.isInteger(account.iterations)
+      && account.iterations >= 100000
+      && account.iterations <= 1000000
+      ? account.iterations
+      : ITERATIONS;
+    const hash = await derivePasswordHash(
+      password,
+      base64ToBytes(account.salt),
+      iterations
+    );
+    return equalBytes(hash, base64ToBytes(account.hash));
+  }
+
+  function localRegistryRecord(account, nameHash) {
+    return {
+      version: 1,
+      nameHash,
+      salt: account.salt,
+      hash: account.hash,
+      iterations: Number(account.iterations || ITERATIONS),
+      createdAt: account.createdAt || new Date().toISOString()
+    };
+  }
+
+  function dedupeRegistryRecords(records) {
+    const seen = new Set();
+    return records.filter(record => {
+      if (!validRegistryRecord(record)) return false;
+      const key = record.salt + '\0' + record.hash;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
+
+  async function registryRecordsFor(name) {
+    const nameHash = await accountNameHash(name);
+    let indexRecords = [];
+    let relayRecords = [];
+    let unavailable = 0;
+    try {
+      const index = await fetchRegistryIndex();
+      indexRecords = index.accounts[nameHash] || [];
+    } catch {
+      unavailable += 1;
+    }
+    try {
+      relayRecords = await queryRelayRecords(nameHash);
+    } catch {
+      unavailable += 1;
+    }
+    return {
+      nameHash,
+      records: dedupeRegistryRecords([...indexRecords, ...relayRecords]),
+      networkError: unavailable === 2
+    };
+  }
+
+  async function cacheLocalVerifier(localStore, name, password, registryRecord) {
+    const key = normalizeStudentName(name);
+    const record = registryRecord || await makeRegistryRecord(name, password);
+    if (!localStore) return record;
+    try {
+      const accounts = readAccounts(localStore);
+      accounts.accounts[key] = {
+        name: displayStudentName(name),
+        salt: record.salt,
+        hash: record.hash,
+        iterations: record.iterations,
+        createdAt: record.createdAt,
+        cloudVerifiedAt: new Date().toISOString()
+      };
+      writeAccounts(localStore, accounts);
+    } catch {
+      /* The cross-device login remains valid if this browser refuses a fallback copy. */
+    }
+    return record;
+  }
+
   function start() {
     const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
     if (!loginForm || !registerForm) return;
-    if (!root.crypto || !root.crypto.subtle) {
-      setError(document.getElementById('loginError'), '当前浏览器不支持安全密码验证，请升级浏览器后重试。');
+    if (!root.crypto || !root.crypto.subtle || typeof root.fetch !== 'function') {
+      setError(document.getElementById('loginError'), '当前浏览器不支持安全账号验证，请升级浏览器后重试。');
       return;
     }
     const localStore = browserStorage('localStorage');
     const sessionStore = browserStorage('sessionStorage');
     let accounts = readAccounts(localStore);
     const accountCount = document.getElementById('accountCount');
+    const accountHint = document.getElementById('accountHint');
+    const cloudStatus = document.getElementById('cloudStatus');
     const updateAccountCount = () => {
       if (accountCount) accountCount.textContent = String(Object.keys(accounts.accounts).length);
     };
+    const updateAccountHint = () => {
+      if (!accountHint) return;
+      const key = normalizeStudentName(document.getElementById('studentName')?.value || '');
+      accountHint.textContent = key && accounts.accounts[key]
+        ? '检测到本设备验证副本。登录后可离线使用，成功联网验证后可在其他设备继续。'
+        : '新设备首次登录需要联网；账号建立后，同一学员名和密码可跨设备使用。';
+    };
     updateAccountCount();
+    updateAccountHint();
+    if (cloudStatus) {
+      const online = !root.navigator || root.navigator.onLine;
+      cloudStatus.textContent = online ? '跨设备账号已启用' : '等待网络连接';
+      cloudStatus.dataset.state = online ? 'ready' : 'offline';
+    }
     if (!localStore || !sessionStore) {
       setError(
         document.getElementById('loginError'),
@@ -243,8 +495,12 @@
       registerForm.classList.toggle('hidden', !registering);
       const title = document.getElementById('authTitle');
       const subtitle = document.getElementById('authSubtitle');
-      if (title) title.textContent = registering ? '建立学员账号' : '学员登录';
-      if (subtitle) subtitle.textContent = registering ? '首次使用请创建本设备账号。' : '使用你的学员名和密码继续。';
+      if (title) title.textContent = registering ? '建立跨设备学员账号' : '学员登录';
+      if (subtitle) {
+        subtitle.textContent = registering
+          ? '建立一次后，可在其他设备使用同一学员名和密码。'
+          : '新设备首次登录需要联网匹配账号，旧账号会自动迁移。';
+      }
       document.querySelectorAll('[data-auth-mode]').forEach(button => {
         const selected = button.dataset.authMode === mode;
         button.classList.toggle('selected', selected);
@@ -252,6 +508,7 @@
       });
       setError(document.getElementById('loginError'), '');
       setError(document.getElementById('registerError'), '');
+      if (!registering) updateAccountHint();
     };
 
     document.querySelectorAll('[data-auth-mode]').forEach(button => {
@@ -267,6 +524,7 @@
         button.setAttribute('aria-label', reveal ? '隐藏密码' : '显示密码');
       });
     });
+    document.getElementById('studentName')?.addEventListener('input', updateAccountHint);
 
     loginForm.addEventListener('submit', async event => {
       event.preventDefault();
@@ -274,48 +532,89 @@
       const passwordInput = document.getElementById('studentPassword');
       const error = document.getElementById('loginError');
       const button = document.getElementById('loginButton');
-      const key = normalizeStudentName(nameInput.value);
-      const account = accounts.accounts[key];
+      const validation = validateStudentName(nameInput.value);
+      const key = normalizeStudentName(validation.value);
+      const localAccount = accounts.accounts[key];
       setError(error, '');
-      if (!key || !passwordInput.value) {
-        setError(error, '请输入学员名和密码。');
+      if (!validation.ok) {
+        setError(error, validation.message || '请输入学员名和密码。');
         return;
       }
-      if (!account) {
-        setMode('register');
-        const newNameInput = document.getElementById('newStudentName');
-        if (newNameInput) newNameInput.value = nameInput.value.trim();
-        setError(document.getElementById('registerError'), '没有找到这个本设备账号，请确认学员名并建立账号。');
-        document.getElementById('newStudentPassword')?.focus();
+      if (!passwordInput.value) {
+        setError(error, '请输入密码。');
         return;
       }
-      if (!localStore || !sessionStore) {
+      if (!sessionStore) {
         setError(error, '登录需要浏览器存储权限。请允许本站使用浏览器存储后刷新页面。');
         return;
       }
-      setButton(button, true, '正在验证…', '进入题库 →');
+      setButton(button, true, '正在匹配跨设备账号…', '进入题库 →');
       try {
-        await new Promise(resolve => setTimeout(resolve, 250));
-        const iterations = Number.isInteger(account.iterations) && account.iterations >= 100000 && account.iterations <= 1000000
-          ? account.iterations
-          : ITERATIONS;
-        const hash = await derivePasswordHash(
-          passwordInput.value,
-          base64ToBytes(account.salt),
-          iterations
-        );
-        if (!equalBytes(hash, base64ToBytes(account.hash))) throw new Error('学员名或密码不正确。');
+        let localVerified = false;
+        if (localAccount) {
+          localVerified = await verifyLocalAccount(localAccount, passwordInput.value);
+          if (!localVerified) throw new Error('学员名或密码不正确。');
+        }
+        const registry = await registryRecordsFor(validation.value);
+        let matchedRecord = null;
+        for (const record of registry.records) {
+          if (await verifyRegistryRecord(record, passwordInput.value)) {
+            matchedRecord = record;
+            break;
+          }
+        }
+        if (registry.networkError && localVerified) {
+          storeSession(sessionStore, {
+            key,
+            name: localAccount.name,
+            mode: 'offline',
+            startedAt: Date.now()
+          });
+          passwordInput.value = '';
+          await finishUnlock(localAccount.name, 'offline');
+          return;
+        }
+        if (!matchedRecord && localVerified) {
+          try {
+            matchedRecord = localRegistryRecord(localAccount, registry.nameHash);
+            await publishRegistryRecord(matchedRecord);
+          } catch {
+            storeSession(sessionStore, {
+              key,
+              name: localAccount.name,
+              mode: 'offline',
+              startedAt: Date.now()
+            });
+            passwordInput.value = '';
+            await finishUnlock(localAccount.name, 'offline');
+            return;
+          }
+        }
+        if (!matchedRecord) {
+          if (registry.networkError) {
+            throw new Error('无法连接跨设备账号索引。新设备首次登录需要网络，请稍后重试。');
+          }
+          throw new Error(
+            registry.records.length
+              ? '学员名或密码不正确。'
+              : '没有找到这个跨设备账号。请先在「建立账号」中注册。'
+          );
+        }
         storeSession(sessionStore, {
           key,
-          name: account.name,
+          name: validation.value,
+          mode: 'cloud',
           startedAt: Date.now()
         });
+        await cacheLocalVerifier(localStore, validation.value, passwordInput.value, matchedRecord);
+        accounts = readAccounts(localStore);
+        updateAccountCount();
         passwordInput.value = '';
-        await finishUnlock(account.name);
+        await finishUnlock(validation.value, 'cloud');
       } catch (failure) {
         setError(error, failure.message || '登录失败，请重试。');
       } finally {
-        setButton(button, false, '正在验证…', '进入题库 →');
+        setButton(button, false, '正在匹配跨设备账号…', '进入题库 →');
       }
     });
 
@@ -332,49 +631,45 @@
         setError(error, validation.message);
         return;
       }
-      if (!localStore || !sessionStore) {
-        setError(error, '建立账号需要浏览器存储权限。请允许本站使用浏览器存储后刷新页面。');
-        return;
-      }
       const key = normalizeStudentName(validation.name);
-      if (accounts.accounts[key]) {
-        setError(error, '这个学员名已经存在，请直接登录。');
+      if (!sessionStore) {
+        setError(error, '建立账号需要浏览器会话存储权限。请允许本站使用浏览器存储后刷新页面。');
         return;
       }
-      setButton(button, true, '正在建立…', '建立学员账号 →');
+      setButton(button, true, '正在建立跨设备账号…', '建立学员账号 →');
       try {
-        const salt = randomBytes(16);
-        const hash = await derivePasswordHash(passwordInput.value, salt, ITERATIONS);
+        const registry = await registryRecordsFor(validation.name);
+        if (registry.networkError) {
+          throw new Error('无法连接跨设备账号索引，请检查网络后重试。');
+        }
+        if (registry.records.length) {
+          throw new Error('这个学员名已经有跨设备账号，请切换到「学员登录」。');
+        }
+        const record = await makeRegistryRecord(validation.name, passwordInput.value);
+        await publishRegistryRecord(record);
+        await cacheLocalVerifier(localStore, validation.name, passwordInput.value, record);
         accounts = readAccounts(localStore);
-        if (accounts.accounts[key]) throw new Error('这个学员名已经存在，请直接登录。');
-        accounts.accounts[key] = {
-          name: validation.name,
-          salt: bytesToBase64(salt),
-          hash: bytesToBase64(hash),
-          iterations: ITERATIONS,
-          createdAt: new Date().toISOString()
-        };
-        writeAccounts(localStore, accounts);
         updateAccountCount();
         storeSession(sessionStore, {
           key,
           name: validation.name,
+          mode: 'cloud',
           startedAt: Date.now()
         });
         passwordInput.value = '';
         confirmation.value = '';
-        await finishUnlock(validation.name);
+        await finishUnlock(validation.name, 'cloud');
       } catch (failure) {
-        setError(error, failure.message || '无法建立账号，请检查浏览器设置。');
+        setError(error, failure.message || '无法建立账号，请稍后重试。');
       } finally {
-        setButton(button, false, '正在建立…', '建立学员账号 →');
+        setButton(button, false, '正在建立跨设备账号…', '建立学员账号 →');
       }
     });
 
-    document.getElementById('logoutBtn')?.addEventListener('click', () => {
-      try {
-        sessionStore?.removeItem(SESSION_KEY);
-      } catch {}
+    document.getElementById('logoutBtn')?.addEventListener('click', async event => {
+      const button = event.currentTarget;
+      button.disabled = true;
+      removeStoredSession(sessionStore);
       authenticated = false;
       currentStudent = '';
       location.reload();
@@ -386,11 +681,10 @@
     } catch {}
     const restored = storedSession ? sessionFor(sessionStore, storedSession.key) : null;
     if (restored && accounts.accounts[restored.key]) {
-      finishUnlock(accounts.accounts[restored.key].name).catch(() => setMode('login'));
+      finishUnlock(accounts.accounts[restored.key].name, restored.mode === 'cloud' ? 'cloud' : 'offline')
+        .catch(() => setMode('login'));
     } else {
-      try {
-        sessionStore?.removeItem(SESSION_KEY);
-      } catch {}
+      removeStoredSession(sessionStore);
       setMode('login');
       document.getElementById('studentName')?.focus();
     }
@@ -405,9 +699,13 @@
     displayStudentName,
     validateStudentName,
     validateRegistration,
+    accountNameHash,
+    validRegistryRecord,
+    parseRegistryIndex,
     derivePasswordHash,
     isAuthenticated: () => authenticated,
     currentStudent: () => currentStudent,
+    sessionMode: () => authMode,
     start
   };
 });

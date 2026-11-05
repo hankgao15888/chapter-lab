@@ -11,6 +11,7 @@ docs/questions/
 *.tar.gz
 *backup*.json
 .release-state.json
+.local-server.pid
 .env
 .env.*
 .openai/

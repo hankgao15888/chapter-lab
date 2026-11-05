@@ -1,0 +1,37 @@
+name: Sync cross-device account index
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: chapterlab-account-index
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Archive account verification records
+        run: node scripts/sync-account-index.mjs
+      - name: Commit changes
+        run: |
+          if git diff --quiet -- docs/accounts-index.json; then
+            echo "Account index is unchanged."
+            exit 0
+          fi
+          git config user.name "chapter-lab-account-bot"
+          git config user.email "chapter-lab-account-bot@users.noreply.github.com"
+          git add docs/accounts-index.json
+          git commit -m "Sync cross-device account index"
+          git push
