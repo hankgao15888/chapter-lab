@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-06T03:56:19.1429376Z",
+  "updatedAt": "2026-11-06T04:18:08.209Z",
   "accounts": {
     "612458061e97d2d838f1ef94616bc9b82dacb85bbbdb261dd0fb6350a4c364b7": [
       {
@@ -51,10 +51,24 @@
         "iterations": 310000,
         "createdAt": "2026-11-06T01:14:18.356Z"
       }
+    ],
+    "f6032a9627390da2a6be1a910b2e1a170bd2f55320716764e8b7a521f9605db2": [
+      {
+        "version": 1,
+        "nameHash": "f6032a9627390da2a6be1a910b2e1a170bd2f55320716764e8b7a521f9605db2",
+        "salt": "9IYAU8BJb8pzqfs/YqB3dg==",
+        "hash": "cIB0rOBRO4m36qEufYJ4LEvjK6A+/D9uBkedUv2nujo=",
+        "iterations": 310000,
+        "createdAt": "2026-11-04T11:07:13.024Z"
+      }
     ]
   },
   "access": {
-    "disabledAccounts": [],
-    "revokedCredentials": []
+    "disabledAccounts": [
+      "f6032a9627390da2a6be1a910b2e1a170bd2f55320716764e8b7a521f9605db2"
+    ],
+    "revokedCredentials": [
+      "7b3f652a1d424da8cd0c3ef15638a3c800e63e759444bb8b1e99e10cb1601c6d"
+    ]
   }
 }
