@@ -24,6 +24,7 @@ function app(storage){
  const context=vm.createContext({document,DB:db,console,Map,Set,URL,Blob,
   localStorage:{getItem:key=>storage[key]||null,setItem:(key,value)=>storage[key]=value},
   ChapterLabNotebook:model,ChapterLabAuth:{isAuthenticated:()=>true},
+  ChapterLabPDFLibrary:{create:()=>({renderHistory(){}})},
   ChapterLabCatalogLoader:{createCatalog:()=>({isLoaded:()=>true,loadMany:async subjects=>subjects.map(subject=>db.questions.filter(q=>q.subject===subject))})},
   ChapterLabCatalog:{availableYears:()=>[2026]},ChapterLabSelection:{selectPaper:()=>null},
   ChapterLabAnswers:{create:()=>({content:()=>'',state:()=>({}),load:async()=>{}})},

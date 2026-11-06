@@ -16,7 +16,7 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function (root) {
   'use strict';
 
-  const VERSION = '1.11.0';
+  const VERSION = '1.12.0';
   const ACCOUNTS_KEY = 'chapterlab-device-accounts-v1';
   const SESSION_KEY = 'chapterlab-student-session-v1';
   const ACCESS_CACHE_KEY = 'chapterlab-access-controls-v1';
@@ -36,6 +36,9 @@
     'answers.js',
     'study-room.js',
     'notebook-state.js',
+    'pdf-library-core.js',
+    'pdf-library-store.js',
+    'pdf-library.js',
     'app.js'
   ];
   let authenticated = false;
