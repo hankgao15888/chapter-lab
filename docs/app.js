@@ -37,7 +37,10 @@ function renderSubjectStatus(){
 
 let saved={practice:{},overrides:{},papers:[]};
 try{Object.assign(saved,JSON.parse(localStorage.getItem('chapterlab-v1')||'{}'));}catch{}
-let state={subject:'physics',view:'bank',chapters:new Set(),basket:[],page:1,paperPage:1,wrongPage:1,unmapped:false,title:'',minutes:90};
+const notebookModel=ChapterLabNotebook;
+const notebookSubjectFor=id=>QM.get(id)?.subject||notebookModel.subjectFromId(id);
+saved.notebook=notebookModel.migrate(saved,notebookSubjectFor);
+let state={subject:'physics',view:'bank',notebookSubject:null,notebookStatus:'wrong',chapters:new Set(),basket:[],page:1,paperPage:1,wrongPage:1,unmapped:false,title:'',minutes:90};
 let previewQuestions=[];
 const drafts={};
 const qCh=q=>(saved.overrides[q.id]??q.chapters).filter(id=>CH.has(id));
@@ -45,27 +48,27 @@ const total=qs=>qs.reduce((s,q)=>s+(q.marks||0),0);
 function persist(){try{localStorage.setItem('chapterlab-v1',JSON.stringify(saved));return true;}catch{toast('浏览器未能保存记录，请导出备份。');return false;}}
 let toastTimer;function toast(t){$('#toast').textContent=t;$('#toast').style.display='block';clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').style.display='none',3500);}
 function badge(board){return `<span class="badge ${board==='cie-international'?'cie':board==='edexcel-ial'?'edexcel':''}">${BOARD[board]}</span>`;}
-function wrongButton(q){const active=saved.practice[q.id]==='wrong';return `<button type="button" class="wrong-toggle ${active?'is-wrong':''}" data-wrong-id="${esc(q.id)}" aria-pressed="${active}">${active?'✓ 已收录 · 移出错题':'＋ 收录错题'}</button>`;}
+function wrongButton(q){const active=Boolean(saved.notebook[q.id]);return `<button type="button" class="wrong-toggle ${active?'is-wrong':''}" data-wrong-id="${esc(q.id)}" aria-pressed="${active}">${active?'✓ 已收录 · 移出错题':'＋ 收录错题'}</button>`;}
 function syncPractice(){
  const count=Object.values(saved.practice).filter(status=>status==='wrong').length;
  $('#notebookCount').textContent=count>99?'99+':String(count);
  $('#notebookCount').hidden=!count;
  $('#notebookNav').setAttribute('aria-label',`错题本，共 ${count} 道错题`);
- $$('[data-wrong-id]').forEach(button=>{const active=saved.practice[button.dataset.wrongId]==='wrong';button.classList.toggle('is-wrong',active);button.setAttribute('aria-pressed',String(active));button.textContent=active?'✓ 已收录 · 移出错题':'＋ 收录错题';});
+ $$('[data-wrong-id]').forEach(button=>{const active=Boolean(saved.notebook[button.dataset.wrongId]);button.classList.toggle('is-wrong',active);button.setAttribute('aria-pressed',String(active));button.textContent=active?'✓ 已收录 · 移出错题':'＋ 收录错题';});
  $$('[data-practice-status]').forEach(span=>{const result=saved.practice[span.dataset.practiceStatus];span.textContent=result==='wrong'?'↺ 错题':result==='correct'?'✓ 已掌握':'';span.hidden=!result;});
 }
 function setPractice(id,result){
  if(!QM.has(id))return;
- const previous=saved.practice[id];
- if(result==='clear')delete saved.practice[id];else saved.practice[id]=result;
- if(!persist()){if(previous===undefined)delete saved.practice[id];else saved.practice[id]=previous;return;}
+ const previous=saved.practice[id],previousEntry=saved.notebook[id];
+ notebookModel.update(saved,id,result,QM.get(id).subject);
+ if(!persist()){if(previous===undefined)delete saved.practice[id];else saved.practice[id]=previous;if(previousEntry===undefined)delete saved.notebook[id];else saved.notebook[id]=previousEntry;return;}
  syncPractice();
  if(state.view==='notebook')renderNotebook();
  if(state.view==='history')renderHistory();
  if(state.view==='bank'&&($('#onlyWrong').checked||$('#excludeDone').checked))renderBank();
- toast(result==='wrong'?'已收录到错题本。':result==='correct'?'已标记掌握，已从错题本移出。':'已移出错题本并清除练习状态。');
+ toast(result==='wrong'?'已移至待掌握，可以继续复习。':result==='correct'?(saved.notebook[id]?'已移至「已掌握」，题目仍保留在错题本。':'已标记掌握。'):'已移出错题本并清除练习状态。');
 }
-document.addEventListener('click',event=>{const button=event.target.closest('[data-wrong-id]');if(button)setPractice(button.dataset.wrongId,saved.practice[button.dataset.wrongId]==='wrong'?'clear':'wrong');});
+document.addEventListener('click',event=>{const button=event.target.closest('[data-wrong-id]');if(button)setPractice(button.dataset.wrongId,saved.notebook[button.dataset.wrongId]?'clear':'wrong');const review=event.target.closest('[data-notebook-result]');if(review)setPractice(review.dataset.questionId,review.dataset.notebookResult);});
 function filters(){return {boards:$$('.boards input[value]:checked').map(x=>x.value),level:$('#level').value,year:$('#year').value,difficulty:$('#difficulty').value,search:$('#search').value.trim().toLowerCase(),wrong:$('#onlyWrong').checked,exclude:$('#excludeDone').checked};}
 function refreshYears(){
  const previous=$('#year').value;
@@ -103,7 +106,7 @@ function pagination(page,count,type){return `<div class="pagination"><button dat
 document.addEventListener('click',e=>{const b=e.target.closest('[data-page]');if(!b)return;if(b.dataset.type==='question'){state.page=Number(b.dataset.page);renderBank();$('.results-head').scrollIntoView({behavior:'smooth',block:'start'});}else if(b.dataset.type==='notebook'){state.wrongPage=Number(b.dataset.page);renderNotebook();$('#notebookView').scrollIntoView({behavior:'smooth',block:'start'});}else{state.paperPage=Number(b.dataset.page);renderPapers();$('#papersView').scrollIntoView({behavior:'smooth'});}});
 function updateBasket(){state.basket=state.basket.filter(id=>QM.has(id));$$('.question-card [data-action="add"]').forEach(button=>{const el=button.closest('[data-id]'),q=QM.get(el.dataset.id);if(!q||q.autoSelectable===false||q.withdrawn)return;const added=state.basket.includes(q.id);button.classList.toggle('added',added);button.textContent=added?'✓ 已加入':'＋ 加入练习卷';});const qs=state.basket.map(id=>QM.get(id)),unknown=qs.filter(q=>!q.marks).length;$('#basketCount').textContent=`${qs.length} 道题`;$('#basketMarks').textContent=qs.length?`${total(qs)} 分${unknown?` + ${unknown} 道待核分`:''} · 约 ${state.minutes} 分钟`:'从题库加入，或智能生成';}
 function renderPapers(){const term=$('#paperSearch').value.trim().toLowerCase();const rows=DB.papers.filter(p=>p.subject===state.subject&&`${p.title} ${p.unit} ${BOARD[p.board]} ${p.year}`.toLowerCase().includes(term));const count=Math.max(1,Math.ceil(rows.length/25));state.paperPage=Math.min(count,state.paperPage);$('#paperList').innerHTML=rows.slice((state.paperPage-1)*25,state.paperPage*25).map(p=>`<div class="archive-row">${badge(p.board)}<div><strong>${esc(p.title)}</strong><small>${esc(p.unit)} · ${SUBJECT[p.subject]}</small></div>${DB.importedPapers.includes(p.id)?'<span class="tag">已拆题</span>':`<span class="tag">${esc(DB.coverage?.unavailable?.find(item=>item.id===p.id)?.reason||'暂未拆题')}</span>`}<div class="row-links"><a href="${p.qp}" target="_blank" rel="noopener">试题原卷 ↗</a>${p.ms?`<a href="${p.ms}" target="_blank" rel="noopener">评分标准 ↗</a>`:'<span>暂无答案链接</span>'}</div></div>`).join('')||'<div class="empty-state">没有匹配的试卷。</div>';$('#paperPagination').innerHTML=pagination(state.paperPage,count,'paper');}
-function notebookQuestions(){return [...QM.values()].filter(q=>q.subject===state.subject&&saved.practice[q.id]==='wrong');}
+function notebookQuestions(){return [...QM.values()].filter(q=>q.subject===state.notebookSubject&&notebookModel.includes(saved,q.id,state.notebookStatus));}
 function notebookPool(){
  const chapter=$('#notebookChapter').value,term=$('#notebookSearch').value.trim().toLowerCase();
  return notebookQuestions().filter(q=>{
@@ -114,8 +117,29 @@ function notebookPool(){
  });
 }
 function renderNotebook(){
+ const summary=notebookModel.summary(saved),subject=state.notebookSubject;
+ $('#notebookHome').classList.toggle('hidden',Boolean(subject));
+ $('#notebookDetail').classList.toggle('hidden',!subject);
+ if(!subject){
+  $('#notebookTitle').textContent='我的错题本';
+  $('#notebookDescription').textContent='先选科目，再把错题逐一练会。';
+  $('#notebookTotal').textContent=String(Object.values(summary).reduce((sum,item)=>sum+item.total,0));
+  $('#notebookSubjectLabel').textContent='道已收录题目';
+  const symbols={physics:'↗',mathematics:'ƒ',furthermathematics:'∫',chemistry:'⚗',biology:'✧',economics:'↗'};
+  $('#notebookSubjects').innerHTML=Object.entries(SUBJECT).map(([id,name])=>{
+   const stats=summary[id];
+   return `<button type="button" class="notebook-subject-card" data-notebook-subject="${id}" aria-label="${esc(name)}，待掌握 ${stats.wrong} 道，已掌握 ${stats.correct} 道"><span class="notebook-subject-icon" aria-hidden="true">${symbols[id]}</span><h3>${esc(name)}</h3><p>待掌握 <strong>${stats.wrong}</strong><span>已掌握 <strong>${stats.correct}</strong></span></p><span class="notebook-subject-link">查看科目错题 <b aria-hidden="true">→</b></span></button>`;
+  }).join('');
+  return;
+ }
+ const stats=summary[subject],mastered=state.notebookStatus==='correct';
+ $('#notebookDescription').textContent='练会一道，收进已掌握；还不熟，就移回待掌握。';
+ $('#notebookPendingCount').textContent=String(stats.wrong);
+ $('#notebookMasteredCount').textContent=String(stats.correct);
+ $$('[data-notebook-status]').forEach(button=>{const selected=button.dataset.notebookStatus===state.notebookStatus;button.classList.toggle('selected',selected);button.setAttribute('aria-selected',String(selected));});
+ $('#notebookPractice').textContent='按待掌握错题组卷 →';
  $('#notebookTitle').textContent=SUBJECT[state.subject]+'错题本';
- $('#notebookSubjectLabel').textContent='道'+SUBJECT[state.subject]+'错题';
+ $('#notebookSubjectLabel').textContent='道'+SUBJECT[state.subject]+'收录题目';
  if(!catalog.isLoaded(state.subject)){
   const error=subjectErrors.has(state.subject);
   $('#notebookTotal').textContent='—';$('#notebookResultCount').textContent=error?'题库暂未加载':'正在载入错题对应的题库…';
@@ -130,15 +154,18 @@ function renderNotebook(){
  $('#notebookChapter').innerHTML='<option value="">全部错题章节</option>'+DB.chapters.filter(ch=>ch.subject===state.subject&&counts.has(ch.id)).map(ch=>`<option value="${esc(ch.id)}">${esc(ch.code)} · ${esc(ch.zh)} (${counts.get(ch.id)})</option>`).join('')+(counts.has('unmapped')?`<option value="unmapped">待归类 (${counts.get('unmapped')})</option>`:'');
  if(counts.has(selected))$('#notebookChapter').value=selected;
  const qs=notebookPool(),pages=Math.max(1,Math.ceil(qs.length/12));state.wrongPage=Math.min(state.wrongPage,pages);
- $('#notebookTotal').textContent=String(all.length);
- $('#notebookResultCount').textContent=`当前科目已收录 ${all.length} 道 · 当前筛选 ${qs.length} 道`;
- $('#notebookPractice').disabled=!qs.some(q=>!q.withdrawn&&q.autoSelectable!==false&&q.marks&&qCh(q).length);
- $('#notebookList').innerHTML=qs.slice((state.wrongPage-1)*12,state.wrongPage*12).map(q=>card(q)).join('')||(all.length?'<div class="empty-state"><strong>当前筛选没有错题</strong>试试其他章节或搜索词。<br><button class="quiet" id="resetNotebookFilters">清除错题筛选</button></div>':'<div class="empty-state"><span class="notebook-empty-mark" aria-hidden="true">↺</span><strong>还没有收录'+SUBJECT[state.subject]+'错题</strong>在题库或练习卷中点击「收录错题」，下次就能在这里接着练。<br><button class="quiet" id="browseNotebookBank">去题库选题 →</button></div>');
+ $('#notebookTotal').textContent=String(stats.total);
+ $('#notebookResultCount').textContent=`${SUBJECT[subject]} · ${mastered?'已掌握':'待掌握'} ${all.length} 道 · 当前筛选 ${qs.length} 道`;
+ $('#notebookPractice').disabled=mastered||!qs.some(q=>!q.withdrawn&&q.autoSelectable!==false&&q.marks&&qCh(q).length);
+ $('#notebookList').innerHTML=qs.slice((state.wrongPage-1)*12,state.wrongPage*12).map(q=>`<section class="notebook-entry">${card(q)}<div class="notebook-review-actions"><span>${mastered?'已掌握的题目会保留在这里。':'这道题现在掌握了吗？'}</span><button type="button" class="${mastered?'quiet':'primary'}" data-question-id="${esc(q.id)}" data-notebook-result="${mastered?'wrong':'correct'}">${mastered?'↺ 仍需复习，移回待掌握':'✓ 我已掌握'}</button></div></section>`).join('')||(all.length?'<div class="empty-state"><strong>当前筛选没有题目</strong>试试其他章节或搜索词。<br><button class="quiet" id="resetNotebookFilters">清除筛选</button></div>':`<div class="empty-state"><span class="notebook-empty-mark" aria-hidden="true">${mastered?'✓':'↺'}</span><strong>${mastered?'还没有已掌握的'+SUBJECT[subject]+'错题':'暂时没有待掌握的'+SUBJECT[subject]+'错题'}</strong>${mastered?'在「待掌握」中点击「我已掌握」，题目就会保留在这里。':'在题库或练习卷中点击「收录错题」，就能按科目接着练。'}<br><button class="quiet" id="browseNotebookBank">去题库选题 →</button></div>`);
  $('#notebookPagination').innerHTML=qs.length?pagination(state.wrongPage,pages,'notebook'):'';
  bindCards('#notebookList');
  if($('#resetNotebookFilters'))$('#resetNotebookFilters').onclick=()=>{$('#notebookSearch').value='';$('#notebookChapter').value='';state.wrongPage=1;renderNotebook();};
  if($('#browseNotebookBank'))$('#browseNotebookBank').onclick=()=>switchView('bank');
 }
+$('#notebookSubjects').onclick=event=>{const button=event.target.closest('[data-notebook-subject]');if(!button||!SUBJECT[button.dataset.notebookSubject])return;state.notebookSubject=button.dataset.notebookSubject;state.notebookStatus='wrong';selectSubject(state.notebookSubject);};
+$('#notebookBack').onclick=()=>{state.notebookSubject=null;renderNotebook();};
+$('#notebookStatusTabs').onclick=event=>{const button=event.target.closest('[data-notebook-status]');if(!button)return;state.notebookStatus=button.dataset.notebookStatus;state.wrongPage=1;$('#notebookChapter').value='';renderNotebook();};
 $('#notebookSearch').oninput=()=>{state.wrongPage=1;renderNotebook();};
 $('#notebookChapter').onchange=()=>{state.wrongPage=1;renderNotebook();};
 $('#notebookPractice').onclick=()=>{
@@ -150,9 +177,10 @@ $('#notebookPractice').onclick=()=>{
  $('#avoidDone').checked=false;$('#paperTitle').value=SUBJECT[state.subject]+' · 错题再练';
  renderChapters();renderBank();switchView('bank');smartInfo();$('#smartDialog').showModal();
 };
-function switchView(view){state.view=view;document.body.dataset.view=view;$$('.view').forEach(x=>x.classList.add('hidden'));$('#'+view+'View').classList.remove('hidden');$$('.nav').forEach(b=>b.classList.toggle('active',b.dataset.view===view));$('#basket').classList.toggle('study-hidden',view==='study');if(view==='papers')renderPapers();if(view==='history')renderHistory();if(view==='notebook')renderNotebook();}
+function switchView(view){if(view==='notebook')state.notebookSubject=null;state.view=view;document.body.dataset.view=view;$$('.view').forEach(x=>x.classList.add('hidden'));$('#'+view+'View').classList.remove('hidden');$$('.nav').forEach(b=>b.classList.toggle('active',b.dataset.view===view));$('#basket').classList.toggle('study-hidden',view==='study');if(view==='papers')renderPapers();if(view==='history')renderHistory();if(view==='notebook')renderNotebook();}
 $$('.nav').forEach(b=>b.onclick=()=>switchView(b.dataset.view));
-$$('[data-subject]').forEach(b=>b.onclick=()=>{drafts[state.subject]={basket:[...state.basket],title:state.title,minutes:state.minutes,target:state.target};state.subject=b.dataset.subject;Object.assign(state,{basket:[],title:'',minutes:90,target:undefined},drafts[state.subject]||{});state.chapters.clear();state.page=1;state.paperPage=1;state.wrongPage=1;$('#notebookSearch').value='';$('#notebookChapter').value='';state.unmapped=false;$$('[data-subject]').forEach(x=>x.classList.toggle('selected',x===b));activateSubject(state.subject);updateBasket();if(state.view==='papers')renderPapers();if(state.view==='history')renderHistory();if(state.view==='notebook')renderNotebook();});
+function selectSubject(subject){drafts[state.subject]={basket:[...state.basket],title:state.title,minutes:state.minutes,target:state.target};state.subject=subject;Object.assign(state,{basket:[],title:'',minutes:90,target:undefined},drafts[state.subject]||{});state.chapters.clear();state.page=1;state.paperPage=1;state.wrongPage=1;$('#notebookSearch').value='';$('#notebookChapter').value='';state.unmapped=false;$$('[data-subject]').forEach(x=>x.classList.toggle('selected',x.dataset.subject===subject));activateSubject(state.subject);updateBasket();if(state.view==='papers')renderPapers();if(state.view==='history')renderHistory();if(state.view==='notebook')renderNotebook();}
+$$('[data-subject]').forEach(b=>b.onclick=()=>selectSubject(b.dataset.subject));
 ['level','year','difficulty','onlyWrong','excludeDone'].forEach(id=>$('#'+id).onchange=()=>{state.page=1;renderBank();});$$('.boards input[value]').forEach(x=>x.onchange=()=>{state.page=1;refreshYears();renderBank();});let searchTimer;$('#search').oninput=()=>{clearTimeout(searchTimer);searchTimer=setTimeout(()=>{state.page=1;renderBank();},180);};$('#paperSearch').oninput=()=>{state.paperPage=1;renderPapers();};
 $('#clearChapters').onclick=()=>{state.chapters.clear();state.unmapped=false;renderChapters();renderBank();};$('#unmappedBtn').onclick=()=>{state.unmapped=!state.unmapped;state.chapters.clear();state.page=1;renderChapters();renderBank();};$('#clearBasket').onclick=()=>{state.basket=[];updateBasket();renderBank();};
 
@@ -221,7 +249,7 @@ $('#exportPaper').onclick=()=>download('chapter-lab-paper.json',{format:'chapter
 $('#savePaper').onclick=()=>{saved.papers.unshift({id:Date.now().toString(36),title:$('#previewTitle').textContent,minutes:state.minutes,subject:state.subject,ids:previewQuestions.map(q=>q.id),date:new Date().toISOString()});persist();toast('已保存到「我的练习」。');};
 function renderHistory(){const rows=saved.papers.filter(p=>p.subject===state.subject);const wrong=Object.entries(saved.practice).filter(([id,status])=>status==='wrong'&&QM.get(id)?.subject===state.subject).length;$('#historyList').innerHTML=`<div class="info-box">${SUBJECT[state.subject]}：已记录 ${Object.keys(saved.practice).filter(id=>QM.get(id)?.subject===state.subject).length} 道练习，其中 ${wrong} 道错题。可打开「错题本」集中复习、查看答案或按错题组卷。</div>`+rows.map(p=>`<div class="history-row"><div><strong>${esc(p.title)}</strong><small>${p.ids.filter(id=>QM.has(id)).length} 道 · ${p.minutes} 分钟 · ${new Date(p.date).toLocaleDateString('zh-CN',{timeZone:'Asia/Shanghai'})}</small></div><div class="row-links"><button data-history="${esc(p.id)}">继续练习 →</button><button data-delete="${esc(p.id)}">删除</button></div></div>`).join('')+(rows.length?'':'<div class="empty-state"><strong>留下一份练习记录</strong>在练习卷预览中点击「保存练习」，下次可以接着做。</div>');$$('[data-history]').forEach(b=>b.onclick=()=>{const p=saved.papers.find(p=>p.id===b.dataset.history);state.basket=p.ids.filter(id=>QM.has(id));state.title=p.title;state.minutes=p.minutes;delete state.target;updateBasket();openPreview();});$$('[data-delete]').forEach(b=>b.onclick=()=>{saved.papers=saved.papers.filter(p=>p.id!==b.dataset.delete);persist();renderHistory();});}
 $('#backupBtn').onclick=()=>download('chapter-lab-backup.json',{format:'chapterlab-backup-v1',...saved});
-$('#restoreInput').onchange=async e=>{try{const f=e.target.files[0];if(!f)return;if(f.size>5e6)throw Error();const data=JSON.parse(await f.text());if(data.format!=='chapterlab-backup-v1'||!Array.isArray(data.papers)||typeof data.practice!=='object'||typeof data.overrides!=='object')throw Error();const referenced=new Set(data.papers.map(p=>p.subject).filter(subject=>SUBJECT[subject]));for(const id of [...Object.keys(data.practice),...Object.keys(data.overrides)])for(const subject of Object.keys(SUBJECT))if(id.includes('-'+subject+'-'))referenced.add(subject);toast('正在载入备份涉及的题库…');await loadSubjects([...referenced]);for(const [id,v] of Object.entries(data.practice))if(QM.has(id)&&['correct','wrong'].includes(v))saved.practice[id]=v;for(const [id,ids] of Object.entries(data.overrides))if(QM.has(id)&&Array.isArray(ids))saved.overrides[id]=ids.filter(c=>CH.has(c)&&CH.get(c).subject===QM.get(id).subject);const safe=data.papers.filter(p=>typeof p.title==='string'&&typeof p.id==='string'&&Array.isArray(p.ids)&&Number.isFinite(p.minutes)&&SUBJECT[p.subject]&&Number.isFinite(Date.parse(p.date))).map(p=>({...p,ids:p.ids.filter(id=>QM.has(id))}));const have=new Set(saved.papers.map(p=>p.id));saved.papers.push(...safe.filter(p=>!have.has(p.id)));persist();syncPractice();renderHistory();renderChapters();renderBank();if(state.view==='notebook')renderNotebook();toast('备份已合并到当前浏览器。');}catch{toast('文件不是有效的 Chapter Lab 备份。');}e.target.value='';};
+$('#restoreInput').onchange=async e=>{try{const f=e.target.files[0];if(!f)return;if(f.size>5e6)throw Error();const data=JSON.parse(await f.text());if(data.format!=='chapterlab-backup-v1'||!Array.isArray(data.papers)||typeof data.practice!=='object'||typeof data.overrides!=='object')throw Error();const referenced=new Set(data.papers.map(p=>p.subject).filter(subject=>SUBJECT[subject]));for(const id of [...Object.keys(data.practice),...Object.keys(data.overrides)])for(const subject of Object.keys(SUBJECT))if(id.includes('-'+subject+'-'))referenced.add(subject);toast('正在载入备份涉及的题库…');await loadSubjects([...referenced]);for(const [id,v] of Object.entries(data.practice))if(QM.has(id)&&['correct','wrong'].includes(v))saved.practice[id]=v;for(const [id,ids] of Object.entries(data.overrides))if(QM.has(id)&&Array.isArray(ids))saved.overrides[id]=ids.filter(c=>CH.has(c)&&CH.get(c).subject===QM.get(id).subject);const safe=data.papers.filter(p=>typeof p.title==='string'&&typeof p.id==='string'&&Array.isArray(p.ids)&&Number.isFinite(p.minutes)&&SUBJECT[p.subject]&&Number.isFinite(Date.parse(p.date))).map(p=>({...p,ids:p.ids.filter(id=>QM.has(id))}));const have=new Set(saved.papers.map(p=>p.id));saved.papers.push(...safe.filter(p=>!have.has(p.id)));notebookModel.restore(saved,data,notebookSubjectFor);persist();syncPractice();renderHistory();renderChapters();renderBank();if(state.view==='notebook')renderNotebook();toast('备份已合并到当前浏览器。');}catch{toast('文件不是有效的 Chapter Lab 备份。');}e.target.value='';};
 function coverageTable(){
  const rows=Object.keys(BOARD).map(board=>{
   const entries=Object.values(DB.subjectIndex).map(subject=>subject.byBoard[board]).filter(Boolean);
