@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-06T04:25:16.117Z",
+  "updatedAt": "2026-11-06T07:18:09.708Z",
   "accounts": {
     "612458061e97d2d838f1ef94616bc9b82dacb85bbbdb261dd0fb6350a4c364b7": [
       {
@@ -85,6 +85,7 @@
   },
   "access": {
     "disabledAccounts": [
+      "d2e92222f829d656f12d8e78559ccabc0dae1f4dff6f1196aa3ad0256545b947",
       "f6032a9627390da2a6be1a910b2e1a170bd2f55320716764e8b7a521f9605db2"
     ],
     "revokedCredentials": [
