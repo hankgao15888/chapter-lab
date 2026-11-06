@@ -16,7 +16,7 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function (root) {
   'use strict';
 
-  const VERSION = '1.9.0';
+  const VERSION = '1.10.0';
   const ACCOUNTS_KEY = 'chapterlab-device-accounts-v1';
   const SESSION_KEY = 'chapterlab-student-session-v1';
   const ACCESS_CACHE_KEY = 'chapterlab-access-controls-v1';
@@ -410,6 +410,10 @@
       document.body.classList.remove('auth-booting');
       document.body.classList.add('auth-ready');
       if (boot) boot.classList.add('hidden');
+      accountNameHash(name).then(nameHash => {
+        const session = JSON.parse(browserStorage('sessionStorage')?.getItem(SESSION_KEY) || 'null');
+        return root.ChapterLabLoginActivity?.report(name, nameHash, session);
+      }).catch(() => {});
     }).catch(error => {
       document.body.classList.remove('auth-booting');
       document.body.classList.add('auth-locked');

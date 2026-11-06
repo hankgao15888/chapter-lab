@@ -24,14 +24,16 @@ jobs:
           node-version: 22
       - name: Archive account verification records
         run: node scripts/sync-account-index.mjs
+      - name: Archive encrypted login activity
+        run: node scripts/sync-login-events.mjs
       - name: Commit changes
         run: |
-          if git diff --quiet -- docs/accounts-index.json; then
+          if git diff --quiet -- docs/accounts-index.json docs/login-events.json; then
             echo "Account index is unchanged."
             exit 0
           fi
           git config user.name "chapter-lab-account-bot"
           git config user.email "chapter-lab-account-bot@users.noreply.github.com"
-          git add docs/accounts-index.json
+          git add docs/accounts-index.json docs/login-events.json
           git commit -m "Sync cross-device account index"
           git push
