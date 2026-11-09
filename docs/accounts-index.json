@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-08T14:30:40.153Z",
+  "updatedAt": "2026-11-09T09:42:10.679Z",
   "accounts": {
     "612458061e97d2d838f1ef94616bc9b82dacb85bbbdb261dd0fb6350a4c364b7": [
       {
@@ -130,6 +130,16 @@
         "hash": "xR0QZy/n6NaKUSVI14N3f/U9+DGkJJt1R9Dy1kXWaMQ=",
         "iterations": 310000,
         "createdAt": "2026-11-08T12:08:38.876Z"
+      }
+    ],
+    "e5612032170c781593bd8b4ed4256833b5cb1c5ca28eac271b573de48eed20ae": [
+      {
+        "version": 1,
+        "nameHash": "e5612032170c781593bd8b4ed4256833b5cb1c5ca28eac271b573de48eed20ae",
+        "salt": "bREAu1ujZ1/cXcbArS2syA==",
+        "hash": "yvyucW0nSuHAjeP0r8bu52I2Hnp2xUnjFvLkC0lw3Jg=",
+        "iterations": 310000,
+        "createdAt": "2026-11-09T05:10:16.614Z"
       }
     ]
   },
