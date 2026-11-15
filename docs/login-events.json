@@ -240,6 +240,14 @@
       "id": "1ede342d-ab67-49a7-84ae-f0c6f105e371",
       "at": "2026-11-13T04:10:07.654Z",
       "ciphertext": "GP3TpfNwG7sIjFZdOFCb/p49vztZ8u14K3KhKtKWOGvXRx9xWq8SGDQ9j0Oa9IaknWvNSB1klodyfYuLflkEVTnv6/DXc4cXSBwLHYLrDVSXIhd15v8NGadLYDCoCYyTSkNZvNWscz4XZK8Hp50XvJN+1AFpAhQo6kOzUIjSQDFNLjJ1Uwhlli4b2SRgXRDkkgHdxLXH2/VFSqH8t0PbaB36rpSDCQTQQFF6b4ui139tWwlihOmgRPxDk8R8fReIwUhz3e4Yvsx0dO8GaCUXmea2z8qAQgyAD3O3t0VKbdzyCAkij3ds3PzR+oKWV7z7yNdkpycwrIgbehi6WEwtsKpKxaMv1TFjcYDuxw/wZJkEpwim3o1HHyxE+/G5NnGsx8y3Ac//WTdCBx3LL0hsiyf48FFHdfd7OjbAWtJz70/gMxr6C+xK9vGgu/ogl9xoV/ykUFdgBZEHpKs2XpmjlUjODWlqB6mv3vR4RLxgLh8gl0sZRh6vjjSq6OgbNx2PZ9U5LtXi+gegmTFe/+0gWc5XFrt/G24RxLRkTxt44TpaEZZS0kb6yn6wEBp+MfWWGidsLrfl5iKWEJGCZljK91Xf+rjrhX5uPz9Yl28WtMVIp86sAFxmTgqv8bEt4yqv0mXUmhGKPTFUGFewcbNJelXNQsHoPkMGw/4UaqhuKJk="
+    },
+    {
+      "version": 1,
+      "kind": "encrypted-login",
+      "keyId": "ff6d6a257b03791c806277fb650a20d83180fe842263366872be54b8d11b8263",
+      "id": "446e24f9-4903-4aa7-a0c3-627ce891ae42",
+      "at": "2026-11-15T12:04:46.709Z",
+      "ciphertext": "VvH1i43ARbjDF/g/fyh4twfxEMUFJqUBGxJxp6WlD9pkTpDjCmB+FqY/22B40G/bIg6vOXN7EpxbSWtKm3yOo7yQ0pRx6mSwp3CC0wvfZXQ6kukEM/VT22N26hsJuJu/PlgcwFMAdOvslDGQKpM+Xt1Cn+eCGp41RlbTAqdfgZ1kj59n/JRM2HtZQsrDK2xI6kBNZeIseMYNK1fhBnAxpuxbT65SEynQVZV0vPJv911NcCuBU1V47Weh0iGfsErez3ofd0/IJR1z9OPf5GYwQYRrLY1UzJyNIRo8wVrMK9Q+jE8VT1hIbbnJX+kxiHkHys45svhvyQDq11IAnOllPNh+myskMfs2q4ppMiLg4E17g7vw2LTaBfymX30YAY/YhxPopVeqBjgai2pR26e+GWfjnnsKY96T7mMOZq0Tkmjxt6Eeh9FLqETy/ovqtNoldPC/VEV7rfq8jeNjSoO5mKJf2fcDcEWsbCu4FRuq7ktLG0+SG0tEaTyo/MiWAKRi3Ee+1RR1mF1iZx78xYZ8Yl/PbdG8ehMXEHJ8as0lh8eaWOA+A0rwpkZlYm+A5ZME6RCLuOJwVy1bFKxPgileZpj62OH00kleXY0j8Hf5na2GnWi8Tw6x1yjxcRI9DIjeldYGeyltBuGEt30iTazQ9dKT8AFLfp6US0ZigR+m5RY="
     }
   ]
 }
