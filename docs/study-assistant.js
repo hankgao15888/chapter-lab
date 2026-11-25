@@ -109,11 +109,92 @@
  function moveWithinViewport(x,y,width,height,viewportWidth,viewportHeight){
   return {x:Math.max(8,Math.min(x,viewportWidth-width-8)),y:Math.max(8,Math.min(y,viewportHeight-height-8))};
  }
- function mount({subjectNames,boardNames,papers,lookupPath,getNotebook,openIndexed,openNotebookQuestion,showNotebook}){
+ const maxPetFileSize=5*1024*1024;
+ const maxGifSize=1024*1024;
+ function petImageType(bytes){
+  const ascii=(start,end)=>String.fromCharCode(...bytes.slice(start,end));
+  if(bytes[0]===137&&ascii(1,8)==='PNG\r\n\x1a\n')return 'png';
+  if(bytes[0]===255&&bytes[1]===216&&bytes[2]===255)return 'jpeg';
+  if(ascii(0,6)==='GIF87a'||ascii(0,6)==='GIF89a')return 'gif';
+  if(ascii(0,4)==='RIFF'&&ascii(8,12)==='WEBP')return 'webp';
+  return '';
+ }
+ async function preparePetPicture(file){
+  if(file.size>maxPetFileSize)throw new Error('图片不能超过 5 MB。');
+  const bytes=new Uint8Array(await file.slice(0,12).arrayBuffer());
+  const type=petImageType(bytes);
+  if(!type)throw new Error('请选择 PNG、JPG、WebP 或 GIF 图片。');
+  if(type==='gif'&&file.size>maxGifSize)throw new Error('GIF 不能超过 1 MB。');
+  const blob=new root.Blob([file],{type:`image/${type}`});
+  const url=root.URL.createObjectURL(blob);
+  try{
+   const image=new root.Image();
+   image.src=url;
+   try{await image.decode();}catch{throw new Error('这张图片无法读取，请换一张。');}
+   if(!image.naturalWidth||!image.naturalHeight||image.naturalWidth*image.naturalHeight>40000000){
+    throw new Error('图片的像素尺寸过大，请先缩小。');
+   }
+   if(type==='gif')return await new Promise((resolve,reject)=>{
+    const reader=new root.FileReader();
+    reader.onload=()=>resolve(reader.result);
+    reader.onerror=()=>reject(new Error('GIF 无法读取，请换一张。'));
+    reader.readAsDataURL(blob);
+   });
+   const scale=Math.min(1,256/Math.max(image.naturalWidth,image.naturalHeight));
+   const canvas=root.document.createElement('canvas');
+   canvas.width=Math.max(1,Math.round(image.naturalWidth*scale));
+   canvas.height=Math.max(1,Math.round(image.naturalHeight*scale));
+   const context=canvas.getContext('2d');
+   if(!context)throw new Error('浏览器无法处理这张图片。');
+   context.drawImage(image,0,0,canvas.width,canvas.height);
+   return canvas.toDataURL('image/png');
+  }finally{root.URL.revokeObjectURL(url);}
+ }
+ function mountPetPicture($,owner){
+  const key='chapterlab-pet-image-v1:'+owner;
+  const fileInput=$('assistantPetFile'),custom=$('assistantPetPicture'),frog=$('assistantDefaultPet');
+  const feedback=$('assistantPetStatus'),reset=$('assistantResetPet');
+  function show(data){
+   const hasPicture=Boolean(data);
+   if(hasPicture)custom.src=data;
+   else custom.removeAttribute('src');
+   custom.hidden=!hasPicture;
+   frog.hidden=hasPicture;
+   reset.hidden=!hasPicture;
+  }
+  try{
+   const saved=root.localStorage.getItem(key);
+   if(/^data:image\/(?:png|gif);base64,[a-z0-9+/=]+$/i.test(saved||''))show(saved);
+  }catch{}
+  fileInput.onchange=async()=>{
+   const file=fileInput.files[0];
+   fileInput.value='';
+   if(!file)return;
+   fileInput.disabled=true;
+   reset.disabled=true;
+   feedback.textContent='正在读取图片…';
+   try{
+    const data=await preparePetPicture(file);
+    try{root.localStorage.setItem(key,data);}catch{throw new Error('浏览器无法保存图片，请检查空间或隐私设置。');}
+    show(data);
+    feedback.textContent='已换好桌宠图片。';
+   }catch(error){feedback.textContent=error.message||'无法导入这张图片。';}
+   finally{fileInput.disabled=false;reset.disabled=false;}
+  };
+  reset.onclick=()=>{
+   try{root.localStorage.removeItem(key);}
+   catch{feedback.textContent='无法恢复默认图片，请稍后重试。';return;}
+   show('');
+   feedback.textContent='已恢复默认桌宠。';
+   fileInput.focus({preventScroll:true});
+  };
+ }
+ function mount({subjectNames,boardNames,papers,lookupPath,getNotebook,openIndexed,openNotebookQuestion,showNotebook,owner=''}){
   const $=id=>root.document.getElementById(id);
   const widget=$('studyAssistant'),launch=$('assistantLaunch'),panel=$('assistantPanel'),handle=$('assistantTitle');
   const form=$('assistantSearch'),input=$('assistantQuery'),subject=$('assistantSubject'),status=$('assistantMastery');
   const notice=$('assistantStatus'),results=$('assistantResults'),more=$('assistantMore');
+  mountPetPicture($,owner);
   let mode='exam',lookupPromise,request=0,actions=[],visible=0,position=null,drag=null,suppressClick=false;
   const pageSize=12;
   for(const [id,label] of Object.entries(subjectNames)){
@@ -143,7 +224,10 @@
   }
   function setOpen(open){
    panel.hidden=!open;launch.setAttribute('aria-expanded',String(open));
-   if(open){layout();input.focus({preventScroll:true});}
+   if(open){
+    layout();
+    if(!root.matchMedia?.('(pointer: coarse)')?.matches)input.focus({preventScroll:true});
+   }
   }
   function resetResults(message=''){
    actions=[];visible=0;results.replaceChildren();more.hidden=true;notice.textContent=message;layout();
@@ -242,11 +326,12 @@
    if(!drag||event.pointerId!==drag.id)return;
    const dx=event.clientX-drag.x,dy=event.clientY-drag.y;
    if(!drag.moved&&Math.hypot(dx,dy)<6)return;
-   drag.moved=true;position={x:drag.left+dx,y:drag.top+dy};layout();
+   drag.moved=true;launch.classList.add('is-dragging');position={x:drag.left+dx,y:drag.top+dy};layout();
   }
   function endDrag(event){
    if(!drag||event.pointerId!==drag.id)return;
    suppressClick=drag.moved;
+   launch.classList.remove('is-dragging');
    drag=null;
    root.setTimeout(()=>{suppressClick=false;},0);
   }
@@ -268,6 +353,6 @@
   if(root.ResizeObserver)new root.ResizeObserver(layout).observe(panel);
   widget.hidden=false;
  }
- const api={parseLookup,paperMatches,numberMatches,searchPapers,moveWithinViewport,mount};
+ const api={parseLookup,paperMatches,numberMatches,searchPapers,moveWithinViewport,petImageType,mount};
  if(typeof module==='object'&&module.exports)module.exports=api;else root.ChapterLabAssistant=api;
 })(globalThis);

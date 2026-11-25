@@ -24,7 +24,7 @@ function app(storage,pdfRows=[]){
  const db={...catalog,questions:[...physics,chemistry],subjectIndex:{}};
  const context=vm.createContext({document,DB:db,console,Map,Set,URL,Blob,
   localStorage:{getItem:key=>storage[key]||null,setItem:(key,value)=>storage[key]=value},
-  ChapterLabAssistant:{...assistant,mount(options){assistantActions=options;}},ChapterLabNotebook:model,ChapterLabAuth:{isAuthenticated:()=>true},
+  ChapterLabAssistant:{...assistant,mount(options){assistantActions=options;}},ChapterLabNotebook:model,ChapterLabAuth:{isAuthenticated:()=>true,currentStudent:()=>'Student Alice',normalizeStudentName:name=>name.toLowerCase()},
   ChapterLabPDFLibrary:{create:options=>({renderHistory(){},openRecord(...ids){openedPDFs.push(ids);},entries:()=>pdfRows,questionCard:q=>`<article>${q.label}<button data-pdf-status="correct">我已掌握</button></article>`,handleAction:event=>{const q=pdfRows.find(q=>q.id===event.target.dataset.pdfId);if(q){q.notebookStatus=event.target.dataset.pdfStatus;options.onChange();}}})},
   ChapterLabCatalogLoader:{createCatalog:()=>({isLoaded:()=>true,loadMany:async subjects=>subjects.map(subject=>db.questions.filter(q=>q.subject===subject))})},
   ChapterLabCatalog:{availableYears:()=>[2026]},ChapterLabSelection:{selectPaper:()=>null},

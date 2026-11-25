@@ -395,6 +395,7 @@ async function assistantNotebook({subject,status,term}){
 }
 ChapterLabAssistant.mount({
  subjectNames:SUBJECT,boardNames:BOARD,papers:DB.papers,lookupPath:DB.questionLookup,
+ owner:ChapterLabAuth.normalizeStudentName(ChapterLabAuth.currentStudent()),
  getNotebook:assistantNotebook,openIndexed:openAssistantIndexed,
  openNotebookQuestion(question,isCurrent){
   if(!isCurrent())return false;
