@@ -51,3 +51,19 @@ assert.deepEqual(editBounds(crossPage.parts,30,70),[{page:2,top:.3,bottom:1},{pa
 assert.throws(()=>editBounds([{page:1,top:0,bottom:1}],80,20));assert.throws(()=>editBounds(crossPage.parts,-1,100));
 assert.equal(questionEntries([{id:'doc',title:'test',subject:'physics',questions:[crossPage,...split]}]).length,1);
 console.log('PDF question boundaries, cross-page splits, saved drafts and notebook membership passed.');
+
+const {rectangle,regionText,regionQuestion}=createRequire(import.meta.url)('../docs/pdf-library-core.js');
+assert.deepEqual(rectangle({x:.8,y:.7},{x:.1,y:.2}),{left:.1,right:.8,top:.2,bottom:.7});
+assert.deepEqual(rectangle({x:-1,y:-1},{x:2,y:2}),{left:0,right:1,top:0,bottom:1});
+assert.throws(()=>rectangle({x:.2,y:.2},{x:.201,y:.8}));assert.throws(()=>rectangle({x:NaN,y:0},{x:1,y:1}));
+const regionViewport={width:600,height:800,convertToViewportPoint:(x,y)=>[x,800-y]};
+const regionItems=[{str:'Calculate force',transform:[12,0,0,12,60,600],width:150,height:12},{str:'Explain wavelength',transform:[12,0,0,12,400,600],width:150,height:12},{str:'Neighbour below',transform:[12,0,0,12,60,300],width:150,height:12}];
+const regionTextResult=regionText(regionItems,regionViewport,{left:.05,right:.5,top:.1,bottom:.4});
+assert.equal(regionTextResult,'Calculate force','Only text from the selected column and vertical range enters classification');
+const regionDraft=regionQuestion({left:.05,right:.5,top:.1,bottom:.4},1,regionTextResult,'physics',[{id:'forces',subject:'physics',zh:'力',keywords:['force']}],'region-1');
+assert.deepEqual(regionDraft.chapters,['forces']);assert.equal(regionDraft.type,'calculation');assert.equal(regionDraft.parts[0].left,.05);assert.equal(regionDraft.savedAt,null);
+assert.equal(regionText([],regionViewport,regionDraft.parts[0]),'');
+assert.throws(()=>regionQuestion(regionDraft.parts[0],0,'','physics',[],'bad'));
+const rotated=regionText([{str:'Rotated force',transform:[12,0,0,12,100,300],width:100,height:12}],{width:800,height:600,convertToViewportPoint:(x,y)=>[y,x]},{left:.3,right:.5,top:.1,bottom:.4});
+assert.equal(rotated,'Rotated force');
+console.log('PDF rectangle normalization, column-isolated extraction, rotation, classification and empty scans passed.');

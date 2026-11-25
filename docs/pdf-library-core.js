@@ -111,9 +111,36 @@
   const draft={...question,reviewed:false,manual:true,savedAt:null,notebookStatus:null};
   return [{...draft,id:question.id,label:(question.label+'（上）').slice(0,30),parts:before},{...draft,id:newId,label:(question.label+'（下）').slice(0,30),parts:after}];
  }
+ function rectangle(start,end){
+  const clamp=value=>Math.max(0,Math.min(1,Number(value)));
+  const left=clamp(Math.min(start.x,end.x)),right=clamp(Math.max(start.x,end.x)),top=clamp(Math.min(start.y,end.y)),bottom=clamp(Math.max(start.y,end.y));
+  if(![left,right,top,bottom].every(Number.isFinite)||right-left<.01||bottom-top<.01)throw new Error('框选区域太小，请重新拖动框住完整题目。');
+  return {left,right,top,bottom};
+ }
+ function regionText(items,viewport,region){
+  const selected=[];
+  for(const item of items){
+   if(!item.str?.trim()||!Array.isArray(item.transform))continue;
+   const [a,b,c,d,x,y]=item.transform,along=Math.hypot(a,b)||1,up=Math.hypot(c,d)||1;
+   const width=Math.abs(item.width||item.str.length*(item.height||10)*.5),height=Math.abs(item.height||up);
+   const dx=a/along*width,dy=b/along*width,ux=c/up*height,uy=d/up*height;
+   const points=[[x,y],[x+dx,y+dy],[x+ux,y+uy],[x+dx+ux,y+dy+uy]].map(([px,py])=>viewport.convertToViewportPoint(px,py));
+   const left=Math.min(...points.map(p=>p[0]))/viewport.width,right=Math.max(...points.map(p=>p[0]))/viewport.width,top=Math.min(...points.map(p=>p[1]))/viewport.height,bottom=Math.max(...points.map(p=>p[1]))/viewport.height;
+   const cx=(left+right)/2,cy=(top+bottom)/2;
+   if(cx<region.left||cx>region.right||cy<region.top||cy>region.bottom)continue;
+   const baseline=viewport.convertToViewportPoint(x,y);
+   selected.push({...item,transform:[1,0,0,Math.max(1,(bottom-top)*viewport.height),baseline[0],viewport.height-baseline[1]],height:Math.max(1,(bottom-top)*viewport.height)});
+  }
+  return linesFromItems(selected,viewport.width,viewport.height).map(line=>line.text).join('\n').slice(0,20000);
+ }
+ function regionQuestion(region,page,text,subject,chapters,id){
+  region=rectangle({x:region.left,y:region.top},{x:region.right,y:region.bottom});
+  if(!Number.isInteger(page)||page<1)throw new Error('框选页码无效。');
+  return {id,label:'框选题目',number:null,parts:[{page,...region}],text:String(text||'').slice(0,20000),...classify(text,subject,chapters),type:questionType(text),reviewed:false,manual:true,savedAt:null,notebookStatus:null};
+ }
  function questionEntries(records){
   return records.flatMap(record=>record.questions.filter(q=>q.savedAt).map(q=>({...q,id:record.id+'::'+q.id,localPDF:true,documentId:record.id,questionId:q.id,subject:record.subject,title:record.title,autoSelectable:false,marks:null,number:q.label})));
  }
- const api={editBounds,splitQuestion,questionEntries,subjects,types,normalize,linesFromItems,classify,questionType,inferSubject,extractQuestions,validateEdit};
+ const api={rectangle,regionText,regionQuestion,editBounds,splitQuestion,questionEntries,subjects,types,normalize,linesFromItems,classify,questionType,inferSubject,extractQuestions,validateEdit};
  if(typeof module==='object'&&module.exports)module.exports=api;else root.ChapterLabPDFCore=api;
 })(globalThis);
