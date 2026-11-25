@@ -1,0 +1,14 @@
+{
+  "name": "chapter-lab-private-file-sync",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": { "deploy": "wrangler deploy" },
+  "devDependencies": { "wrangler": "4.158.0" },
+  "cloudflare": {
+    "bindings": {
+      "PRIVATE_FILES": { "description": "Chapter Lab 的私有 R2 存储桶。文件由浏览器加密后上传。" },
+      "SYNC_VAULTS": { "description": "粘贴 Chapter Lab「我的练习 → 文件同步 → 同步存储编号」里的 64 位编号。不要填写同步密钥或学员密码。多个编号用英文逗号分隔。" }
+    }
+  }
+}

@@ -2,7 +2,15 @@
 
 控制器在登录后的浏览器内生成并加密同步包。在部署配置云端前，用户可以通过「我的练习 → 文件同步」手动迁移 `.clsync` 文件。这个服务部署在独立的 Cloudflare Worker，使用私有 R2 bucket，当前 GitHub Pages 默认没有配置服务地址。
 
-## 启用云端
+## 用 Cloudflare 部署向导接入
+
+[打开 Cloudflare 部署向导](https://deploy.workers.cloudflare.com/?url=https%3A%2F%2Fgithub.com%2Fhankgao15888%2Fchapter-lab%2Ftree%2Fmain%2Ffile-sync-service)
+
+部署向导会在你授权的 Cloudflare 账号下部署同步服务并配置 R2。若提示开通 R2，先在 Cloudflare 确认订阅。存储桶的公开访问应保持关闭。
+
+在 Chapter Lab 的「我的练习 → 文件同步」生成或使用已有同步密钥，展开「同步存储编号」。仅把编号填入部署向导的 `SYNC_VAULTS`。若部署向导没有显示这个字段，可在 Worker 的「Settings → Variables and Secrets」中新增同名 Secret。部署后复制 Worker 的 `https://…workers.dev` 地址，填入站点的 `docs/file-sync-config.json` 并重新发布 GitHub Pages。
+
+## 命令行部署
 
 1. 在拥有部署权限的 Cloudflare 账号中启用 R2，创建名为 `chapter-lab-private-sync` 的 bucket。保持 bucket 的公开访问关闭。使用另一个名字时，同步修改 `wrangler.jsonc`。
 2. 在 Chapter Lab 登录需要同步的学员账号，生成或填入同步密钥。展开「同步存储编号」，复制编号。不要把同步密钥或登录密码传给管理员。
