@@ -114,8 +114,22 @@
  function rectangle(start,end){
   const clamp=value=>Math.max(0,Math.min(1,Number(value)));
   const left=clamp(Math.min(start.x,end.x)),right=clamp(Math.max(start.x,end.x)),top=clamp(Math.min(start.y,end.y)),bottom=clamp(Math.max(start.y,end.y));
-  if(![left,right,top,bottom].every(Number.isFinite)||right-left<.01||bottom-top<.01)throw new Error('框选区域太小，请重新拖动框住完整题目。');
+  if(![left,right,top,bottom].every(Number.isFinite)||right-left<.01-1e-9||bottom-top<.01-1e-9)throw new Error('框选区域太小，请重新拖动框住完整题目。');
   return {left,right,top,bottom};
+ }
+ function adjustRectangle(original,kind,start,end){
+  const min=.01,dx=end.x-start.x,dy=end.y-start.y,clamp=(n,lo,hi)=>Math.max(lo,Math.min(hi,n));
+  if(![dx,dy].every(Number.isFinite))throw new Error('选框位置无效。');
+  const r={...original};
+  if(kind==='move'){
+   const width=r.right-r.left,height=r.bottom-r.top;r.left=clamp(r.left+dx,0,1-width);r.top=clamp(r.top+dy,0,1-height);r.right=r.left+width;r.bottom=r.top+height;
+  }else{
+   if(kind.includes('w'))r.left=clamp(r.left+dx,0,r.right-min);
+   if(kind.includes('e'))r.right=clamp(r.right+dx,r.left+min,1);
+   if(kind.includes('n'))r.top=clamp(r.top+dy,0,r.bottom-min);
+   if(kind.includes('s'))r.bottom=clamp(r.bottom+dy,r.top+min,1);
+  }
+  return r;
  }
  function regionText(items,viewport,region){
   const selected=[];
@@ -141,6 +155,6 @@
  function questionEntries(records){
   return records.flatMap(record=>record.questions.filter(q=>q.savedAt).map(q=>({...q,id:record.id+'::'+q.id,localPDF:true,documentId:record.id,questionId:q.id,subject:record.subject,title:record.title,autoSelectable:false,marks:null,number:q.label})));
  }
- const api={rectangle,regionText,regionQuestion,editBounds,splitQuestion,questionEntries,subjects,types,normalize,linesFromItems,classify,questionType,inferSubject,extractQuestions,validateEdit};
+ const api={adjustRectangle,rectangle,regionText,regionQuestion,editBounds,splitQuestion,questionEntries,subjects,types,normalize,linesFromItems,classify,questionType,inferSubject,extractQuestions,validateEdit};
  if(typeof module==='object'&&module.exports)module.exports=api;else root.ChapterLabPDFCore=api;
 })(globalThis);

@@ -67,3 +67,13 @@ assert.throws(()=>regionQuestion(regionDraft.parts[0],0,'','physics',[],'bad'));
 const rotated=regionText([{str:'Rotated force',transform:[12,0,0,12,100,300],width:100,height:12}],{width:800,height:600,convertToViewportPoint:(x,y)=>[y,x]},{left:.3,right:.5,top:.1,bottom:.4});
 assert.equal(rotated,'Rotated force');
 console.log('PDF rectangle normalization, column-isolated extraction, rotation, classification and empty scans passed.');
+
+const {adjustRectangle}=createRequire(import.meta.url)('../docs/pdf-library-core.js');
+const screenshot={left:.2,right:.6,top:.3,bottom:.7};
+assert.deepEqual(adjustRectangle(screenshot,'se',{x:.6,y:.7},{x:.9,y:.9}),{left:.2,right:.9,top:.3,bottom:.9});
+const moved=adjustRectangle(screenshot,'move',{x:.3,y:.4},{x:1,y:1});assert.equal(moved.right,1);assert.equal(moved.bottom,1);assert(Math.abs(moved.right-moved.left-.4)<1e-8);
+for(const direction of ['n','ne','e','se','s','sw','w','nw']){
+ const r=adjustRectangle(screenshot,direction,{x:.5,y:.5},{x:-2,y:3});assert(r.left>=0&&r.right<=1&&r.top>=0&&r.bottom<=1);assert(r.right-r.left>=.01-1e-9&&r.bottom-r.top>=.01-1e-9);
+ rectangle({x:r.left,y:r.top},{x:r.right,y:r.bottom});
+}
+console.log('Screenshot selection: eight resize handles, bounded movement, minimum size and normalized crop passed.');

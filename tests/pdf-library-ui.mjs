@@ -72,25 +72,35 @@ await ui.library.importFiles([new File(['%PDF-1.7'],'second.pdf')]);assert.equal
 await ui.library.openRecord(id,'q1');
 const countBeforeRegion=records.get(id).questions.length;
 const pointer=(x,y)=>({clientX:10+x*600,clientY:20+y*800,pointerId:1,button:0,isPrimary:true,preventDefault(){}});
+async function enableRegion(){if(ui.el('#pdfRegionMode')['aria-pressed']!=='true')await ui.el('#pdfRegionMode').onclick();}
 async function drag(start={x:.05,y:.15},end={x:.8,y:.4}){
  ui.el('#pdfPageFrame').onpointerdown(pointer(start.x,start.y));ui.el('#pdfPageFrame').onpointermove(pointer(end.x,end.y));await ui.el('#pdfPageFrame').onpointerup(pointer(end.x,end.y));
 }
-ui.el('#pdfRegionMode').onclick();await drag();
+await enableRegion();await drag();
 assert.equal(ui.el('#pdfRegionReview').hidden,false);assert(ui.el('#pdfRegionText').value.includes('force'));assert.equal(ui.el('#pdfRegionType').value,'calculation');assert(ui.el('#pdfRegionChapters').innerHTML.includes('selected'));
 ui.el('#pdfCancelRegion').onclick();assert.equal(ui.el('#pdfRegionReview').hidden,true);assert.equal(records.get(id).questions.length,countBeforeRegion,'Cancel leaves all original questions untouched');
-await drag({x:.8,y:.4},{x:.05,y:.15});ui.el('#pdfRegionLabel').value='My selected region';ui.el('#pdfRegionChapters').selectedOptions=[{value:'physics-waves'}];ui.el('#pdfRegionType').value='explanation';
+await drag({x:.8,y:.4},{x:.05,y:.15});const handleEvent=(x,y,direction)=>({...pointer(x,y),target:{closest:selector=>selector==='[data-region-handle]'?{dataset:{regionHandle:direction}}:selector==='#pdfRegionBox'?{}:null}});
+ui.el('#pdfPageFrame').onpointerdown(handleEvent(.8,.4,'se'));ui.el('#pdfPageFrame').onpointermove(handleEvent(.9,.5,'se'));await ui.el('#pdfPageFrame').onpointerup(handleEvent(.9,.5,'se'));
+assert.equal(ui.el('#pdfRegionBox').style.width,'85%');
+const moveEvent=(x,y)=>({...pointer(x,y),target:{closest:selector=>selector==='#pdfRegionBox'?{}:null}});
+ui.el('#pdfPageFrame').onpointerdown(moveEvent(.5,.3));ui.el('#pdfPageFrame').onpointermove(moveEvent(.55,.35));await ui.el('#pdfPageFrame').onpointerup(moveEvent(.55,.35));
+assert(Math.abs(parseFloat(ui.el('#pdfRegionBox').style.left)-10)<1e-8);
+ui.el('#pdfRegionLabel').value='My selected region';ui.el('#pdfRegionChapters').selectedOptions=[{value:'physics-waves'}];ui.el('#pdfRegionType').value='explanation';
 const normalUpdate=storage.update;storage.update=async()=>{throw Error('region save blocked');};
 await ui.el('#pdfConfirmRegion').onclick();assert.equal(records.get(id).questions.length,countBeforeRegion);assert.equal(ui.el('#pdfRegionReview').hidden,false,'Failed confirmation retains editable preview');storage.update=normalUpdate;
 await ui.el('#pdfConfirmRegion').onclick();
 const regionId=records.get(id).questions.at(-1).id,region=records.get(id).questions.at(-1);
-assert.equal(region.label,'My selected region');assert.equal(region.chapters[0],'physics-waves');assert.equal(region.type,'explanation');assert.equal(region.savedAt,null);assert.equal(region.parts[0].left,.05);assert.equal(region.parts[0].right,.8);
+assert.equal(region.label,'My selected region');assert.equal(region.chapters[0],'physics-waves');assert.equal(region.type,'explanation');assert.equal(region.savedAt,null);assert(Math.abs(region.parts[0].left-.1)<1e-8);assert(Math.abs(region.parts[0].right-.95)<1e-8);
 ui.el('#pdfQuestionType').value='explanation';ui.el('#pdfQuestionChapters').selectedOptions=[{value:'physics-waves'}];ui.el('#pdfSaveToNotebook').checked=true;
 await ui.el('#pdfSaveQuestion').onclick();await ui.library.openRecord(id,regionId);
-assert.equal(ui.el('#pdfQuestionHighlight').style.left,'5%');assert(Math.abs(parseFloat(ui.el('#pdfQuestionHighlight').style.right)-20)<1e-8);assert.equal(records.get(id).questions.at(-1).notebookStatus,'wrong');
-ui.el('#pdfRegionMode').onclick();await drag();
+assert(Math.abs(parseFloat(ui.el('#pdfQuestionHighlight').style.left)-10)<1e-8);assert(Math.abs(parseFloat(ui.el('#pdfQuestionHighlight').style.right)-5)<1e-8);assert.equal(ui.el('#pdfCropView').hidden,false);assert.equal(ui.el('#pdfCanvasHost').hidden,true);assert(ui.el('#pdfCropCanvas').width>1);assert.equal(records.get(id).questions.at(-1).notebookStatus,'wrong');
+const countBeforeEdit=records.get(id).questions.length;
+await ui.el('#pdfEditCrop').onclick();assert.equal(ui.el('#pdfRegionLabel').value,'My selected region');
+await ui.el('#pdfConfirmRegion').onclick();assert.equal(records.get(id).questions.length,countBeforeEdit);assert.equal(records.get(id).questions.find(q=>q.id===regionId).notebookStatus,'wrong');
+await enableRegion();await drag();
 await ui.el('#pdfViewerDialog').dispatch('keydown',{key:'Escape',preventDefault(){}});assert.equal(ui.el('#pdfRegionReview').hidden,true);assert.equal(ui.el('#pdfRegionMode')['aria-pressed'],'false');
-ui.el('#pdfRegionMode').onclick();await drag();await ui.el('#pdfPageNext').onclick();assert.equal(ui.el('#pdfRegionReview').hidden,true,'Changing page cancels stale selection');
-await ui.library.openRecord(id,regionId);ui.el('#pdfRegionMode').onclick();
+await enableRegion();await drag();await ui.el('#pdfPageNext').onclick();assert.equal(ui.el('#pdfRegionReview').hidden,true,'Changing page cancels stale selection');
+await ui.library.openRecord(id,regionId);await enableRegion();
 let resolveText;pendingText=new Promise(resolve=>resolveText=resolve);
 const pendingDrag=drag();await Promise.resolve();await Promise.resolve();ui.el('#pdfCancelRegion').onclick();resolveText({items:[]});await pendingDrag;pendingText=null;
 assert.equal(ui.el('#pdfRegionReview').hidden,true,'Late text results must not revive cancelled selection');
