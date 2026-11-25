@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="登录 Chapter Lab 后，按 OxfordAQA 官方单元筛选物理、数学、进阶数学、化学、生物与经济真题，跨考试局生成章节练习卷，并在公共聊天自习室交流。"><title>Chapter Lab · 学员登录</title><link rel="stylesheet" href="style.css?v=1.22.0"><link rel="stylesheet" href="study-room.css?v=1.22.0"><link rel="stylesheet" href="auth.css?v=1.22.0"><link rel="stylesheet" href="notebook.css?v=1.22.0"><link rel="stylesheet" href="pdf-library.css?v=1.22.0"><link rel="stylesheet" href="study-assistant.css?v=1.22.0"></head>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="登录 Chapter Lab 后，按 OxfordAQA 官方单元筛选物理、数学、进阶数学、化学、生物与经济真题，跨考试局生成章节练习卷，并在公共聊天自习室交流。"><title>Chapter Lab · 学员登录</title><link rel="stylesheet" href="style.css?v=1.23.0"><link rel="stylesheet" href="study-room.css?v=1.23.0"><link rel="stylesheet" href="auth.css?v=1.23.0"><link rel="stylesheet" href="notebook.css?v=1.23.0"><link rel="stylesheet" href="pdf-library.css?v=1.23.0"><link rel="stylesheet" href="study-assistant.css?v=1.23.0"></head>
 <body class="auth-locked">
 <section id="authGate" class="auth-gate" aria-labelledby="authHeadline">
 <div class="auth-visual">
@@ -86,6 +86,7 @@
   <button class="close" type="button" data-close="fileSyncDialog" aria-label="关闭文件同步">×</button>
   <h2 id="fileSyncTitle">文件同步</h2>
   <p>将原 PDF、截题、章节分类、本地错题状态和答案附件一起带到另一台设备。</p>
+  <p id="fileSyncStatus" role="status" aria-live="polite"></p>
   <section class="file-sync-section" aria-labelledby="fileSyncKeyTitle">
    <h3 id="fileSyncKeyTitle">同步密钥</h3>
    <label for="fileSyncCode">在新设备使用原来的密钥</label>
@@ -93,20 +94,32 @@
    <div class="file-sync-actions"><button id="fileSyncNew" class="quiet" type="button">生成新密钥</button><button id="fileSyncUse" class="quiet" type="button">使用此密钥</button><button id="fileSyncReveal" class="text-button" type="button">显示密钥</button><button id="fileSyncCopy" class="text-button" type="button">复制密钥</button></div>
    <p class="pdf-local-note">请妥善保管密钥。另一台设备需登录同一学员名，再使用同一密钥。</p>
   </section>
+  <label for="fileSyncDocument" class="pdf-local-note">要保存的 PDF</label>
+  <select id="fileSyncDocument"><option value="">全部 PDF</option></select>
+  <section class="file-sync-section" aria-labelledby="fileSyncFolderTitle">
+   <h3 id="fileSyncFolderTitle">坚果云同步文件夹</h3>
+   <p id="fileSyncFolderState" class="pdf-local-note">正在检查浏览器支持…</p>
+   <div class="file-sync-actions">
+    <button id="fileSyncFolderPick" class="quiet" type="button" disabled>选择坚果云文件夹</button>
+    <button id="fileSyncFolderSave" class="primary" type="button" disabled>保存到文件夹</button>
+    <button id="fileSyncFolderRefresh" class="text-button" type="button" disabled>刷新列表</button>
+   </div>
+   <label for="fileSyncFolderPackage">要恢复的同步包</label>
+   <select id="fileSyncFolderPackage"><option value="">最新同步包</option></select>
+   <button id="fileSyncFolderRestore" class="quiet" type="button" disabled>从文件夹恢复</button>
+   <p class="pdf-local-note">请选已经设为「同步到本地」的坚果云文件夹。保存后由坚果云客户端同步。手机可从坚果云的 <b>Chapter Lab Sync</b> 文件夹下载加密包，再在下方导入。</p>
+  </section>
   <section class="file-sync-section" aria-labelledby="fileSyncBundleTitle">
    <h3 id="fileSyncBundleTitle">加密同步包</h3>
-   <label for="fileSyncDocument">导出的范围</label>
-   <select id="fileSyncDocument"><option value="">全部 PDF</option></select>
    <div class="file-sync-actions"><button id="fileSyncExport" class="primary" type="button" disabled>导出同步包</button><label class="button pdf-answer-picker file-sync-picker">导入同步包<input id="fileSyncImport" type="file" accept=".clsync,application/octet-stream" disabled></label></div>
    <p class="pdf-local-note">将 .clsync 文件传到新设备后导入。每个包最大 80 MB。不同版本会保留为副本。</p>
   </section>
-  <section class="file-sync-section" aria-labelledby="fileSyncCloudTitle">
-   <h3 id="fileSyncCloudTitle">私有云端</h3>
+  <details class="file-sync-section">
+   <summary>私有云端（可选）</summary>
    <p id="fileSyncCloudState" class="pdf-local-note">正在读取配置…</p>
    <div class="file-sync-actions"><button id="fileSyncPush" class="quiet" type="button" disabled>上传全部 PDF</button><button id="fileSyncPull" class="quiet" type="button" disabled>下载到此设备</button></div>
    <details class="pdf-local-note"><summary>同步存储编号</summary><code id="fileSyncVault"></code></details>
-  </section>
-  <p id="fileSyncStatus" role="status" aria-live="polite"></p>
+  </details>
  </div>
 </dialog>
 <dialog id="pdfAnswerDialog" aria-labelledby="pdfAnswerTitle">
@@ -170,5 +183,5 @@
   <div id="assistantQuestionContent"></div>
  </div>
 </dialog>
-<div id="toast" role="status"></div><div id="printArea"></div><script src="login-activity.js?v=1.22.0"></script><script src="auth.js?v=1.22.0"></script>
+<div id="toast" role="status"></div><div id="printArea"></div><script src="login-activity.js?v=1.23.0"></script><script src="auth.js?v=1.23.0"></script>
 </body></html>

@@ -79,3 +79,6 @@
 .file-sync-actions button:disabled{opacity:.46;cursor:default}
 #fileSyncDialog #fileSyncStatus{color:var(--ink);font-weight:600;overflow-wrap:anywhere}
 @media(max-width:650px){#fileSyncDialog .dialog-shell{padding:20px 14px}}
+.file-sync-section #fileSyncFolderPackage{box-sizing:border-box;width:100%;margin:4px 0 8px;padding:8px 10px;border:1px solid var(--line);border-radius:7px;background:white}
+#fileSyncFolderState{overflow-wrap:anywhere}
+#fileSyncDialog #fileSyncStatus{position:sticky;top:0;z-index:1;padding:8px 10px;background:#eef3e6;border-radius:7px}

@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 import {createRequire} from 'node:module';
 import worker from '../file-sync-service/worker.mjs';
-const require=createRequire(import.meta.url),core=require('../docs/file-sync-core.js');
+const require=createRequire(import.meta.url),core=require('../docs/file-sync-core.js'),folderAPI=require('../docs/file-sync-folder.js');
 const owner='b'.repeat(64),other='c'.repeat(64);
 const code=core.newCode(),keys=await core.keys(code,owner);
 assert(core.validCode(code));assert.notEqual(keys.vault,(await core.keys(code,other)).vault);
@@ -67,20 +67,23 @@ for(const match of fs.readFileSync(new URL('../docs/file-sync.js',import.meta.ur
 console.log('File sync: complete encrypted round trips, changed snapshots, wrong students/keys, tamper detection, private storage authentication and conditional updates passed.');
 
 // Two independent browser profiles: export on device one and recover using device two.
-function device(initial){
+function device(initial,folder=null){
  const data=new Map(initial.map(item=>[item.metadata.id,structuredClone(item)]));
  const storage=new Map(),controls=new Map(),downloads=[];
+ let remembered=null;
  function control(id){
   if(!controls.has(id))controls.set(id,{value:'',options:[],append(option){this.options.push(option);},replaceChildren(){this.options=[];},addEventListener(){},showModal(){this.open=true;}});
   return controls.get(id);
  }
- const context=vm.createContext({ChapterLabFileSyncCore:core,document:{getElementById:control,createElement:()=>({})},
+ const context=vm.createContext({ChapterLabFileSyncCore:core,ChapterLabSyncFolder:folderAPI,showDirectoryPicker:folder?async()=>folder:undefined,document:{getElementById:control,createElement:()=>({})},
   AbortSignal,location:{hostname:'example.test'},fetch:async()=>({ok:true,json:async()=>({endpoint:''})}),
   localStorage:{getItem:key=>storage.get(key),setItem:(key,value)=>storage.set(key,value)},confirm:()=>true});
  vm.runInContext(fs.readFileSync(new URL('../docs/file-sync.js',import.meta.url),'utf8'),context);
  context.ChapterLabFileSync.create({owner:async()=>owner,store:{
   async list(){return [...data.values()].map(item=>item.metadata);},
   async snapshot(owner,id){return data.get(id);},
+  async setSyncDirectory(owner,handle){remembered=handle;},
+  async getSyncDirectory(){return remembered;},
   async restore(owner,item){if(data.has(item.metadata.id))return false;data.set(item.metadata.id,item);return true;}
  },download:(blob,name)=>downloads.push({blob,name}),onRestored(){}});
  return {control,downloads,data};
@@ -104,3 +107,55 @@ assert.match(target.control('fileSyncStatus').textContent,/已导入 1 份/);
 assert.deepEqual(target.data.get(id).metadata.questions,record.metadata.questions);
 assert.equal(target.data.get(id).answers[0].filename,'answer.png');
 console.log('Two browser profiles can move an encrypted file bundle without a cloud endpoint.');
+
+function virtualDirectory(name){
+ const children=new Map();
+ const missing=()=>Object.assign(Error('Not found'),{name:'NotFoundError'});
+ return {name,kind:'directory',children,async queryPermission(){return 'granted';},async requestPermission(){return 'granted';},
+  async *entries(){yield* children;},
+  async getDirectoryHandle(child,{create=false}={}){
+   if(!children.has(child)&&!create)throw missing();
+   if(!children.has(child))children.set(child,virtualDirectory(child));
+   return children.get(child);
+  },
+  async getFileHandle(child,{create=false}={}){
+   if(!children.has(child)&&!create)throw missing();
+   if(!children.has(child)){
+    let contents=new Blob([]);
+    children.set(child,{kind:'file',async getFile(){return contents;},async createWritable(){
+     let pending;
+     return {async write(blob){pending=blob;},async close(){contents=pending;},async abort(){pending=null;}};
+    }});
+   }
+   return children.get(child);
+  },async removeEntry(child){children.delete(child);}
+ };
+}
+const synced=virtualDirectory('我的坚果云'),one=device([record],synced),two=device([],synced);
+await one.control('fileSyncOpen').onclick();
+await one.control('fileSyncFolderPick').onclick();
+assert.match(one.control('fileSyncFolderState').textContent,/我的坚果云/);
+one.control('fileSyncCode').value=code;
+await one.control('fileSyncUse').onclick();
+await one.control('fileSyncFolderSave').onclick();
+assert.match(one.control('fileSyncStatus').textContent,/已写入/);
+await one.control('fileSyncFolderSave').onclick();
+assert.equal((await folderAPI.list(synced,keys.vault)).length,2,'Each save produces a distinct encrypted snapshot');
+assert.equal((await folderAPI.list(synced,(await core.keys(code,other)).vault)).length,0);
+assert.equal(synced.children.size,1,'Only the Chapter Lab subfolder is written');
+one.control('fileSyncDialog').open=false;
+await one.control('fileSyncOpen').onclick();
+assert.match(one.control('fileSyncFolderState').textContent,/我的坚果云/);
+await two.control('fileSyncOpen').onclick();
+two.control('fileSyncCode').value=code;
+await two.control('fileSyncUse').onclick();
+await two.control('fileSyncFolderPick').onclick();
+assert.equal(two.control('fileSyncFolderPackage').options.length,3);
+await two.control('fileSyncFolderRestore').onclick();
+assert.match(two.control('fileSyncStatus').textContent,/已导入 1 份/);
+assert.equal(two.data.get(id).answers[0].filename,'answer.png');
+assert.deepEqual(two.data.get(id).metadata.questions,record.metadata.questions);
+await two.control('fileSyncFolderRestore').onclick();
+assert.match(two.control('fileSyncStatus').textContent,/跳过 1 份/);
+assert.match(target.control('fileSyncFolderState').textContent,/下载/);
+console.log('Nutstore folder workflow: independent browser profiles save and restore encrypted screenshots and answers; remembered folder and mobile fallback passed.');

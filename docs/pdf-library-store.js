@@ -64,6 +64,18 @@
     };
    });
   }
+  const syncDirectoryKey=owner=>'file-sync-directory:v1:'+owner;
+  async function getSyncDirectory(owner){
+   return transaction(['files'],'readonly',tx=>{
+    const request=tx.objectStore('files').get(syncDirectoryKey(owner));
+    return ()=>request.result?.directory??null;
+   });
+  }
+  async function setSyncDirectory(owner,directory){
+   return transaction(['files'],'readwrite',tx=>{
+    tx.objectStore('files').put({id:syncDirectoryKey(owner),directory});
+   });
+  }
   async function snapshot(owner,documentId){
    return transaction(['documents','files'],'readonly',tx=>{
     const files=tx.objectStore('files');
@@ -124,7 +136,7 @@
     };
    });
   }
-  return {list,get,save,update,remove,getAnswer,setAnswer,snapshot,restore};
+  return {list,get,save,update,remove,getAnswer,setAnswer,snapshot,restore,getSyncDirectory,setSyncDirectory};
  }
  const api={create};if(typeof module==='object'&&module.exports)module.exports=api;else root.ChapterLabPDFStore=api;
 })(globalThis);

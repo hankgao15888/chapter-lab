@@ -5,6 +5,10 @@
   const dialog=$('fileSyncDialog'),status=$('fileSyncStatus'),keyInput=$('fileSyncCode');
   const select=$('fileSyncDocument'),importInput=$('fileSyncImport');
   const upload=$('fileSyncPush'),pull=$('fileSyncPull');
+  const folderAPI=root.ChapterLabSyncFolder;
+  const hasFolderPicker=typeof root.showDirectoryPicker==='function'&&Boolean(folderAPI);
+  const folderSelect=$('fileSyncFolderPackage');
+  let directory=null,folderFiles=[];
   const controls=['fileSyncNew','fileSyncUse','fileSyncReveal','fileSyncCopy','fileSyncExport'];
   let account,settings={},endpoint='',cryptoKeys=null,busy=false;
 
@@ -22,12 +26,19 @@
    upload.disabled=busy||!endpoint||!cryptoKeys||select.options.length<2;
    pull.disabled=busy||!endpoint||!cryptoKeys;
    $('fileSyncVault').textContent=cryptoKeys?.vault||'请先设置同步密钥。';
+   $('fileSyncFolderPick').disabled=busy||!hasFolderPicker;
+   $('fileSyncFolderSave').disabled=busy||!directory||!cryptoKeys||select.options.length<2;
+   $('fileSyncFolderRefresh').disabled=busy||!directory||!cryptoKeys;
+   $('fileSyncFolderRestore').disabled=busy||!directory||!cryptoKeys;
+   folderSelect.disabled=busy||!folderFiles.length;
+   $('fileSyncFolderState').textContent=directory?`已选择「${directory.name}」`:
+    hasFolderPicker?'选择坚果云已经同步到本地的文件夹。':'当前浏览器不能直接连接电脑文件夹。可下载坚果云里的 .clsync 文件后导入。';
   }
   async function task(message,work){
    if(busy)return;
    busy=true;updateControls();status.textContent=message;
    try{await work();}
-   catch(error){status.textContent=error.message||'同步未完成，请稍后重试。';}
+   catch(error){status.textContent=error.name==='AbortError'?'已取消选择。':error.message||'同步未完成，请稍后重试。';}
    finally{busy=false;updateControls();}
   }
   async function listFiles(){
@@ -66,6 +77,7 @@
    writeSettings(settings.code===code?settings:{code});
    cryptoKeys=derived;
    keyInput.value=code;
+   await refreshWithSavedPermission();
    return true;
   }
   $('fileSyncOpen').onclick=()=>{
@@ -74,11 +86,16 @@
    keyInput.type='password';$('fileSyncReveal').textContent='显示密钥';
    return task('正在读取同步设置…',async()=>{
     account=await owner();
-    settings={};cryptoKeys=null;endpoint='';
+    settings={};cryptoKeys=null;endpoint='';directory=null;
+    setFolderFiles([]);
     try{settings=JSON.parse(root.localStorage.getItem('chapterlab-file-sync-v1:'+account)||'{}')||{};}catch{}
     keyInput.value=core.validCode(settings.code||'')?settings.code:'';
     if(keyInput.value)cryptoKeys=await core.keys(keyInput.value,account);
     await listFiles();
+    if(hasFolderPicker){
+     try{directory=await store.getSyncDirectory?.(account)||null;}catch{}
+     await refreshWithSavedPermission();
+    }
     try{
      const response=await root.fetch('file-sync-config.json',{cache:'no-store',signal:AbortSignal.timeout(5000)});
      if(response.ok){
@@ -121,6 +138,65 @@
     status.textContent=await restorePack(file);await reloadViews();
    });
   };
+  function setFolderFiles(files){
+   const prior=folderSelect.value;
+   folderFiles=files;
+   folderSelect.replaceChildren();
+   const latest=root.document.createElement('option');latest.value='';latest.textContent='最新同步包';folderSelect.append(latest);
+   for(const file of folderFiles){
+    const option=root.document.createElement('option');
+    option.value=file.name;
+    const date=new Date(file.createdAt).toLocaleString('zh-CN',{hour12:false});
+    option.textContent=`${date} · ${file.name.slice(-19,-7)}`;
+    folderSelect.append(option);
+   }
+   folderSelect.value=files.some(file=>file.name===prior)?prior:'';
+  }
+  async function refreshWithSavedPermission(){
+   setFolderFiles([]);
+   if(!directory||!cryptoKeys)return;
+   try{
+    if(await directory.queryPermission({mode:'read'})==='granted')setFolderFiles(await folderAPI.list(directory,cryptoKeys.vault));
+   }catch{}
+  }
+  async function folderPermission(mode){
+   if(!directory)throw Error('请先选择坚果云同步文件夹。');
+   const options={mode};
+   if(await directory.requestPermission(options)!=='granted')throw Error('未获得文件夹权限，请重新选择坚果云文件夹。');
+  }
+  $('fileSyncFolderPick').onclick=()=>task('请选择坚果云同步文件夹…',async()=>{
+   const selected=await root.showDirectoryPicker({id:'chapter-lab-nutstore',mode:'readwrite'});
+   directory=selected;
+   let remembered=true;
+   try{await store.setSyncDirectory(account,selected);}catch{remembered=false;}
+   await refreshWithSavedPermission();
+   status.textContent=remembered?'已选择文件夹。写入后，坚果云客户端会负责同步。':'已为本次打开选择文件夹。下次打开可能需要重新选择。';
+  });
+  $('fileSyncFolderSave').onclick=()=>task('正在加密并保存到坚果云文件夹…',async()=>{
+   if(!cryptoKeys)throw Error('请先设置同步密钥。');
+   await folderPermission('readwrite');
+   const encrypted=await makePack(select.value);
+   await folderAPI.write(directory,cryptoKeys.vault,encrypted);
+   await refreshWithSavedPermission();
+   status.textContent='已写入 Chapter Lab Sync 文件夹。请等坚果云客户端显示同步完成。';
+  });
+  $('fileSyncFolderRefresh').onclick=()=>task('正在读取坚果云文件夹…',async()=>{
+   if(!cryptoKeys)throw Error('请先设置同步密钥。');
+   await folderPermission('read');
+   setFolderFiles(await folderAPI.list(directory,cryptoKeys.vault));
+   status.textContent=folderFiles.length?`找到 ${folderFiles.length} 个同步包。`:'还没有找到同步包。等坚果云同步完成后再试。';
+  });
+  $('fileSyncFolderRestore').onclick=()=>task('正在读取并解密同步包…',async()=>{
+   if(!cryptoKeys)throw Error('请先设置同步密钥。');
+   const requested=folderSelect.value;
+   await folderPermission('read');
+   setFolderFiles(await folderAPI.list(directory,cryptoKeys.vault));
+   const file=requested?folderFiles.find(item=>item.name===requested):folderFiles[0];
+   if(!file)throw Error(requested?'选中的同步包已不在文件夹中，请重新选择。':'还没有找到可恢复的同步包。请核对密钥并等待坚果云同步完成。');
+   const blob=await file.handle.getFile();
+   if(blob.size<40)throw Error('同步包还未下载完整，请等坚果云同步完成后重试。');
+   status.textContent=await restorePack(blob);await reloadViews();
+  });
   function cloudRequest(method,options={}){
    const {headers={},...rest}=options;
    return root.fetch(endpoint,{method,cache:'no-store',signal:AbortSignal.timeout(120000),...rest,
