@@ -43,7 +43,8 @@ saved.notebook=notebookModel.migrate(saved,notebookSubjectFor);
 let state={subject:'physics',view:'bank',notebookSubject:null,notebookStatus:'wrong',chapters:new Set(),basket:[],page:1,paperPage:1,wrongPage:1,unmapped:false,title:'',minutes:90};
 let previewQuestions=[];
 const drafts={};
-const pdfLibrary=ChapterLabPDFLibrary.create({chapters:DB.chapters,getOwner:()=>ChapterLabAuth.currentStudent(),getSubject:()=>state.subject,toast,onImported:()=>switchView('history')});
+const pdfLibrary=ChapterLabPDFLibrary.create({chapters:DB.chapters,getOwner:()=>ChapterLabAuth.currentStudent(),getSubject:()=>state.subject,toast,onImported:()=>switchView('history'),onChange:()=>{syncPractice();if(state.view==='notebook')renderNotebook();}});
+pdfLibrary.refresh?.().catch(error=>toast(error.message));
 const qCh=q=>(saved.overrides[q.id]??q.chapters).filter(id=>CH.has(id));
 const total=qs=>qs.reduce((s,q)=>s+(q.marks||0),0);
 function persist(){try{localStorage.setItem('chapterlab-v1',JSON.stringify(saved));return true;}catch{toast('浏览器未能保存记录，请导出备份。');return false;}}
@@ -51,7 +52,7 @@ let toastTimer;function toast(t){$('#toast').textContent=t;$('#toast').style.dis
 function badge(board){return `<span class="badge ${board==='cie-international'?'cie':board==='edexcel-ial'?'edexcel':''}">${BOARD[board]}</span>`;}
 function wrongButton(q){const active=Boolean(saved.notebook[q.id]);return `<button type="button" class="wrong-toggle ${active?'is-wrong':''}" data-wrong-id="${esc(q.id)}" aria-pressed="${active}">${active?'✓ 已收录 · 移出错题':'＋ 收录错题'}</button>`;}
 function syncPractice(){
- const count=Object.values(saved.practice).filter(status=>status==='wrong').length;
+ const count=Object.values(saved.practice).filter(status=>status==='wrong').length+(pdfLibrary.entries?.()||[]).filter(q=>q.notebookStatus==='wrong').length;
  $('#notebookCount').textContent=count>99?'99+':String(count);
  $('#notebookCount').hidden=!count;
  $('#notebookNav').setAttribute('aria-label',`错题本，共 ${count} 道错题`);
@@ -107,7 +108,7 @@ function pagination(page,count,type){return `<div class="pagination"><button dat
 document.addEventListener('click',e=>{const b=e.target.closest('[data-page]');if(!b)return;if(b.dataset.type==='question'){state.page=Number(b.dataset.page);renderBank();$('.results-head').scrollIntoView({behavior:'smooth',block:'start'});}else if(b.dataset.type==='notebook'){state.wrongPage=Number(b.dataset.page);renderNotebook();$('#notebookView').scrollIntoView({behavior:'smooth',block:'start'});}else{state.paperPage=Number(b.dataset.page);renderPapers();$('#papersView').scrollIntoView({behavior:'smooth'});}});
 function updateBasket(){state.basket=state.basket.filter(id=>QM.has(id));$$('.question-card [data-action="add"]').forEach(button=>{const el=button.closest('[data-id]'),q=QM.get(el.dataset.id);if(!q||q.autoSelectable===false||q.withdrawn)return;const added=state.basket.includes(q.id);button.classList.toggle('added',added);button.textContent=added?'✓ 已加入':'＋ 加入练习卷';});const qs=state.basket.map(id=>QM.get(id)),unknown=qs.filter(q=>!q.marks).length;$('#basketCount').textContent=`${qs.length} 道题`;$('#basketMarks').textContent=qs.length?`${total(qs)} 分${unknown?` + ${unknown} 道待核分`:''} · 约 ${state.minutes} 分钟`:'从题库加入，或智能生成';}
 function renderPapers(){const term=$('#paperSearch').value.trim().toLowerCase();const rows=DB.papers.filter(p=>p.subject===state.subject&&`${p.title} ${p.unit} ${BOARD[p.board]} ${p.year}`.toLowerCase().includes(term));const count=Math.max(1,Math.ceil(rows.length/25));state.paperPage=Math.min(count,state.paperPage);$('#paperList').innerHTML=rows.slice((state.paperPage-1)*25,state.paperPage*25).map(p=>`<div class="archive-row">${badge(p.board)}<div><strong>${esc(p.title)}</strong><small>${esc(p.unit)} · ${SUBJECT[p.subject]}</small></div>${DB.importedPapers.includes(p.id)?'<span class="tag">已拆题</span>':`<span class="tag">${esc(DB.coverage?.unavailable?.find(item=>item.id===p.id)?.reason||'暂未拆题')}</span>`}<div class="row-links"><a href="${p.qp}" target="_blank" rel="noopener">试题原卷 ↗</a>${p.ms?`<a href="${p.ms}" target="_blank" rel="noopener">评分标准 ↗</a>`:'<span>暂无答案链接</span>'}</div></div>`).join('')||'<div class="empty-state">没有匹配的试卷。</div>';$('#paperPagination').innerHTML=pagination(state.paperPage,count,'paper');}
-function notebookQuestions(){return [...QM.values()].filter(q=>q.subject===state.notebookSubject&&notebookModel.includes(saved,q.id,state.notebookStatus));}
+function notebookQuestions(){return [...QM.values()].filter(q=>q.subject===state.notebookSubject&&notebookModel.includes(saved,q.id,state.notebookStatus)).concat((pdfLibrary.entries?.()||[]).filter(q=>q.subject===state.notebookSubject&&q.notebookStatus===state.notebookStatus));}
 function notebookPool(){
  const chapter=$('#notebookChapter').value,term=$('#notebookSearch').value.trim().toLowerCase();
  return notebookQuestions().filter(q=>{
@@ -119,6 +120,7 @@ function notebookPool(){
 }
 function renderNotebook(){
  const summary=notebookModel.summary(saved),subject=state.notebookSubject;
+ for(const q of pdfLibrary.entries?.()||[]){if(['wrong','correct'].includes(q.notebookStatus)){summary[q.subject][q.notebookStatus]++;summary[q.subject].total++;}}
  $('#notebookHome').classList.toggle('hidden',Boolean(subject));
  $('#notebookDetail').classList.toggle('hidden',!subject);
  if(!subject){
@@ -141,7 +143,7 @@ function renderNotebook(){
  $('#notebookPractice').textContent='按待掌握错题组卷 →';
  $('#notebookTitle').textContent=SUBJECT[state.subject]+'错题本';
  $('#notebookSubjectLabel').textContent='道'+SUBJECT[state.subject]+'收录题目';
- if(!catalog.isLoaded(state.subject)){
+ if(!catalog.isLoaded(state.subject)&&!(pdfLibrary.entries?.()||[]).some(q=>q.subject===subject&&q.notebookStatus===state.notebookStatus)){
   const error=subjectErrors.has(state.subject);
   $('#notebookTotal').textContent='—';$('#notebookResultCount').textContent=error?'题库暂未加载':'正在载入错题对应的题库…';
   $('#notebookPractice').disabled=true;
@@ -158,9 +160,10 @@ function renderNotebook(){
  $('#notebookTotal').textContent=String(stats.total);
  $('#notebookResultCount').textContent=`${SUBJECT[subject]} · ${mastered?'已掌握':'待掌握'} ${all.length} 道 · 当前筛选 ${qs.length} 道`;
  $('#notebookPractice').disabled=mastered||!qs.some(q=>!q.withdrawn&&q.autoSelectable!==false&&q.marks&&qCh(q).length);
- $('#notebookList').innerHTML=qs.slice((state.wrongPage-1)*12,state.wrongPage*12).map(q=>`<section class="notebook-entry">${card(q)}<div class="notebook-review-actions"><span>${mastered?'已掌握的题目会保留在这里。':'这道题现在掌握了吗？'}</span><button type="button" class="${mastered?'quiet':'primary'}" data-question-id="${esc(q.id)}" data-notebook-result="${mastered?'wrong':'correct'}">${mastered?'↺ 仍需复习，移回待掌握':'✓ 我已掌握'}</button></div></section>`).join('')||(all.length?'<div class="empty-state"><strong>当前筛选没有题目</strong>试试其他章节或搜索词。<br><button class="quiet" id="resetNotebookFilters">清除筛选</button></div>':`<div class="empty-state"><span class="notebook-empty-mark" aria-hidden="true">${mastered?'✓':'↺'}</span><strong>${mastered?'还没有已掌握的'+SUBJECT[subject]+'错题':'暂时没有待掌握的'+SUBJECT[subject]+'错题'}</strong>${mastered?'在「待掌握」中点击「我已掌握」，题目就会保留在这里。':'在题库或练习卷中点击「收录错题」，就能按科目接着练。'}<br><button class="quiet" id="browseNotebookBank">去题库选题 →</button></div>`);
+ $('#notebookList').innerHTML=qs.slice((state.wrongPage-1)*12,state.wrongPage*12).map(q=>`<section class="notebook-entry">${q.localPDF?pdfLibrary.questionCard(q,true):card(q)}${q.localPDF?'':`<div class="notebook-review-actions"><span>${mastered?'已掌握的题目会保留在这里。':'这道题现在掌握了吗？'}</span><button type="button" class="${mastered?'quiet':'primary'}" data-question-id="${esc(q.id)}" data-notebook-result="${mastered?'wrong':'correct'}">${mastered?'↺ 仍需复习，移回待掌握':'✓ 我已掌握'}</button></div>`}</section>`).join('')||(all.length?'<div class="empty-state"><strong>当前筛选没有题目</strong>试试其他章节或搜索词。<br><button class="quiet" id="resetNotebookFilters">清除筛选</button></div>':`<div class="empty-state"><span class="notebook-empty-mark" aria-hidden="true">${mastered?'✓':'↺'}</span><strong>${mastered?'还没有已掌握的'+SUBJECT[subject]+'错题':'暂时没有待掌握的'+SUBJECT[subject]+'错题'}</strong>${mastered?'在「待掌握」中点击「我已掌握」，题目就会保留在这里。':'在题库或练习卷中点击「收录错题」，就能按科目接着练。'}<br><button class="quiet" id="browseNotebookBank">去题库选题 →</button></div>`);
  $('#notebookPagination').innerHTML=qs.length?pagination(state.wrongPage,pages,'notebook'):'';
  bindCards('#notebookList');
+ $('#notebookList').onclick=event=>pdfLibrary.handleAction?.(event);
  if($('#resetNotebookFilters'))$('#resetNotebookFilters').onclick=()=>{$('#notebookSearch').value='';$('#notebookChapter').value='';state.wrongPage=1;renderNotebook();};
  if($('#browseNotebookBank'))$('#browseNotebookBank').onclick=()=>switchView('bank');
 }

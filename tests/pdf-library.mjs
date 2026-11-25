@@ -39,3 +39,15 @@ assert(questions.every(q=>q.parts.every(p=>p.bottom>p.top&&p.top>=0&&p.bottom<=1
 const store=require('../docs/pdf-library-store.js').create(null);
 await assert.rejects(store.list('owner'),/本地 PDF 存储/);
 console.log('PDF text layout, multi-page splitting, chapter/type suggestions, scan fallback and validated edits passed.');
+
+const {splitQuestion,editBounds,questionEntries}=createRequire(import.meta.url)('../docs/pdf-library-core.js');
+const crossPage={id:'x',label:'Q1',text:'Original math text',savedAt:'2026-11-25',notebookStatus:'correct',parts:[{page:2,top:.2,bottom:1},{page:3,top:0,bottom:.8}],chapters:[]};
+const split=splitQuestion(crossPage,3,40,'new');
+assert.equal(split[0].parts.length,2);assert.equal(split[0].parts[1].bottom,.4);assert.equal(split[1].parts[0].top,.4);assert.equal(split[1].parts[0].bottom,.8);
+assert.equal(split[0].notebookStatus,null);assert.equal(split[1].savedAt,null);assert.equal(crossPage.notebookStatus,'correct');
+assert.throws(()=>splitQuestion(crossPage,1,50,'new'));assert.throws(()=>splitQuestion(crossPage,2,20,'new'));assert.throws(()=>splitQuestion(crossPage,3,80,'new'));
+assert.equal(splitQuestion(crossPage,3,0,'new')[0].parts.length,1);
+assert.deepEqual(editBounds(crossPage.parts,30,70),[{page:2,top:.3,bottom:1},{page:3,top:0,bottom:.7}]);
+assert.throws(()=>editBounds([{page:1,top:0,bottom:1}],80,20));assert.throws(()=>editBounds(crossPage.parts,-1,100));
+assert.equal(questionEntries([{id:'doc',title:'test',subject:'physics',questions:[crossPage,...split]}]).length,1);
+console.log('PDF question boundaries, cross-page splits, saved drafts and notebook membership passed.');

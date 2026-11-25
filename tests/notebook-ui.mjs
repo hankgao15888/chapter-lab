@@ -6,7 +6,7 @@ const require=createRequire(import.meta.url),model=require('../docs/notebook-sta
 const catalog=JSON.parse(fs.readFileSync(new URL('../data/catalog.json',import.meta.url),'utf8'));
 const physics=catalog.questions.filter(q=>q.subject==='physics').slice(0,3);
 const chemistry=catalog.questions.find(q=>q.subject==='chemistry');
-function app(storage){
+function app(storage,pdfRows=[]){
  const elements=new Map(),clicks=[];
  function element(selector){
   if(!elements.has(selector)){
@@ -24,7 +24,7 @@ function app(storage){
  const context=vm.createContext({document,DB:db,console,Map,Set,URL,Blob,
   localStorage:{getItem:key=>storage[key]||null,setItem:(key,value)=>storage[key]=value},
   ChapterLabNotebook:model,ChapterLabAuth:{isAuthenticated:()=>true},
-  ChapterLabPDFLibrary:{create:()=>({renderHistory(){}})},
+  ChapterLabPDFLibrary:{create:options=>({renderHistory(){},entries:()=>pdfRows,questionCard:q=>`<article>${q.label}<button data-pdf-status="correct">我已掌握</button></article>`,handleAction:event=>{const q=pdfRows.find(q=>q.id===event.target.dataset.pdfId);if(q){q.notebookStatus=event.target.dataset.pdfStatus;options.onChange();}}})},
   ChapterLabCatalogLoader:{createCatalog:()=>({isLoaded:()=>true,loadMany:async subjects=>subjects.map(subject=>db.questions.filter(q=>q.subject===subject))})},
   ChapterLabCatalog:{availableYears:()=>[2026]},ChapterLabSelection:{selectPaper:()=>null},
   ChapterLabAnswers:{create:()=>({content:()=>'',state:()=>({}),load:async()=>{}})},
@@ -65,3 +65,11 @@ assert.equal(ui.element('#notebookPendingCount').textContent,'0');
 assert(ui.element('#notebookList').innerHTML.includes('暂时没有待掌握'));
 ui.home();assert.equal((ui.element('#notebookSubjects').innerHTML.match(/data-notebook-subject=/g)||[]).length,6);
 console.log('Notebook app events: subject home, isolated lists, mark/revisit, refresh persistence and empty subjects passed.');
+
+const local={id:'local-pdf-id',questionId:'q1',documentId:'file',label:'Imported force exercise',text:'local force question',number:'Q1',title:'My PDF',localPDF:true,subject:'physics',chapters:[physics[0].chapters[0]],notebookStatus:'wrong',autoSelectable:false};
+const localUI=app({},[local]);await localUI.settle();localUI.home();assert.equal(localUI.element('#notebookTotal').textContent,'1');
+localUI.subject('physics');await localUI.settle();assert.equal(localUI.element('#notebookPendingCount').textContent,'1');assert(localUI.element('#notebookList').innerHTML.includes(local.label));
+assert.equal(localUI.element('#notebookPractice').disabled,true,'Local questions without marks must not enter smart paper selection');
+localUI.element('#notebookList').onclick({target:{dataset:{pdfId:local.id,pdfStatus:'correct'}}});localUI.tab('correct');assert(localUI.element('#notebookList').innerHTML.includes(local.label));assert.equal(localUI.element('#notebookMasteredCount').textContent,'1');
+localUI.element('#notebookList').onclick({target:{dataset:{pdfId:local.id,pdfStatus:null}}});assert(!localUI.element('#notebookList').innerHTML.includes(local.label));
+console.log('Imported PDF notebook subjects, saved cards, mastered status and removal passed.');

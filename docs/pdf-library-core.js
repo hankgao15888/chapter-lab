@@ -92,6 +92,28 @@
   for(let page=first;page<=last;page++)parts.push({page,top:0,bottom:1});
   return {label:number,number:null,parts,text:String(input.text||'').slice(0,20000),chapters:selected,type:types[input.type]?input.type:'other',reviewed:true,manual:true};
  }
- const api={subjects,types,normalize,linesFromItems,classify,questionType,inferSubject,extractQuestions,validateEdit};
+ function editBounds(parts,top,bottom){
+  top=Number(top)/100;bottom=Number(bottom)/100;
+  if(!Number.isFinite(top)||!Number.isFinite(bottom)||top<0||top>=1||bottom<=0||bottom>1||(parts.length===1&&bottom<=top))throw new Error('题目边界需在 0–100% 内，结束位置必须晚于起始位置。');
+  return parts.map((part,index)=>({...part,top:index===0?top:part.top,bottom:index===parts.length-1?bottom:part.bottom}));
+ }
+ function splitQuestion(question,page,position,newId){
+  page=Number(page);position=Number(position)/100;
+  const part=question.parts.find(part=>part.page===page);
+  if(!part||!Number.isFinite(position)||position<part.top||position>part.bottom)throw new Error('请在当前题目高亮范围内选择拆分位置。');
+  const before=[],after=[];
+  for(const item of question.parts){
+   if(item.page<page)before.push({...item});
+   else if(item.page>page)after.push({...item});
+   else {if(position>item.top+.001)before.push({...item,bottom:position});if(position<item.bottom-.001)after.push({...item,top:position});}
+  }
+  if(!before.length||!after.length)throw new Error('拆分后两道题都必须包含内容，请调整位置。');
+  const draft={...question,reviewed:false,manual:true,savedAt:null,notebookStatus:null};
+  return [{...draft,id:question.id,label:(question.label+'（上）').slice(0,30),parts:before},{...draft,id:newId,label:(question.label+'（下）').slice(0,30),parts:after}];
+ }
+ function questionEntries(records){
+  return records.flatMap(record=>record.questions.filter(q=>q.savedAt).map(q=>({...q,id:record.id+'::'+q.id,localPDF:true,documentId:record.id,questionId:q.id,subject:record.subject,title:record.title,autoSelectable:false,marks:null,number:q.label})));
+ }
+ const api={editBounds,splitQuestion,questionEntries,subjects,types,normalize,linesFromItems,classify,questionType,inferSubject,extractQuestions,validateEdit};
  if(typeof module==='object'&&module.exports)module.exports=api;else root.ChapterLabPDFCore=api;
 })(globalThis);
