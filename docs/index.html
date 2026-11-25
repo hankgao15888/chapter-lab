@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="登录 Chapter Lab 后，按 OxfordAQA 官方单元筛选物理、数学、进阶数学、化学、生物与经济真题，跨考试局生成章节练习卷，并在公共聊天自习室交流。"><title>Chapter Lab · 学员登录</title><link rel="stylesheet" href="style.css?v=1.18.0"><link rel="stylesheet" href="study-room.css?v=1.18.0"><link rel="stylesheet" href="auth.css?v=1.18.0"><link rel="stylesheet" href="notebook.css?v=1.18.0"><link rel="stylesheet" href="pdf-library.css?v=1.18.0"></head>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="登录 Chapter Lab 后，按 OxfordAQA 官方单元筛选物理、数学、进阶数学、化学、生物与经济真题，跨考试局生成章节练习卷，并在公共聊天自习室交流。"><title>Chapter Lab · 学员登录</title><link rel="stylesheet" href="style.css?v=1.19.0"><link rel="stylesheet" href="study-room.css?v=1.19.0"><link rel="stylesheet" href="auth.css?v=1.19.0"><link rel="stylesheet" href="notebook.css?v=1.19.0"><link rel="stylesheet" href="pdf-library.css?v=1.19.0"><link rel="stylesheet" href="study-assistant.css?v=1.19.0"></head>
 <body class="auth-locked">
 <section id="authGate" class="auth-gate" aria-labelledby="authHeadline">
 <div class="auth-visual">
@@ -81,5 +81,32 @@
  <ol id="pdfStitchParts" aria-label="截图拼接顺序"></ol>
 </section>
 <div id="pdfPageToolbar" class="pdf-page-toolbar"><button id="pdfBackToCrop" class="quiet" type="button" hidden>← 返回题目截图</button><button id="pdfPagePrevious" class="quiet" type="button" aria-label="上一页 PDF">← 上一页</button><label>页码 <input id="pdfPageNumber" type="number" min="1" value="1" aria-label="PDF 页码"><span id="pdfPageTotal"></span></label><button id="pdfPageNext" class="quiet" type="button" aria-label="下一页 PDF">下一页 →</button><label>缩放<select id="pdfZoom"><option value="1">适合宽度</option><option value="1.25">125%</option><option value="1.5">150%</option></select></label></div><p id="pdfPageStatus" class="pdf-page-status" role="status" aria-live="polite"></p><section id="pdfCropView" hidden><div class="pdf-crop-heading"><strong id="pdfCropTitle">本题截图</strong><button id="pdfViewOriginal" type="button" class="primary">查看原试卷</button><button id="pdfCropDetails" type="button" class="quiet" aria-expanded="false" aria-controls="pdfQuestionEditor">编辑题目</button><label id="pdfCropPartPicker" hidden>调整片段 <select id="pdfCropPart"></select></label><button id="pdfEditCrop" type="button" class="quiet">重新框选 / 调整范围</button><button id="pdfDownloadCrop" type="button" class="quiet">下载题目截图</button></div><canvas id="pdfCropCanvas" aria-label="独立题目截图"></canvas></section><div id="pdfCanvasHost"><div id="pdfPageFrame"><canvas id="pdfCanvas" aria-label="PDF 原始页面"></canvas><div id="pdfQuestionHighlight" hidden aria-hidden="true"></div><div id="pdfSplitLine" hidden aria-hidden="true"></div><div id="pdfRegionBox" hidden><button type="button" class="pdf-region-handle handle-nw" data-region-handle="nw" aria-label="调整截图框左上角" title="拖动调整范围"></button><button type="button" class="pdf-region-handle handle-n" data-region-handle="n" aria-label="调整截图框上边" title="拖动调整范围"></button><button type="button" class="pdf-region-handle handle-ne" data-region-handle="ne" aria-label="调整截图框右上角" title="拖动调整范围"></button><button type="button" class="pdf-region-handle handle-e" data-region-handle="e" aria-label="调整截图框右边" title="拖动调整范围"></button><button type="button" class="pdf-region-handle handle-se" data-region-handle="se" aria-label="调整截图框右下角" title="拖动调整范围"></button><button type="button" class="pdf-region-handle handle-s" data-region-handle="s" aria-label="调整截图框下边" title="拖动调整范围"></button><button type="button" class="pdf-region-handle handle-sw" data-region-handle="sw" aria-label="调整截图框左下角" title="拖动调整范围"></button><button type="button" class="pdf-region-handle handle-w" data-region-handle="w" aria-label="调整截图框左边" title="拖动调整范围"></button></div></div></div></div></div></div></dialog>
-<div id="toast" role="status"></div><div id="printArea"></div><script src="login-activity.js?v=1.18.0"></script><script src="auth.js?v=1.18.0"></script>
+<div id="studyAssistant" hidden>
+ <button id="assistantLaunch" type="button" aria-expanded="false" aria-controls="assistantPanel" aria-label="学习助手，可拖动或用方向键移动"><span aria-hidden="true">⌖</span> 学习助手</button>
+ <section id="assistantPanel" aria-labelledby="assistantTitle" hidden>
+  <div class="assistant-heading"><h2 id="assistantTitle">学习助手</h2><button id="assistantClose" type="button" aria-label="收起学习助手">×</button></div>
+  <div class="assistant-tabs" aria-label="查找范围">
+   <button id="assistantExam" type="button" aria-pressed="true">查真题</button>
+   <button id="assistantNotebook" type="button" aria-pressed="false">找错题</button>
+  </div>
+  <form id="assistantSearch">
+   <label class="assistant-field"><span id="assistantQueryLabel">考试局、年份和题号</span><input id="assistantQuery" type="search" maxlength="160" autocomplete="off" placeholder="例如 CIE 2024 物理 42 Q3"></label>
+   <div class="assistant-filters">
+    <label class="assistant-field">科目<select id="assistantSubject"><option value="">全部科目</option></select></label>
+    <label class="assistant-field" id="assistantMasteryField" hidden>掌握状态<select id="assistantMastery"><option value="wrong">待掌握</option><option value="correct">已掌握</option><option value="">全部状态</option></select></label>
+   </div>
+   <div class="assistant-actions"><button class="primary" type="submit">查找</button><button id="assistantNotebookLink" class="quiet" type="button" hidden>打开错题本</button></div>
+  </form>
+  <p id="assistantStatus" role="status" aria-live="polite">可加科目、月份和卷号缩小范围。</p>
+  <ul id="assistantResults" aria-label="匹配题目"></ul>
+  <button id="assistantMore" class="quiet" type="button" hidden>显示更多结果</button>
+ </section>
+</div>
+<dialog id="assistantQuestionDialog" aria-labelledby="assistantQuestionTitle">
+ <div class="dialog-shell"><button class="close" type="button" data-close="assistantQuestionDialog" aria-label="关闭题目">×</button>
+  <h2 id="assistantQuestionTitle"></h2><p id="assistantQuestionMeta"></p>
+  <div id="assistantQuestionContent"></div>
+ </div>
+</dialog>
+<div id="toast" role="status"></div><div id="printArea"></div><script src="login-activity.js?v=1.19.0"></script><script src="auth.js?v=1.19.0"></script>
 </body></html>

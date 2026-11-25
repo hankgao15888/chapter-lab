@@ -2,12 +2,13 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 import {createRequire} from 'node:module';
-const require=createRequire(import.meta.url),model=require('../docs/notebook-state.js');
+const require=createRequire(import.meta.url),model=require('../docs/notebook-state.js'),assistant=require('../docs/study-assistant.js');
 const catalog=JSON.parse(fs.readFileSync(new URL('../data/catalog.json',import.meta.url),'utf8'));
 const physics=catalog.questions.filter(q=>q.subject==='physics').slice(0,3);
 const chemistry=catalog.questions.find(q=>q.subject==='chemistry');
 function app(storage,pdfRows=[]){
- const elements=new Map(),clicks=[];
+ const elements=new Map(),clicks=[],openedPDFs=[];
+ let assistantActions;
  function element(selector){
   if(!elements.has(selector)){
    const classes=new Set();
@@ -23,8 +24,8 @@ function app(storage,pdfRows=[]){
  const db={...catalog,questions:[...physics,chemistry],subjectIndex:{}};
  const context=vm.createContext({document,DB:db,console,Map,Set,URL,Blob,
   localStorage:{getItem:key=>storage[key]||null,setItem:(key,value)=>storage[key]=value},
-  ChapterLabNotebook:model,ChapterLabAuth:{isAuthenticated:()=>true},
-  ChapterLabPDFLibrary:{create:options=>({renderHistory(){},entries:()=>pdfRows,questionCard:q=>`<article>${q.label}<button data-pdf-status="correct">我已掌握</button></article>`,handleAction:event=>{const q=pdfRows.find(q=>q.id===event.target.dataset.pdfId);if(q){q.notebookStatus=event.target.dataset.pdfStatus;options.onChange();}}})},
+  ChapterLabAssistant:{...assistant,mount(options){assistantActions=options;}},ChapterLabNotebook:model,ChapterLabAuth:{isAuthenticated:()=>true},
+  ChapterLabPDFLibrary:{create:options=>({renderHistory(){},openRecord(...ids){openedPDFs.push(ids);},entries:()=>pdfRows,questionCard:q=>`<article>${q.label}<button data-pdf-status="correct">我已掌握</button></article>`,handleAction:event=>{const q=pdfRows.find(q=>q.id===event.target.dataset.pdfId);if(q){q.notebookStatus=event.target.dataset.pdfStatus;options.onChange();}}})},
   ChapterLabCatalogLoader:{createCatalog:()=>({isLoaded:()=>true,loadMany:async subjects=>subjects.map(subject=>db.questions.filter(q=>q.subject===subject))})},
   ChapterLabCatalog:{availableYears:()=>[2026]},ChapterLabSelection:{selectPaper:()=>null},
   ChapterLabAnswers:{create:()=>({content:()=>'',state:()=>({}),load:async()=>{}})},
@@ -33,7 +34,7 @@ function app(storage,pdfRows=[]){
  context.window=context;
  vm.runInContext(fs.readFileSync(new URL('../docs/app.js',import.meta.url),'utf8'),context);
  function click(dataset,selector){const target={dataset,closest:query=>query===selector?target:null};return {target};}
- return {element,async settle(){await Promise.resolve();await Promise.resolve();},home(){vm.runInContext("switchView('notebook')",context);},subject(subject){element('#notebookSubjects').onclick(click({notebookSubject:subject},'[data-notebook-subject]'));},tab(status){element('#notebookStatusTabs').onclick(click({notebookStatus:status},'[data-notebook-status]'));},result(id,status){const event=click({questionId:id,notebookResult:status},'[data-notebook-result]');clicks.forEach(handler=>handler(event));}};
+ return {element,assistant:assistantActions,openedPDFs,async settle(){await Promise.resolve();await Promise.resolve();},home(){vm.runInContext("switchView('notebook')",context);},subject(subject){element('#notebookSubjects').onclick(click({notebookSubject:subject},'[data-notebook-subject]'));},tab(status){element('#notebookStatusTabs').onclick(click({notebookStatus:status},'[data-notebook-status]'));},result(id,status){const event=click({questionId:id,notebookResult:status},'[data-notebook-result]');clicks.forEach(handler=>handler(event));}};
 }
 const storage={'chapterlab-v1':JSON.stringify({practice:{[physics[0].id]:'wrong',[physics[1].id]:'wrong',[physics[2].id]:'correct',[chemistry.id]:'wrong'},overrides:{},papers:[]})};
 let ui=app(storage);await ui.settle();ui.home();
@@ -73,3 +74,23 @@ assert.equal(localUI.element('#notebookPractice').disabled,true,'Local questions
 localUI.element('#notebookList').onclick({target:{dataset:{pdfId:local.id,pdfStatus:'correct'}}});localUI.tab('correct');assert(localUI.element('#notebookList').innerHTML.includes(local.label));assert.equal(localUI.element('#notebookMasteredCount').textContent,'1');
 localUI.element('#notebookList').onclick({target:{dataset:{pdfId:local.id,pdfStatus:null}}});assert(!localUI.element('#notebookList').innerHTML.includes(local.label));
 console.log('Imported PDF notebook subjects, saved cards, mastered status and removal passed.');
+
+const lookupUI=app(storage,[{...local,notebookStatus:'wrong'}]);
+await lookupUI.settle();
+const localResult=await lookupUI.assistant.getNotebook({subject:'physics',status:'wrong',term:'Imported force'});
+assert.equal(localResult.rows.length,1);
+await lookupUI.assistant.openNotebookQuestion(localResult.rows[0].question,()=>true);
+assert.deepEqual(lookupUI.openedPDFs,[[local.documentId,local.questionId]]);
+const mastered=await lookupUI.assistant.getNotebook({subject:'physics',status:'correct',term:''});
+assert(mastered.rows.some(row=>row.question.id===physics[2].id));
+assert(mastered.rows.every(row=>row.meta.includes('已掌握')));
+lookupUI.assistant.showNotebook('physics','correct');
+assert(lookupUI.element('#notebookList').innerHTML.includes(physics[2].id));
+const paper=catalog.papers.find(p=>p.id===chemistry.paperId);
+await lookupUI.assistant.openIndexed({paper,number:chemistry.number},()=>true);
+assert.equal(lookupUI.element('#assistantQuestionDialog').open,true);
+assert(lookupUI.element('#assistantQuestionContent').innerHTML.includes(`data-question-visual="${chemistry.id}"`));
+lookupUI.element('#assistantQuestionDialog').close();
+await lookupUI.assistant.openIndexed({paper,number:chemistry.number},()=>false);
+assert.equal(lookupUI.element('#assistantQuestionDialog').open,false,'Stale searches cannot open a question');
+console.log('Assistant opens indexed practice directly, finds pending local screenshots and jumps to mastered notebook entries.');

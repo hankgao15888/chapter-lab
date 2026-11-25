@@ -327,3 +327,83 @@ $('#localBankInput').onchange=async e=>{
  finally{button.disabled=false;button.textContent='导入本地题库';e.target.value='';}
 };
 window.addEventListener('pagehide',()=>localImageUrls.forEach(url=>URL.revokeObjectURL(url)));
+
+// The assistant uses the same renderer, grades and notebook entries as the rest of Chapter Lab.
+function showAssistantQuestion(question){
+ const dialog=$('#assistantQuestionDialog');
+ $('#assistantQuestionTitle').textContent=`${SUBJECT[question.subject]} · 原题 Q${question.number}`;
+ $('#assistantQuestionMeta').textContent=`${BOARD[question.board]} · ${question.title} · ${question.sourceUnit}`;
+ const result=saved.practice[question.id];
+ $('#assistantQuestionContent').innerHTML=`
+  <div class="assistant-practice">
+   ${wrongButton(question)}
+   <button class="quiet" type="button" data-question-id="${esc(question.id)}" data-notebook-result="correct">我已掌握</button>
+   <span class="tag" data-practice-status="${esc(question.id)}" ${result?'':'hidden'}>${result==='wrong'?'待掌握':result==='correct'?'已掌握':''}</span>
+   <a class="text-button" href="${esc(question.qp)}#page=${originalParts(question)[0]?.page||1}" target="_blank" rel="noopener">查看原试卷 ↗</a>
+  </div>
+  <div class="question-images">${questionContent(question)}</div>
+  ${answers.content(question)}`;
+ if(!dialog.open)dialog.showModal();
+ dialog.scrollTop=0;
+ ChapterLabQuestions.load(question).catch(()=>{});
+}
+async function openAssistantIndexed({paper,number},isCurrent){
+ try{await loadSubjects([paper.subject]);}
+ catch{throw new Error('对应科目的题库暂时无法读取，请检查网络后重试。');}
+ if(!isCurrent())return false;
+ const question=DB.questions.find(q=>q.paperId===paper.id&&q.number===number);
+ if(!question)throw new Error('无法定位这道题，请在原试卷中核对题号。');
+ showAssistantQuestion(question);
+}
+function notebookMatchesAssistant(question,term){
+ if(!term)return true;
+ const normalized=term.normalize('NFKC').trim().toLowerCase();
+ const parsed=ChapterLabAssistant.parseLookup(normalized);
+ if(parsed.board&&parsed.year&&parsed.number&&!question.localPDF){
+  return ChapterLabAssistant.paperMatches({...question,unit:question.sourceUnit},parsed)&&ChapterLabAssistant.numberMatches(question.number,parsed);
+ }
+ const label=question.localPDF?question.label:`Q${question.number} 第${question.number}题`;
+ const board=BOARD[question.board]||'';
+ const chapters=qCh(question).map(id=>`${CH.get(id).zh} ${CH.get(id).name} ${CH.get(id).code}`).join(' ');
+ const haystack=[label,board,question.title,question.sourceUnit,SUBJECT[question.subject],chapters,question.text].filter(Boolean).join(' ').normalize('NFKC').toLowerCase();
+ return normalized.split(/\s+/).every(token=>{
+  const number=token.match(/^(?:q|第)(\d+)题?$/);
+  if(number&&!question.localPDF)return ChapterLabAssistant.numberMatches(question.number,{number:Number(number[1])});
+  return haystack.includes(token);
+ });
+}
+async function assistantNotebook({subject,status,term}){
+ const relevantStatus=value=>status?value===status:['wrong','correct'].includes(value);
+ const ids=Object.keys(saved.notebook).filter(id=>{
+  const entry=saved.notebook[id];
+  return relevantStatus(saved.practice[id])&&(!subject||subject===entry.subject);
+ });
+ const subjects=[...new Set(ids.map(id=>saved.notebook[id].subject))];
+ const loaded=await Promise.allSettled([...subjects.map(subject=>loadSubjects([subject])),pdfLibrary.refresh?.()]);
+ const indexed=ids.map(id=>QM.get(id)).filter(Boolean);
+ const local=(pdfLibrary.entries?.()||[]).filter(q=>(!subject||subject===q.subject)&&relevantStatus(q.notebookStatus));
+ const rows=[...indexed,...local].filter(q=>notebookMatchesAssistant(q,term)).map(question=>{
+  const mastered=(question.localPDF?question.notebookStatus:saved.practice[question.id])==='correct';
+  const statusLabel=mastered?'已掌握':'待掌握';
+  return {
+   question,
+   title:question.localPDF?`${SUBJECT[question.subject]} · ${question.label}`:`${SUBJECT[question.subject]} · ${question.title} · Q${question.number}`,
+   meta:question.localPDF?`${statusLabel} · ${question.title}`:`${statusLabel} · ${BOARD[question.board]}`
+  };
+ });
+ return {rows,incomplete:loaded.some(result=>result.status==='rejected')};
+}
+ChapterLabAssistant.mount({
+ subjectNames:SUBJECT,boardNames:BOARD,papers:DB.papers,lookupPath:DB.questionLookup,
+ getNotebook:assistantNotebook,openIndexed:openAssistantIndexed,
+ openNotebookQuestion(question,isCurrent){
+  if(!isCurrent())return false;
+  if(question.localPDF)return pdfLibrary.openRecord(question.documentId,question.questionId);
+  showAssistantQuestion(question);
+ },
+ showNotebook(subject,status){
+  switchView('notebook');
+  if(subject){state.notebookSubject=subject;state.notebookStatus=status==='correct'?'correct':'wrong';selectSubject(subject);}
+  $('#notebookView').scrollIntoView({block:'start'});
+ }
+});

@@ -37,6 +37,14 @@ for(const subject of new Set(db.chapters.map(c=>c.subject))){
  }
  manifest.subjectIndex[subject]={path:'catalog/'+file,count:rows.length,paperCount:new Set(rows.map(q=>q.paperId)).size,chapterCounts,byBoard};
 }
+const questionsByPaper=Object.create(null);
+for(const question of db.questions)(questionsByPaper[question.paperId]??=[]).push(question.number);
+const lookupJson=JSON.stringify(questionsByPaper);
+const lookupHash=crypto.createHash('sha256').update(lookupJson).digest('hex').slice(0,12);
+const lookupFile=`lookup-${lookupHash}.json`;
+outputs.add(lookupFile);
+fs.writeFileSync(path.join(catalogDirectory,lookupFile),lookupJson);
+manifest.questionLookup='catalog/'+lookupFile;
 for(const file of fs.readdirSync(catalogDirectory))if(/^[a-z]+-[a-f0-9]{12}\.json$/.test(file)&&!outputs.has(file))fs.unlinkSync(path.join(catalogDirectory,file));
 manifest.coverage={...db.coverage,questionCount:db.questions.length,unmappedQuestionCount:db.questions.filter(q=>!q.chapters.length).length,chaptersCovered:new Set(db.questions.flatMap(q=>q.chapters)).size};
 fs.writeFileSync(path.join(root,'docs/data.js'),'window.DB='+JSON.stringify(manifest)+';');
