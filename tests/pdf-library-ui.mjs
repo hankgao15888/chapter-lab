@@ -152,6 +152,31 @@ assert.deepEqual(adjusted.parts.slice(0,2),stitched.parts.slice(0,2));
 assert(Math.abs(adjusted.parts[2].top-.58)<1e-8);
 assert.equal(adjusted.notebookStatus,'wrong');
 console.log('PDF stitch joins three ordered regions on two pages, previews text, exports one PNG, reopens and adjusts one piece without losing notebook status.');
+// Both old single crops and stitched questions can inspect the complete PDF and return.
+for(const question of [region,adjusted]){
+ await ui.library.openRecord(id,question.id);
+ assert.equal(ui.el('#pdfCropView').hidden,false);
+ assert.equal(ui.el('#pdfPageToolbar').hidden,true);
+ await ui.el('#pdfViewOriginal').onclick();
+ assert.equal(ui.el('#pdfCropView').hidden,true);
+ assert.equal(ui.el('#pdfCanvasHost').hidden,false);
+ assert.equal(ui.el('#pdfBackToCrop').hidden,false);
+ assert.equal(ui.el('#pdfPageToolbar').hidden,false);
+ assert.equal(ui.el('#pdfPageNumber').value,question.parts[0].page);
+ assert.equal(ui.el('#pdfRegionMode')['aria-pressed'],'false');
+ await ui.el('#pdfPageNext').onclick();
+ assert.equal(ui.el('#pdfPageNumber').value,2);
+ assert.equal(ui.el('#pdfCanvasHost').hidden,false);
+ await ui.el('#pdfPagePrevious').onclick();
+ assert.equal(ui.el('#pdfPageNumber').value,1);
+ assert.equal(ui.el('#pdfCropView').hidden,true,'Returning to source page stays in original-paper view');
+ await ui.el('#pdfBackToCrop').onclick();
+ assert.equal(ui.el('#pdfCropView').hidden,false);
+ assert.equal(ui.el('#pdfCanvasHost').hidden,true);
+ assert.equal(ui.el('#pdfBackToCrop').hidden,true);
+ assert.equal(ui.el('#pdfDownloadCrop').disabled,false);
+}
+console.log('Single and stitched PDF crops can open the source paper, browse pages, then return to the same crop.');
 const first=[...records.values()][0];
 const target={dataset:{removePdf:first.id},closest:selector=>selector==='[data-remove-pdf]'?target:null};
 await ui.el('#pdfHistoryList').onclick({target});assert.equal(records.size,1);

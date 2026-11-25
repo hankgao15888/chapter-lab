@@ -8,6 +8,7 @@
   let regionMode=false,regionDrag=null,regionDraft=null,regionBounds=null,regionEditingId=null,regionVersion=0;
   let stitchParts=[],regionSegment=null,editingPartIndex=0,committingRegion=false,pageReady=false;
   const maxStitchParts=30;
+  let viewingOriginal=false;
   let libraryPromise,ownerPromise,current=null,pdf=null,selectedId=null,renderTask=null,renderVersion=0,pageNumber=1,historyVersion=0,opening=0,busy=false;
   const hash=async bytes=>Array.from(new Uint8Array(await root.crypto.subtle.digest('SHA-256',bytes)),byte=>byte.toString(16).padStart(2,'0')).join('');
   function owner(){if(!ownerPromise)ownerPromise=hash(new TextEncoder().encode('chapterlab-pdf-owner-v1\0'+core.normalize(getOwner())));return ownerPromise;}
@@ -145,6 +146,7 @@
   async function selectQuestion(id){
    resetStitch();
    const question=current?.questions.find(q=>q.id===id);if(!question)return;
+   viewingOriginal=false;
    selectedId=id;pageNumber=question.parts[0].page;setRegionMode(!isCrop(question));fillEditor(question);fillCropPicker(question);renderQuestions();await renderPage();
   }
   function fillCropPicker(question){
@@ -200,6 +202,7 @@
   }
   async function renderPage(){
    cancelRegion();pageReady=false;$('#pdfDownloadCrop').disabled=true;
+   updateReaderView();
    const version=++renderVersion;
    if(renderTask){renderTask.cancel();await renderTask.promise.catch(()=>{});}
    if(version!==renderVersion||!pdf||!current)return;
@@ -224,10 +227,10 @@
     const highlight=$('#pdfQuestionHighlight');highlight.hidden=!part;
     if(part){highlight.style.left=((part.left||0)*100)+'%';highlight.style.right=((1-(part.right??1))*100)+'%';highlight.style.top=(part.top*100)+'%';highlight.style.height=((part.bottom-part.top)*100)+'%';}
     pageReady=true;
-    const showCrop=!regionMode&&isCrop(question)&&(Boolean(part)||question.parts.length>1);
+    const showCrop=showingCrop(question);
     const crop=$('#pdfCropCanvas');
     if(showCrop&&question.parts.length>1){
-     const stitched=await stitchCanvas(documentToRender,question.parts,1440,()=>version===renderVersion&&!regionMode);
+     const stitched=await stitchCanvas(documentToRender,question.parts,1440,()=>version===renderVersion&&showingCrop(question));
      if(!stitched)return;
      copyCanvas(stitched,crop);
      crop.style.width=Math.min(stitched.width,1100)+'px';
@@ -237,11 +240,13 @@
      crop.style.width=Math.min(width,1100)+'px';crop.style.maxWidth='100%';
     }
     $('#pdfDownloadCrop').disabled=!showCrop;
-    $('#pdfCropView').hidden=!showCrop;$('#pdfCanvasHost').hidden=showCrop;
-    $('#pdfPageStatus').textContent='第 '+pageNumber+' 页'+(part?' · '+question.label:'');
+    updateReaderView();
+    const pageStatus='第 '+pageNumber+' / '+current.pageCount+' 页';
+    $('#pdfPageStatus').textContent=(viewingOriginal?'原试卷 · ':'')+pageStatus+(part?' · '+question.label:'');
    }catch(error){if(version===renderVersion&&error.name!=='RenderingCancelledException')$('#pdfPageStatus').textContent='页面读取失败，请重试切换页码。';}
   }
   async function cleanup(){
+   viewingOriginal=false;
    resetStitch();setRegionMode(false);pageReady=false;
    ++opening;++renderVersion;
    if(renderTask){renderTask.cancel();await renderTask.promise.catch(()=>{});renderTask=null;}
@@ -282,10 +287,36 @@
    selectQuestion(button.dataset.selectPdfQuestion);
   };
   ['pdfChapterFilter','pdfTypeFilter'].forEach(id=>$('#'+id).onchange=renderQuestions);$('#pdfQuestionSearch').oninput=renderQuestions;
-  $('#pdfPagePrevious').onclick=()=>{if(pageNumber>1){pageNumber--;return renderPage();}};
-  $('#pdfPageNext').onclick=()=>{if(current&&pageNumber<current.pageCount){pageNumber++;return renderPage();}};
-  $('#pdfPageNumber').onchange=()=>{if(current){pageNumber=Math.max(1,Math.min(current.pageCount,Math.floor(Number($('#pdfPageNumber').value))||1));return renderPage();}};
+  function goToPage(requestedPage){
+   if(!current)return;
+   const nextPage=Math.max(1,Math.min(current.pageCount,Math.floor(Number(requestedPage))||1));
+   if(viewingOriginal&&pageNumber!==nextPage)$('#pdfCanvasHost').scrollTop=0;
+   pageNumber=nextPage;
+   return renderPage();
+  }
+  $('#pdfPagePrevious').onclick=()=>goToPage(pageNumber-1);
+  $('#pdfPageNext').onclick=()=>goToPage(pageNumber+1);
+  $('#pdfPageNumber').onchange=()=>goToPage($('#pdfPageNumber').value);
   $('#pdfZoom').onchange=renderPage;
+  $('#pdfViewOriginal').onclick=async()=>{
+   const question=current?.questions.find(q=>q.id===selectedId);
+   if(!isCrop(question)||viewingOriginal)return;
+   viewingOriginal=true;
+   pageNumber=question.parts[0].page;
+   $('#pdfCanvasHost').scrollTop=0;
+   await renderPage();
+   if(viewingOriginal&&selectedId===question.id)$('#pdfBackToCrop').focus({preventScroll:true});
+  };
+  $('#pdfBackToCrop').onclick=async()=>{
+   const question=current?.questions.find(q=>q.id===selectedId);
+   if(!viewingOriginal||!isCrop(question))return;
+   if(stitchParts.length){toast('请先完成拼接，或点击「清空拼接」。');return;}
+   viewingOriginal=false;
+   pageNumber=question.parts[0].page;
+   setRegionMode(false);
+   await renderPage();
+   if(!viewingOriginal&&selectedId===question.id)$('#pdfViewOriginal').focus({preventScroll:true});
+  };
   $('#pdfDocumentSubject').onchange=async()=>{
    if(!current)return;
    if(committingRegion){$('#pdfDocumentSubject').value=current.subject;return;}cancelRegion();const subject=$('#pdfDocumentSubject').value;if(!core.subjects[subject])return;
@@ -351,9 +382,18 @@
    regionMode=enabled;$('#pdfRegionMode').setAttribute('aria-pressed',String(enabled));$('#pdfPageFrame').classList.toggle('pdf-region-mode',enabled);
    $('#pdfRegionStatus').textContent=enabled?'拖动鼠标画截图框；拉边角调整大小，拖动框内移动；按 Esc 取消。':'点击「截图框选」在原页画方框。';
    if(enabled)$('#pdfSplitLine').hidden=true;
+   updateReaderView();
+  }
+  function showingCrop(question){
+   return !viewingOriginal&&!regionMode&&isCrop(question)&&(question.parts[0].page===pageNumber||question.parts.length>1);
+  }
+  function updateReaderView(){
    const question=current?.questions.find(q=>q.id===selectedId);
-   const part=question?.parts.find(p=>p.page===pageNumber);
-   const isolated=!enabled&&isCrop(question)&&(Boolean(part)||question.parts.length>1);$('#pdfCropView').hidden=!isolated;$('#pdfCanvasHost').hidden=isolated;
+   const showCrop=showingCrop(question);
+   $('#pdfCropView').hidden=!showCrop;
+   $('#pdfCanvasHost').hidden=showCrop;
+   $('#pdfPageToolbar').hidden=showCrop;
+   $('#pdfBackToCrop').hidden=!viewingOriginal||!isCrop(question);
   }
   function cancelRegion(){
    ++regionVersion;
