@@ -50,3 +50,19 @@
 .pdf-crop-only .pdf-reader-sidebar{max-height:none;border-right:0;border-top:1px solid var(--line)}
 .pdf-crop-only #pdfQuestionEditor{max-width:42rem;margin:0 auto;padding:0;border:0}
 .pdf-crop-only .pdf-crop-heading{position:sticky;top:-18px;background:#e9ece4;padding:10px 0}
+
+#pdfAnswerDialog{width:min(1000px,95vw);max-height:92vh}
+#pdfAnswerTitle{padding-right:24px;overflow-wrap:anywhere}
+.pdf-answer-actions{display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+.pdf-answer-actions[hidden],.pdf-answer-preview[hidden]{display:none}
+.pdf-answer-picker{position:relative;overflow:hidden;background:var(--green);color:white}
+.pdf-answer-picker:hover{background:#164632}
+.pdf-answer-picker:focus-within{outline:2px solid var(--green);outline-offset:2px}
+.pdf-answer-picker:has(input:disabled){opacity:.55}
+.pdf-answer-picker input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.pdf-answer-status,.pdf-answer-name{overflow-wrap:anywhere}
+.pdf-answer-status:empty{display:none}
+.pdf-answer-name{font-weight:600}
+.pdf-answer-preview{display:block;width:auto;max-width:100%;height:auto;margin:12px auto 0;background:white;box-shadow:0 3px 15px #233b3620}
+.pdf-answer-actions button:disabled{opacity:.45;cursor:default}
+@media(max-width:650px){#pdfAnswerDialog .dialog-shell{padding:24px 14px}}

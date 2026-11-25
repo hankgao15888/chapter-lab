@@ -7,9 +7,11 @@ const core=createRequire(import.meta.url)('../docs/pdf-library-core.js');
 const html=fs.readFileSync(new URL('../docs/index.html',import.meta.url),'utf8');
 const ids=[...html.matchAll(/id="([^"]+)"/g)].map(match=>match[1]);
 assert.equal(ids.length,new Set(ids).size,'Page element IDs must be unique');
-for(const match of fs.readFileSync(new URL('../docs/pdf-library.js',import.meta.url),'utf8').matchAll(/\$\('#([^']+)'\)/g))assert(ids.includes(match[1]),'Missing PDF control '+match[1]);
-const records=new Map(),messages=[],chapters=[{id:'physics-forces',subject:'physics',zh:'力与运动',code:'P1',keywords:['force','acceleration']},{id:'physics-waves',subject:'physics',zh:'波动',code:'P2',keywords:['wavelength']}];
-const storage={async list(owner){return [...records.values()].filter(r=>r.owner===owner).map(({blob,...r})=>structuredClone(r));},async get(owner,id){const r=records.get(id);return r?.owner===owner?structuredClone(r):null;},async save(meta,blob){records.set(meta.id,structuredClone({...meta,blob}));},async update(owner,meta){assert.equal(records.get(meta.id)?.owner,owner);records.set(meta.id,structuredClone({...meta,blob:records.get(meta.id).blob}));},async remove(owner,id){assert.equal(records.get(id)?.owner,owner);records.delete(id);}};
+for(const filename of ['pdf-library.js','pdf-question-answers.js'])for(const match of fs.readFileSync(new URL('../docs/'+filename,import.meta.url),'utf8').matchAll(/\$\('#([^']+)'\)/g))assert(ids.includes(match[1]),'Missing PDF control '+match[1]);
+const records=new Map(),answerFiles=new Map(),messages=[],chapters=[{id:'physics-forces',subject:'physics',zh:'力与运动',code:'P1',keywords:['force','acceleration']},{id:'physics-waves',subject:'physics',zh:'波动',code:'P2',keywords:['wavelength']}];
+const storage={async list(owner){return [...records.values()].filter(r=>r.owner===owner).map(({blob,...r})=>structuredClone(r));},async get(owner,id){const r=records.get(id);return r?.owner===owner?structuredClone(r):null;},async save(meta,blob){records.set(meta.id,structuredClone({...meta,blob}));},async update(owner,meta){assert.equal(records.get(meta.id)?.owner,owner);records.set(meta.id,structuredClone({...meta,blob:records.get(meta.id).blob}));},async remove(owner,id){assert.equal(records.get(id)?.owner,owner);records.delete(id);},
+ async getAnswer(owner,id,questionId){const record=records.get(id);return record?.owner===owner&&record.questions.some(q=>q.id===questionId)?answerFiles.get(id+':'+questionId)??null:null;},
+ async setAnswer(owner,id,questionId,attachment){const record=records.get(id);assert.equal(record?.owner,owner);assert(record.questions.some(q=>q.id===questionId));if(attachment)answerFiles.set(id+':'+questionId,attachment);else answerFiles.delete(id+':'+questionId);}};
 let destroyed=0,imported=0,pendingText=null;
 async function loadDocument(){return {numPages:2,async getPage(page){return {getViewport:()=>({width:600,height:800,convertToViewportPoint:(x,y)=>[x,800-y]}),async getTextContent(){if(pendingText)return pendingText;return {items:[{str:page===1?'1. Calculate the force and acceleration.':'2. Explain the wavelength.',transform:[1,0,0,12,60,600],height:12}]};},cleanup(){},render:()=>({promise:Promise.resolve(),cancel(){}})};},async destroy(){destroyed++;}};}
 function setup(name='Student Alice'){
@@ -19,13 +21,13 @@ function setup(name='Student Alice'){
    const classes=new Set(['hidden']),events=new Map();
    const element={value:'',innerHTML:'',textContent:'',disabled:false,clientWidth:800,style:{},selectedOptions:[],open:false,
     classList:{toggle(name,value){value?classes.add(name):classes.delete(name);},contains:name=>classes.has(name)},
-    addEventListener(type,handler){events.set(type,handler);},showModal(){this.open=true;},close(){this.open=false;return events.get('close')?.();},click(){},focus(){},getContext:()=>({drawImage(){},fillRect(){}}),toBlob(callback,type){callback(new Blob(['image'],{type}));},getBoundingClientRect:()=>({left:10,top:20,width:600,height:800}),setAttribute(name,value){this[name]=value;},setPointerCapture(id){this.captured=id;},hasPointerCapture(id){return this.captured===id;},releasePointerCapture(){this.captured=null;},dispatch(type,event){return events.get(type)?.(event);},scrollIntoView(){}};
+    addEventListener(type,handler){events.set(type,handler);},showModal(){this.open=true;},close(){this.open=false;return events.get('close')?.();},click(){},focus(){},removeAttribute(name){delete this[name];},getContext:()=>({drawImage(){},fillRect(){}}),toBlob(callback,type){callback(new Blob(['image'],{type}));},getBoundingClientRect:()=>({left:10,top:20,width:600,height:800}),setAttribute(name,value){this[name]=value;},setPointerCapture(id){this.captured=id;},hasPointerCapture(id){return this.captured===id;},releasePointerCapture(){this.captured=null;},dispatch(type,event){return events.get(type)?.(event);},scrollIntoView(){}};
    elements.set(selector,element);
   }
   return elements.get(selector);
  }
- const context=vm.createContext({document:{createElement:tag=>tag==='canvas'?{getContext:()=>({drawImage(){},fillRect(){}})}:{click(){downloads.push(this.download);}},querySelector:el,baseURI:'http://localhost/'},ChapterLabPDFCore:core,crypto:crypto.webcrypto,Blob,File,URL,TextEncoder,TextDecoder,AbortSignal,setTimeout:()=>0,confirm:()=>true,devicePixelRatio:1,addEventListener(){}});
- vm.runInContext(fs.readFileSync(new URL('../docs/pdf-library.js',import.meta.url),'utf8'),context);
+ const context=vm.createContext({document:{createElement:tag=>tag==='canvas'?{getContext:()=>({drawImage(){},fillRect(){}})}:{click(){downloads.push(this.download);}},querySelector:el,baseURI:'http://localhost/'},ChapterLabPDFCore:core,crypto:crypto.webcrypto,Blob,File,URL,Image:class{async decode(){}},TextEncoder,TextDecoder,AbortSignal,setTimeout:()=>0,confirm:()=>true,devicePixelRatio:1,addEventListener(){}});
+ for(const filename of ['pdf-question-answers.js','pdf-library.js'])vm.runInContext(fs.readFileSync(new URL('../docs/'+filename,import.meta.url),'utf8'),context);
  const library=context.ChapterLabPDFLibrary.create({chapters,getOwner:()=>name,getSubject:()=> 'physics',toast:message=>messages.push(message),onImported:()=>imported++,storage,loadDocument});
  return {el,library,downloads};
 }
@@ -188,6 +190,52 @@ for(const question of [region,adjusted]){
  assert.equal(ui.el('#pdfReaderSidebar').hidden,true);
 }
 console.log('Single and stitched PDF crops can open the source paper, browse pages, then return to the same crop.');
+// Each saved crop may preview or replace its own answer without altering the question notebook.
+await ui.library.openRecord(id,stitched.id);
+await ui.el('#pdfCropAnswer').onclick();
+assert(ui.el('#pdfViewerDialog').open);
+assert(ui.el('#pdfAnswerDialog').open);
+assert.match(ui.el('#pdfAnswerStatus').textContent,/还没有附件/);
+const chooseAnswer=async attachment=>{
+ ui.el('#pdfAnswerFile').files=[attachment];
+ await ui.el('#pdfAnswerFile').onchange();
+};
+await chooseAnswer(new File(['%PDF-1.7 worked answer'],'答案.pdf',{type:'application/pdf'}));
+assert.equal(ui.el('#pdfAnswerName').textContent,'答案.pdf');
+assert.equal(ui.el('#pdfAnswerCanvas').hidden,false);
+assert.equal(ui.el('#pdfAnswerPageNumber').textContent,'第 1 / 2 页');
+await ui.el('#pdfAnswerNext').onclick();
+assert.equal(ui.el('#pdfAnswerPageNumber').textContent,'第 2 / 2 页');
+await chooseAnswer(new File(['<svg/>'],'fake.png',{type:'image/png'}));
+assert.equal(ui.el('#pdfAnswerName').textContent,'答案.pdf');
+const savedAnswer=storage.setAnswer;
+storage.setAnswer=async()=>{throw Error('答案空间不足');};
+await chooseAnswer(new File(['GIF89a'],'答案.gif',{type:'image/gif'}));
+assert.equal(ui.el('#pdfAnswerName').textContent,'答案.pdf');
+assert.match(ui.el('#pdfAnswerStatus').textContent,/空间不足/);
+storage.setAnswer=savedAnswer;
+await ui.el('#pdfAnswerDialog').close();
+assert(ui.el('#pdfViewerDialog').open);
+await ui.library.openRecord(id,regionId);
+await ui.el('#pdfCropAnswer').onclick();
+assert.match(ui.el('#pdfAnswerStatus').textContent,/还没有附件/);
+await ui.el('#pdfAnswerDialog').close();
+await ui.el('#pdfViewerDialog').close();
+ui=setup();await ui.library.openRecord(id,stitched.id);
+await ui.el('#pdfCropAnswer').onclick();
+assert.equal(ui.el('#pdfAnswerName').textContent,'答案.pdf');
+ui.el('#pdfAnswerDownload').onclick();
+assert.equal(ui.downloads.at(-1),'答案.pdf');
+await chooseAnswer(new File(['GIF89a'],'答案.gif',{type:'image/gif'}));
+assert.equal(ui.el('#pdfAnswerImage').hidden,false);
+assert.equal(ui.el('#pdfAnswerCanvas').hidden,true);
+await ui.el('#pdfAnswerRemove').onclick();
+assert.equal(ui.el('#pdfAnswerImage').hidden,true);
+assert.equal(ui.el('#pdfAnswerDownload').hidden,true);
+assert.equal(await storage.getAnswer(records.get(id).owner,id,stitched.id),null);
+assert.equal(records.get(id).questions.find(q=>q.id===stitched.id).notebookStatus,'wrong');
+await ui.el('#pdfAnswerDialog').close();
+console.log('Attached answers stay question-specific, reopen, preview PDF pages and images, replace atomically, download and remove.');
 const first=[...records.values()][0];
 const target={dataset:{removePdf:first.id},closest:selector=>selector==='[data-remove-pdf]'?target:null};
 await ui.el('#pdfHistoryList').onclick({target});assert.equal(records.size,1);

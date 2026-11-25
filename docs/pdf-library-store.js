@@ -37,19 +37,63 @@
   async function save(meta,blob){
    return transaction(['documents','files'],'readwrite',tx=>{tx.objectStore('documents').put(meta);tx.objectStore('files').put({id:meta.id,blob});});
   }
-  async function update(owner,meta){
-   return transaction(['documents'],'readwrite',tx=>{
+  // Attachments share the existing binary store; document lists never load their bytes.
+  const answerKey=(documentId,questionId)=>'question-answer:'+JSON.stringify([documentId,questionId]);
+  async function getAnswer(owner,documentId,questionId){
+   return transaction(['documents','files'],'readonly',tx=>{
+    const document=tx.objectStore('documents').get(documentId);
+    let answer;
+    document.onsuccess=()=>{
+     const meta=document.result;
+     if(meta?.owner===owner&&meta.questions.some(question=>question.id===questionId)){
+      answer=tx.objectStore('files').get(answerKey(documentId,questionId));
+     }
+    };
+    return ()=>answer?.result?.attachment??null;
+   });
+  }
+  async function setAnswer(owner,documentId,questionId,attachment){
+   return transaction(['documents','files'],'readwrite',tx=>{
+    const document=tx.objectStore('documents').get(documentId);
+    document.onsuccess=()=>{
+     const meta=document.result;
+     if(meta?.owner!==owner||!meta.questions.some(question=>question.id===questionId)){tx.abort();return;}
+     const files=tx.objectStore('files'),id=answerKey(documentId,questionId);
+     if(attachment)files.put({id,attachment});
+     else files.delete(id);
+    };
+   });
+  }
+  async function update(owner,meta,{discardAnswers=[]}={}){
+   return transaction(['documents','files'],'readwrite',tx=>{
     const store=tx.objectStore('documents'),request=store.get(meta.id);
-    request.onsuccess=()=>{if(request.result?.owner!==owner){tx.abort();return;}store.put({...meta,owner});};
+    request.onsuccess=()=>{
+     const previous=request.result;
+     if(previous?.owner!==owner){tx.abort();return;}
+     const retained=new Set(meta.questions.map(question=>question.id));
+     const discard=new Set(discardAnswers);
+     const files=tx.objectStore('files');
+     for(const question of previous.questions){
+      if(!retained.has(question.id)||discard.has(question.id))files.delete(answerKey(meta.id,question.id));
+     }
+     store.put({...meta,owner});
+    };
    });
   }
   async function remove(owner,id){
    return transaction(['documents','files'],'readwrite',tx=>{
     const request=tx.objectStore('documents').get(id);
-    request.onsuccess=()=>{if(request.result?.owner!==owner){tx.abort();return;}tx.objectStore('documents').delete(id);tx.objectStore('files').delete(id);};
+    request.onsuccess=()=>{
+     const meta=request.result;
+     if(meta?.owner!==owner){tx.abort();return;}
+     const files=tx.objectStore('files');
+     for(const question of meta.questions)files.delete(answerKey(id,question.id));
+     files.delete(id);
+     tx.objectStore('documents').delete(id);
+    };
    });
   }
-  return {list,get,save,update,remove};
+  return {list,get,save,update,remove,getAnswer,setAnswer};
  }
  const api={create};if(typeof module==='object'&&module.exports)module.exports=api;else root.ChapterLabPDFStore=api;
 })(globalThis);

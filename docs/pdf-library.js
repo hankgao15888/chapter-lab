@@ -25,11 +25,12 @@
    try{const document=await task.promise;return {numPages:document.numPages,getPage:page=>document.getPage(page),destroy:()=>task.destroy()};}catch(error){await task.destroy().catch(()=>{});throw new Error(protectedFile?'PDF 有密码保护，请先解密后导入。':'无法读取这个 PDF，请检查文件是否完整。');}
   }
   const acquirePDF=loadDocument||loadPDF;
+  const questionAnswers=root.ChapterLabPDFQuestionAnswers.create({store,owner,loadPDF:acquirePDF,download});
   function metadata(record){const {blob,...meta}=record;return meta;}
   async function refresh(){recordsCache=await store.list(await owner());onChange();}
   function entries(){return core.questionEntries(recordsCache);}
   function cacheRecord(record){recordsCache=recordsCache.filter(item=>item.id!==record.id).concat(metadata(record));onChange();}
-  async function saveCurrent(){await store.update(await owner(),metadata(current));cacheRecord(current);}
+  async function saveCurrent(options){await store.update(await owner(),metadata(current),options);cacheRecord(current);}
   async function setNotebook(documentId,questionId,status){
    if(![null,'wrong','correct'].includes(status))return;
    const record=await store.get(await owner(),documentId),question=record?.questions.find(q=>q.id===questionId);
@@ -416,6 +417,7 @@
    $('#pdfCanvasHost').hidden=showCrop;
    $('#pdfPageToolbar').hidden=showCrop;
    $('#pdfBackToCrop').hidden=!viewingOriginal||!isCrop(question);
+   $('#pdfQuestionAnswer').hidden=!question;
   }
   function cancelRegion(){
    ++regionVersion;
@@ -603,19 +605,27 @@
   };
   $('#pdfSplitQuestion').onclick=async()=>{
    if(!current||committingRegion)return;const old=current.questions.find(q=>q.id===selectedId);if(!old||isCrop(old))return;
-   if(old.savedAt&&!root.confirm('拆分会替换这道已保存题目，并清除它原来的错题状态。拆分后请分别保存，继续吗？'))return;
+   const hasAnswer=await questionAnswers.has(current.id,old.id).catch(()=>false);
+   if(current?.questions.find(q=>q.id===selectedId)!==old)return;
+   if((old.savedAt||hasAnswer)&&!root.confirm('拆分会清除原题的答案附件和错题状态。拆分后请分别保存，继续吗？'))return;
    const previous=current.questions;
    try{
     const split=core.splitQuestion(old,pageNumber,$('#pdfSplitPercent').value,'manual-'+root.crypto.randomUUID());
     current.questions=current.questions.flatMap(q=>q.id===selectedId?split:[q]);
-    try{await saveCurrent();}catch(error){current.questions=previous;throw error;}
+    try{await saveCurrent({discardAnswers:[old.id]});}catch(error){current.questions=previous;throw error;}
     $('#pdfSplitLine').hidden=true;await selectQuestion(split[0].id);await renderHistory();toast('已拆成两道。原识别文字保留在两题中，请核对文字与边界，再分别保存。');
    }catch(error){toast(error.message);}
   };
+  function openQuestionAnswer(){
+   const question=current?.questions.find(q=>q.id===selectedId);
+   if(question)return questionAnswers.open(current.id,question);
+  }
+  $('#pdfCropAnswer').onclick=openQuestionAnswer;
+  $('#pdfQuestionAnswer').onclick=openQuestionAnswer;
   $('#pdfDownloadOriginal').onclick=()=>{if(current?.blob)download(current.blob,current.filename);};
   $('#pdfExportClassification').onclick=()=>{if(current)download(new Blob([JSON.stringify({format:'chapterlab-pdf-classification-v1',...metadata(current)},null,2)],{type:'application/json'}),current.title+'-章节分类.json');};
-  $('#pdfViewerDialog').addEventListener('close',cleanup);
-  root.addEventListener('pagehide',cleanup);
+  $('#pdfViewerDialog').addEventListener('close',()=>{questionAnswers.close();return cleanup();});
+  root.addEventListener('pagehide',()=>{questionAnswers.close();return cleanup();});
   return {renderHistory,importFiles,openRecord,refresh,entries,questionCard,handleAction,setNotebook};
  }
  root.ChapterLabPDFLibrary={create};
