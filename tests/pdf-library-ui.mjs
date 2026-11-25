@@ -13,21 +13,21 @@ const storage={async list(owner){return [...records.values()].filter(r=>r.owner=
 let destroyed=0,imported=0,pendingText=null;
 async function loadDocument(){return {numPages:2,async getPage(page){return {getViewport:()=>({width:600,height:800,convertToViewportPoint:(x,y)=>[x,800-y]}),async getTextContent(){if(pendingText)return pendingText;return {items:[{str:page===1?'1. Calculate the force and acceleration.':'2. Explain the wavelength.',transform:[1,0,0,12,60,600],height:12}]};},cleanup(){},render:()=>({promise:Promise.resolve(),cancel(){}})};},async destroy(){destroyed++;}};}
 function setup(name='Student Alice'){
- const elements=new Map();
+ const elements=new Map(),downloads=[];
  function el(selector){
   if(!elements.has(selector)){
    const classes=new Set(['hidden']),events=new Map();
    const element={value:'',innerHTML:'',textContent:'',disabled:false,clientWidth:800,style:{},selectedOptions:[],open:false,
     classList:{toggle(name,value){value?classes.add(name):classes.delete(name);},contains:name=>classes.has(name)},
-    addEventListener(type,handler){events.set(type,handler);},showModal(){this.open=true;},close(){this.open=false;return events.get('close')?.();},click(){},focus(){},getContext:()=>({drawImage(){}}),getBoundingClientRect:()=>({left:10,top:20,width:600,height:800}),setAttribute(name,value){this[name]=value;},setPointerCapture(id){this.captured=id;},hasPointerCapture(id){return this.captured===id;},releasePointerCapture(){this.captured=null;},dispatch(type,event){return events.get(type)?.(event);},scrollIntoView(){}};
+    addEventListener(type,handler){events.set(type,handler);},showModal(){this.open=true;},close(){this.open=false;return events.get('close')?.();},click(){},focus(){},getContext:()=>({drawImage(){},fillRect(){}}),toBlob(callback,type){callback(new Blob(['image'],{type}));},getBoundingClientRect:()=>({left:10,top:20,width:600,height:800}),setAttribute(name,value){this[name]=value;},setPointerCapture(id){this.captured=id;},hasPointerCapture(id){return this.captured===id;},releasePointerCapture(){this.captured=null;},dispatch(type,event){return events.get(type)?.(event);},scrollIntoView(){}};
    elements.set(selector,element);
   }
   return elements.get(selector);
  }
- const context=vm.createContext({document:{querySelector:el,baseURI:'http://localhost/'},ChapterLabPDFCore:core,crypto:crypto.webcrypto,Blob,File,URL,TextEncoder,TextDecoder,AbortSignal,setTimeout:()=>0,confirm:()=>true,devicePixelRatio:1,addEventListener(){}});
+ const context=vm.createContext({document:{createElement:tag=>tag==='canvas'?{getContext:()=>({drawImage(){},fillRect(){}})}:{click(){downloads.push(this.download);}},querySelector:el,baseURI:'http://localhost/'},ChapterLabPDFCore:core,crypto:crypto.webcrypto,Blob,File,URL,TextEncoder,TextDecoder,AbortSignal,setTimeout:()=>0,confirm:()=>true,devicePixelRatio:1,addEventListener(){}});
  vm.runInContext(fs.readFileSync(new URL('../docs/pdf-library.js',import.meta.url),'utf8'),context);
  const library=context.ChapterLabPDFLibrary.create({chapters,getOwner:()=>name,getSubject:()=> 'physics',toast:message=>messages.push(message),onImported:()=>imported++,storage,loadDocument});
- return {el,library};
+ return {el,library,downloads};
 }
 const file=new File(['%PDF-1.7\nmock contents'],'physics-practice.pdf',{type:'application/pdf'});
 let ui=setup();await ui.library.importFiles([file]);
@@ -110,6 +110,48 @@ ui.el('#pdfCancelRegion').onclick();
 ui.el('#pdfPageFrame').onpointerdown(pointer(.05,.15));ui.el('#pdfPageFrame').onpointermove(pointer(.3,.3));ui.el('#pdfPageFrame').onpointercancel();assert.equal(ui.el('#pdfRegionBox').hidden,true);
 await drag({x:.1,y:.1},{x:.101,y:.101});assert.equal(ui.el('#pdfRegionReview').hidden,true);assert(ui.el('#pdfRegionStatus').textContent.includes('太小'));
 console.log('PDF rectangle pointer events, inferred/editable categories, cancellation, stale work, exact region persistence and notebook saving passed.');
+// One exercise can contain several captures, including two from the same page.
+await ui.library.openRecord(id,split[0].id);
+await drag();
+ui.el('#pdfAddStitchPart').onclick();
+await ui.el('#pdfPageNext').onclick();
+assert.match(ui.el('#pdfStitchCount').textContent,/1 段/,'Changing page keeps added captures');
+await drag();
+ui.el('#pdfAddStitchPart').onclick();
+await drag({x:.1,y:.54},{x:.8,y:.8});
+ui.el('#pdfAddStitchPart').onclick();
+await drag({x:.9,y:.8},{x:.99,y:.95});
+ui.el('#pdfAddStitchPart').onclick();
+const removeLast={dataset:{removeStitch:'3'}};
+ui.el('#pdfStitchParts').onclick({target:{closest:()=>removeLast}});
+await ui.el('#pdfReviewStitch').onclick();
+assert.match(ui.el('#pdfRegionText').value,/force[\s\S]*wavelength/);
+const countBeforeStitch=records.get(id).questions.length;
+await ui.el('#pdfConfirmRegion').onclick();
+const stitched=records.get(id).questions.at(-1);
+assert.equal(records.get(id).questions.length,countBeforeStitch+1);
+assert.deepEqual(stitched.parts.map(part=>part.page),[1,2,2]);
+assert.equal(ui.el('#pdfCropView').hidden,false);
+assert.match(ui.el('#pdfCropTitle').textContent,/3 段/);
+assert(ui.el('#pdfCropCanvas').height>ui.el('#pdfRegionPreview').height);
+ui.el('#pdfDownloadCrop').onclick();
+assert.equal(ui.downloads.at(-1),'拼接题目.png');
+ui.el('#pdfSaveToNotebook').checked=true;
+await ui.el('#pdfSaveQuestion').onclick();
+await ui.library.openRecord(id,stitched.id);
+assert.deepEqual(records.get(id).questions.at(-1).parts,stitched.parts,'Saving must preserve all exact crop bounds');
+assert.equal(ui.library.entries().find(question=>question.questionId===stitched.id).notebookStatus,'wrong');
+ui.el('#pdfCropPart').value='2';
+await ui.el('#pdfEditCrop').onclick();
+assert.equal(ui.el('#pdfPageNumber').value,2);
+await drag({x:.15,y:.58},{x:.75,y:.78});
+await ui.el('#pdfConfirmRegion').onclick();
+const adjusted=records.get(id).questions.at(-1);
+assert.equal(adjusted.id,stitched.id);
+assert.deepEqual(adjusted.parts.slice(0,2),stitched.parts.slice(0,2));
+assert(Math.abs(adjusted.parts[2].top-.58)<1e-8);
+assert.equal(adjusted.notebookStatus,'wrong');
+console.log('PDF stitch joins three ordered regions on two pages, previews text, exports one PNG, reopens and adjusts one piece without losing notebook status.');
 const first=[...records.values()][0];
 const target={dataset:{removePdf:first.id},closest:selector=>selector==='[data-remove-pdf]'?target:null};
 await ui.el('#pdfHistoryList').onclick({target});assert.equal(records.size,1);

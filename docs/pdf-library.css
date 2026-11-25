@@ -29,3 +29,15 @@
 .pdf-region-toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px;background:#fff9ee;border-bottom:1px solid var(--line)}.pdf-region-toolbar span{font-size:11px;line-height:1.7;color:var(--muted);flex:1;min-width:180px}.pdf-region-toolbar [aria-pressed="true"]{background:var(--green);color:white}.pdf-region-mode{touch-action:none;user-select:none;cursor:crosshair}#pdfRegionBox{position:absolute;box-sizing:border-box;border:2px solid #d87826;background:#e8963524;pointer-events:none;z-index:3}#pdfRegionReview[hidden]{display:none}#pdfRegionReview{background:#fff9ee;padding:12px;border:1px solid #e5ca9e;border-radius:8px}#pdfRegionPreview{display:block;width:100%;height:auto;background:white;border:1px solid var(--line);max-height:240px;object-fit:contain}#pdfConfirmRegion{margin-top:12px}#pdfRegionReview .quiet{width:100%}
 
 #pdfPageFrame{overflow:hidden}#pdfRegionBox{pointer-events:auto;cursor:move;box-shadow:0 0 0 9999px #12211f80;background:transparent;touch-action:none}.pdf-region-handle{position:absolute;width:13px;height:13px;min-width:0;min-height:0;margin:0;padding:0;border:2px solid #d87826;border-radius:2px;background:white;z-index:5;transform:translate(-50%,-50%);touch-action:none}.handle-nw{left:0;top:0;cursor:nwse-resize}.handle-n{left:50%;top:0;cursor:ns-resize}.handle-ne{left:100%;top:0;cursor:nesw-resize}.handle-e{left:100%;top:50%;cursor:ew-resize}.handle-se{left:100%;top:100%;cursor:nwse-resize}.handle-s{left:50%;top:100%;cursor:ns-resize}.handle-sw{left:0;top:100%;cursor:nesw-resize}.handle-w{left:0;top:50%;cursor:ew-resize}#pdfCropView{padding:18px;max-height:65vh;overflow:auto;background:#e9ece4}#pdfCropView[hidden],#pdfCanvasHost[hidden]{display:none}#pdfCropCanvas{display:block;height:auto;margin:16px auto;background:white;box-shadow:0 3px 16px #233b3630}.pdf-crop-heading{display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-size:13px}.pdf-split-tools summary{font-size:11px;color:var(--muted);cursor:pointer}
+
+.pdf-stitch-queue{padding:10px 12px;background:#f4f7eb;border-bottom:1px solid var(--line);font-size:12px}
+.pdf-stitch-actions,.pdf-stitch-queue ol{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px}
+.pdf-stitch-queue ol{margin:8px 0 0;padding:0;list-style:none;counter-reset:stitch}
+.pdf-stitch-queue li{counter-increment:stitch;padding:4px 8px;background:white;border:1px solid var(--line);border-radius:6px}
+.pdf-stitch-queue li::before{content:counter(stitch) ". ";font-weight:600}
+.pdf-stitch-queue li button{margin-left:4px}
+.pdf-crop-heading label{font-size:12px}
+.pdf-crop-heading select{margin-left:6px;padding:5px}
+#pdfRegionPreview{max-height:none}
+.pdf-region-preview-scroll{max-height:280px;overflow:auto}
+#pdfStitchQueue[hidden],#pdfQuestionPages[hidden],#pdfQuestionBounds[hidden],#pdfSplitTools[hidden],#pdfCropPartPicker[hidden],#pdfAddStitchPart[hidden]{display:none}

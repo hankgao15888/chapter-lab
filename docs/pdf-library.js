@@ -6,6 +6,8 @@
   const chapterMap=new Map(chapters.map(ch=>[ch.id,ch]));
   let recordsCache=[];
   let regionMode=false,regionDrag=null,regionDraft=null,regionBounds=null,regionEditingId=null,regionVersion=0;
+  let stitchParts=[],regionSegment=null,editingPartIndex=0,committingRegion=false,pageReady=false;
+  const maxStitchParts=30;
   let libraryPromise,ownerPromise,current=null,pdf=null,selectedId=null,renderTask=null,renderVersion=0,pageNumber=1,historyVersion=0,opening=0,busy=false;
   const hash=async bytes=>Array.from(new Uint8Array(await root.crypto.subtle.digest('SHA-256',bytes)),byte=>byte.toString(16).padStart(2,'0')).join('');
   function owner(){if(!ownerPromise)ownerPromise=hash(new TextEncoder().encode('chapterlab-pdf-owner-v1\0'+core.normalize(getOwner())));return ownerPromise;}
@@ -107,31 +109,97 @@
     }).join('')||'<div class="empty-state"><strong>还没有导入的 PDF</strong>点击「导入 PDF」，导入后可直接阅读并按章节整理。</div>';
    }catch(error){$('#pdfHistoryCount').textContent='';$('#pdfHistoryList').innerHTML=`<div class="info-box">${esc(error.message)}</div>`;}
   }
+  const isCrop=question=>Boolean(question?.parts.every(part=>part.left!==undefined&&part.right!==undefined));
+  function pageRange(parts){
+   const pages=parts.map(part=>part.page);
+   return [Math.min(...pages),Math.max(...pages)];
+  }
+  function pageLabel(parts){
+   const [first,last]=pageRange(parts);
+   return '第 '+first+(first===last?'':'–'+last)+' 页';
+  }
   function renderQuestions(){
    if(!current)return;
    const chapter=$('#pdfChapterFilter').value,type=$('#pdfTypeFilter').value,term=core.normalize($('#pdfQuestionSearch').value);
    const questions=current.questions.filter(q=>(!chapter||(chapter==='unmapped'?!q.chapters.length:q.chapters.includes(chapter)))&&(!type||q.type===type)&&(!term||core.normalize(q.label+' '+q.text+' '+q.chapters.map(id=>chapterMap.get(id)?.zh||'').join(' ')).includes(term)));
    $('#pdfQuestionCount').textContent=`共 ${current.questions.length} 个条目 · 当前 ${questions.length} 个`;
-   $('#pdfQuestionList').innerHTML=questions.map(q=>`<button type="button" class="pdf-question-item ${q.id===selectedId?'selected':''}" data-select-pdf-question="${esc(q.id)}"><strong>${esc(q.label)}</strong><small>第 ${q.parts[0].page}${q.parts.at(-1).page!==q.parts[0].page?'–'+q.parts.at(-1).page:''} 页 · ${esc(core.types[q.type])}</small><span>${q.chapters.length?q.chapters.map(id=>esc(chapterMap.get(id)?.zh||id)).join(' / '):'待归类'}</span><em>${q.savedAt?'已保存单题'+(q.notebookStatus==='wrong'?' · 待掌握':q.notebookStatus==='correct'?' · 已掌握':''):q.reviewed?'已人工核对':q.manual?'待手动拆题':'自动建议，待核对'}</em></button>`).join('')||'<p class="pdf-empty">当前筛选没有题目，可清除筛选或手动新增题目。</p>';
+   $('#pdfQuestionList').innerHTML=questions.map(q=>`<button type="button" class="pdf-question-item ${q.id===selectedId?'selected':''}" data-select-pdf-question="${esc(q.id)}"><strong>${esc(q.label)}</strong><small>${pageLabel(q.parts)} · ${esc(core.types[q.type])}</small><span>${q.chapters.length?q.chapters.map(id=>esc(chapterMap.get(id)?.zh||id)).join(' / '):'待归类'}</span><em>${q.savedAt?'已保存单题'+(q.notebookStatus==='wrong'?' · 待掌握':q.notebookStatus==='correct'?' · 已掌握':''):q.reviewed?'已人工核对':q.manual?'待手动拆题':'自动建议，待核对'}</em></button>`).join('')||'<p class="pdf-empty">当前筛选没有题目，可清除筛选或手动新增题目。</p>';
   }
   function fillEditor(question){
-   $('#pdfQuestionEditor').classList.toggle('hidden',!question);if(!question)return;
+   $('#pdfQuestionEditor').classList.toggle('hidden',!question||Boolean(stitchParts.length));if(!question)return;
+   const cropped=isCrop(question);
+   $('#pdfQuestionPages').hidden=cropped;
+   $('#pdfQuestionBounds').hidden=cropped;
+   $('#pdfSplitTools').hidden=cropped;
    $('#pdfQuestionLabel').value=question.label;
    $('#pdfStartPercent').value=Number((question.parts[0].top*100).toFixed(1));$('#pdfEndPercent').value=Number((question.parts.at(-1).bottom*100).toFixed(1));
    $('#pdfSaveToNotebook').checked=Boolean(question.notebookStatus);
    $('#pdfQuestionSaveStatus').textContent=question.savedAt?'已保存到「我的练习」'+(question.notebookStatus==='wrong'?' · 已收录，待掌握':question.notebookStatus==='correct'?' · 错题本中已掌握':' · 未收录错题'):'尚未保存为单题，核对后点击下方保存。';
-   $('#pdfFirstPage').value=question.parts[0].page;$('#pdfLastPage').value=question.parts.at(-1).page;
+   const [first,last]=pageRange(question.parts);
+   $('#pdfFirstPage').value=first;
+   $('#pdfLastPage').value=last;
    $('#pdfQuestionType').value=question.type;$('#pdfQuestionText').value=question.text;
    $('#pdfQuestionChapters').innerHTML=chapterOptions(current.subject,question.chapters);
    $('#pdfClassificationReason').textContent=question.reviewed?'已人工核对，可继续调整。':question.matchedKeywords?.length?'建议依据：'+question.matchedKeywords.join('、'):'没有足够的文字线索，请手动选择章节。';
   }
   async function selectQuestion(id){
-   cancelRegion();
+   resetStitch();
    const question=current?.questions.find(q=>q.id===id);if(!question)return;
-   selectedId=id;pageNumber=question.parts[0].page;setRegionMode(question.parts[0].left===undefined);fillEditor(question);renderQuestions();await renderPage();
+   selectedId=id;pageNumber=question.parts[0].page;setRegionMode(!isCrop(question));fillEditor(question);fillCropPicker(question);renderQuestions();await renderPage();
+  }
+  function fillCropPicker(question){
+   const stitched=isCrop(question)&&question.parts.length>1;
+   $('#pdfCropTitle').textContent=stitched?`本题截图 · 已拼接 ${question.parts.length} 段`:'本题截图';
+   $('#pdfCropPartPicker').hidden=!stitched;
+   $('#pdfCropPart').innerHTML=stitched?question.parts.map((part,index)=>`<option value="${index}">第 ${index+1} 段 · 第 ${part.page} 页</option>`).join(''):'';
+   $('#pdfCropPart').value='0';
+  }
+  function copyCanvas(source,target){
+   target.width=source.width;
+   target.height=source.height;
+   target.getContext('2d').drawImage(source,0,0);
+  }
+  async function stitchCanvas(pdfDocument,parts,maxWidth,isCurrent){
+   const regions=[];
+   for(const part of parts){
+    if(!isCurrent())return null;
+    const page=await pdfDocument.getPage(part.page);
+    const viewport=page.getViewport({scale:1});
+    regions.push({part,page,width:(part.right-part.left)*viewport.width,height:(part.bottom-part.top)*viewport.height});
+   }
+   // Keep a common PDF scale so different crop widths retain their relative sizes.
+   const gap=10;
+   const maxHeight=8192;
+   const width=Math.max(...regions.map(region=>region.width));
+   const height=regions.reduce((total,region)=>total+region.height,0);
+   const scale=Math.min(maxWidth/width,(maxHeight-(regions.length-1)*gap-regions.length)/height,3);
+   const result=document.createElement('canvas');
+   result.width=Math.ceil(width*scale);
+   result.height=regions.reduce((total,region)=>total+Math.ceil(region.height*scale),0)+(regions.length-1)*gap;
+   const context=result.getContext('2d',{alpha:false});
+   context.fillStyle='#fff';
+   context.fillRect(0,0,result.width,result.height);
+   const scratch=document.createElement('canvas');
+   let offset=0;
+   try{
+    for(const {part,page,width,height} of regions){
+     if(!isCurrent())return null;
+     const viewport=page.getViewport({scale});
+     scratch.width=Math.ceil(width*scale);
+     scratch.height=Math.ceil(height*scale);
+     const transform=[1,0,0,1,-part.left*viewport.width,-part.top*viewport.height];
+     try{
+      await page.render({canvasContext:scratch.getContext('2d',{alpha:false}),viewport,transform,background:'#fff'}).promise;
+     }finally{page.cleanup();}
+     if(!isCurrent())return null;
+     context.drawImage(scratch,0,offset);
+     offset+=scratch.height+gap;
+    }
+    return result;
+   }finally{scratch.width=1;scratch.height=1;}
   }
   async function renderPage(){
-   cancelRegion();$('#pdfDownloadCrop').disabled=true;
+   cancelRegion();pageReady=false;$('#pdfDownloadCrop').disabled=true;
    const version=++renderVersion;
    if(renderTask){renderTask.cancel();await renderTask.promise.catch(()=>{});}
    if(version!==renderVersion||!pdf||!current)return;
@@ -141,7 +209,7 @@
     const page=await documentToRender.getPage(pageNumber);
     if(version!==renderVersion){page.cleanup();return;}
     const base=page.getViewport({scale:1}),host=$('#pdfCanvasHost');
-    const width=Math.max(260,Math.min(1200,host.clientWidth||800)-24);
+    const width=Math.max(260,Math.min(1200,host.clientWidth||$('.pdf-reader-main').clientWidth||800)-24);
     const zoom=Number($('#pdfZoom').value)||1;
     const scale=Math.min(width/base.width*zoom*Math.min(root.devicePixelRatio||1,2),3000/base.width,4000/base.height);
     const viewport=page.getViewport({scale}),canvas=$('#pdfCanvas');
@@ -155,18 +223,26 @@
     const question=current.questions.find(q=>q.id===selectedId),part=question?.parts.find(part=>part.page===pageNumber);
     const highlight=$('#pdfQuestionHighlight');highlight.hidden=!part;
     if(part){highlight.style.left=((part.left||0)*100)+'%';highlight.style.right=((1-(part.right??1))*100)+'%';highlight.style.top=(part.top*100)+'%';highlight.style.height=((part.bottom-part.top)*100)+'%';}
-    if(part?.left!==undefined){
-     const crop=$('#pdfCropCanvas'),left=part.left*canvas.width,top=part.top*canvas.height,width=(part.right-part.left)*canvas.width,height=(part.bottom-part.top)*canvas.height;
+    pageReady=true;
+    const showCrop=!regionMode&&isCrop(question)&&(Boolean(part)||question.parts.length>1);
+    const crop=$('#pdfCropCanvas');
+    if(showCrop&&question.parts.length>1){
+     const stitched=await stitchCanvas(documentToRender,question.parts,1440,()=>version===renderVersion&&!regionMode);
+     if(!stitched)return;
+     copyCanvas(stitched,crop);
+     crop.style.width=Math.min(stitched.width,1100)+'px';
+    }else if(showCrop){
+     const left=part.left*canvas.width,top=part.top*canvas.height,width=(part.right-part.left)*canvas.width,height=(part.bottom-part.top)*canvas.height;
      crop.width=Math.max(1,Math.round(width));crop.height=Math.max(1,Math.round(height));crop.getContext('2d').drawImage(canvas,left,top,width,height,0,0,crop.width,crop.height);
      crop.style.width=Math.min(width,1100)+'px';crop.style.maxWidth='100%';
     }
-    $('#pdfDownloadCrop').disabled=part?.left===undefined;
-    $('#pdfCropView').hidden=regionMode||part?.left===undefined;$('#pdfCanvasHost').hidden=!$('#pdfCropView').hidden;
+    $('#pdfDownloadCrop').disabled=!showCrop;
+    $('#pdfCropView').hidden=!showCrop;$('#pdfCanvasHost').hidden=showCrop;
     $('#pdfPageStatus').textContent='第 '+pageNumber+' 页'+(part?' · '+question.label:'');
    }catch(error){if(version===renderVersion&&error.name!=='RenderingCancelledException')$('#pdfPageStatus').textContent='页面读取失败，请重试切换页码。';}
   }
   async function cleanup(){
-   cancelRegion();setRegionMode(false);
+   resetStitch();setRegionMode(false);pageReady=false;
    ++opening;++renderVersion;
    if(renderTask){renderTask.cancel();await renderTask.promise.catch(()=>{});renderTask=null;}
    const old=pdf;pdf=null;current=null;selectedId=null;if(old)await old.destroy().catch(()=>{});
@@ -186,7 +262,7 @@
     $('#pdfAnalysisNote').textContent=(record.scannedPages?'含扫描或少文字页面，可直接阅读并手动拆题。':'自动拆题和章节匹配仅为建议，请对照原 PDF 核对。')+(record.truncated?'部分文字过长未参与识别。':'');
     $('#pdfSplitLine').hidden=true;
     if(!$('#pdfViewerDialog').open)$('#pdfViewerDialog').showModal();
-    if(record.questions[0])await selectQuestion(record.questions.some(q=>q.id===questionId)?questionId:record.questions[0].id);else{fillEditor(null);renderQuestions();await renderPage();}
+    if(record.questions[0])await selectQuestion(record.questions.some(q=>q.id===questionId)?questionId:record.questions[0].id);else{setRegionMode(true);fillEditor(null);renderQuestions();await renderPage();}
    }catch(error){toast(error.message||'PDF 打开失败。');}
   }
   $('#pdfUploadInput').onchange=event=>importFiles([...event.target.files]);
@@ -199,26 +275,35 @@
     try{await store.remove(await owner(),remove.dataset.removePdf);await refresh();await renderHistory();toast('已删除本地 PDF。');}catch(error){toast(error.message);}
    }
   };
-  $('#pdfQuestionList').onclick=event=>{const button=event.target.closest('[data-select-pdf-question]');if(button)selectQuestion(button.dataset.selectPdfQuestion);};
+  $('#pdfQuestionList').onclick=event=>{
+   const button=event.target.closest('[data-select-pdf-question]');
+   if(!button||committingRegion)return;
+   if(stitchParts.length){toast('请先完成拼接，或点击「清空拼接」。');return;}
+   selectQuestion(button.dataset.selectPdfQuestion);
+  };
   ['pdfChapterFilter','pdfTypeFilter'].forEach(id=>$('#'+id).onchange=renderQuestions);$('#pdfQuestionSearch').oninput=renderQuestions;
-  $('#pdfPagePrevious').onclick=()=>{if(pageNumber>1){pageNumber--;renderPage();}};
-  $('#pdfPageNext').onclick=()=>{if(current&&pageNumber<current.pageCount){pageNumber++;renderPage();}};
-  $('#pdfPageNumber').onchange=()=>{if(current){pageNumber=Math.max(1,Math.min(current.pageCount,Math.floor(Number($('#pdfPageNumber').value))||1));renderPage();}};
+  $('#pdfPagePrevious').onclick=()=>{if(pageNumber>1){pageNumber--;return renderPage();}};
+  $('#pdfPageNext').onclick=()=>{if(current&&pageNumber<current.pageCount){pageNumber++;return renderPage();}};
+  $('#pdfPageNumber').onchange=()=>{if(current){pageNumber=Math.max(1,Math.min(current.pageCount,Math.floor(Number($('#pdfPageNumber').value))||1));return renderPage();}};
   $('#pdfZoom').onchange=renderPage;
   $('#pdfDocumentSubject').onchange=async()=>{
-   if(!current)return;cancelRegion();const subject=$('#pdfDocumentSubject').value;if(!core.subjects[subject])return;
+   if(!current)return;
+   if(committingRegion){$('#pdfDocumentSubject').value=current.subject;return;}cancelRegion();const subject=$('#pdfDocumentSubject').value;if(!core.subjects[subject])return;
    const previous=current.subject,questions=current.questions;
    current.subject=subject;current.questions=current.questions.map(q=>({...q,...core.classify(q.text,subject,chapters),reviewed:false}));
    try{await saveCurrent();$('#pdfChapterFilter').innerHTML='<option value="">全部章节</option><option value="unmapped">待归类</option>'+chapterOptions(subject);fillEditor(current.questions.find(q=>q.id===selectedId));renderQuestions();await renderHistory();toast('科目已更新，章节已重新建议。');}
    catch(error){current.subject=previous;current.questions=questions;$('#pdfDocumentSubject').value=previous;toast(error.message);}
   };
   $('#pdfSaveQuestion').onclick=async()=>{
-   if(!current)return;
+   if(!current||committingRegion)return;
    const old=current.questions.find(q=>q.id===selectedId);if(!old)return;
    try{
     const edit=core.validateEdit({number:$('#pdfQuestionLabel').value,firstPage:$('#pdfFirstPage').value,lastPage:$('#pdfLastPage').value,type:$('#pdfQuestionType').value,text:$('#pdfQuestionText').value,chapters:[...$('#pdfQuestionChapters').selectedOptions].map(option=>option.value)},current.subject,chapters,current.pageCount);
-    if(edit.parts[0].page===old.parts[0].page&&edit.parts.at(-1).page===old.parts.at(-1).page)edit.parts=old.parts;
-    edit.parts=core.editBounds(edit.parts,$('#pdfStartPercent').value,$('#pdfEndPercent').value);
+    if(isCrop(old))edit.parts=old.parts;
+    else{
+     const samePages=edit.parts[0].page===old.parts[0].page&&edit.parts.at(-1).page===old.parts.at(-1).page;
+     edit.parts=core.editBounds(samePages?old.parts:edit.parts,$('#pdfStartPercent').value,$('#pdfEndPercent').value);
+    }
     edit.savedAt=old.savedAt||new Date().toISOString();
     edit.notebookStatus=$('#pdfSaveToNotebook').checked?(old.notebookStatus||'wrong'):null;
     const updated={...old,...edit};const previous=current.questions;
@@ -235,7 +320,8 @@
    $('#pdfClassificationReason').textContent=suggestion.matchedKeywords.length?'建议依据：'+suggestion.matchedKeywords.join('、')+'。核对后请点击保存。':'没有足够的匹配线索，请手动选择章节后保存。';
   };
   $('#pdfAddQuestion').onclick=async()=>{
-   if(!current)return;
+   if(!current||committingRegion)return;
+   if(stitchParts.length){toast('请先完成拼接，或点击「清空拼接」。');return;}
    const previous=current.questions;
    const question={id:'manual-'+root.crypto.randomUUID(),label:'新题目',number:null,parts:[{page:pageNumber,top:0,bottom:1}],text:'',chapters:[],type:'other',reviewed:false,manual:true};
    current.questions=[...current.questions,question];
@@ -243,14 +329,14 @@
    catch(error){current.questions=previous;toast(error.message);}
   };
   $('#pdfDeleteQuestion').onclick=async()=>{
-   if(!current||!selectedId||!root.confirm('删除这道题及其错题记录？PDF 原文件会保留。'))return;
+   if(!current||!selectedId||committingRegion||!root.confirm('删除这道题及其错题记录？PDF 原文件会保留。'))return;
    const previous=current.questions;current.questions=current.questions.filter(q=>q.id!==selectedId);
    try{await saveCurrent();selectedId=null;fillEditor(null);renderQuestions();await renderHistory();await renderPage();}
    catch(error){current.questions=previous;toast(error.message);}
   };
   function questionCard(q,notebook=false){
    const status=q.notebookStatus;
-   return `<article class="pdf-saved-question"><div><span class="badge">本地 PDF · ${esc(core.subjects[q.subject])}</span><h3>${esc(q.label)}</h3><small>${esc(q.title)} · 第 ${q.parts[0].page}–${q.parts.at(-1).page} 页 · ${esc(core.types[q.type])}</small><p>${q.chapters.map(id=>esc(chapterMap.get(id)?.zh||id)).join(' / ')||'待归类'}</p><pre>${esc(q.text.slice(0,500)||'扫描题目，请打开原题查看。')}</pre></div><div class="pdf-row-actions"><button class="primary" data-pdf-open-question="${esc(q.questionId)}" data-pdf-document="${esc(q.documentId)}">查看这道题 →</button><button data-pdf-status="${status?'remove':'wrong'}" data-pdf-question="${esc(q.questionId)}" data-pdf-document="${esc(q.documentId)}">${status?'移出错题本':'＋ 收录错题'}</button>${status?`<button data-pdf-status="${status==='correct'?'wrong':'correct'}" data-pdf-question="${esc(q.questionId)}" data-pdf-document="${esc(q.documentId)}">${status==='correct'?'↺ 仍需复习':'✓ 我已掌握'}</button>`:''}</div></article>`;
+   return `<article class="pdf-saved-question"><div><span class="badge">本地 PDF · ${esc(core.subjects[q.subject])}</span><h3>${esc(q.label)}</h3><small>${esc(q.title)} · ${pageLabel(q.parts)} · ${esc(core.types[q.type])}</small><p>${q.chapters.map(id=>esc(chapterMap.get(id)?.zh||id)).join(' / ')||'待归类'}</p><pre>${esc(q.text.slice(0,500)||'扫描题目，请打开原题查看。')}</pre></div><div class="pdf-row-actions"><button class="primary" data-pdf-open-question="${esc(q.questionId)}" data-pdf-document="${esc(q.documentId)}">查看这道题 →</button><button data-pdf-status="${status?'remove':'wrong'}" data-pdf-question="${esc(q.questionId)}" data-pdf-document="${esc(q.documentId)}">${status?'移出错题本':'＋ 收录错题'}</button>${status?`<button data-pdf-status="${status==='correct'?'wrong':'correct'}" data-pdf-question="${esc(q.questionId)}" data-pdf-document="${esc(q.documentId)}">${status==='correct'?'↺ 仍需复习':'✓ 我已掌握'}</button>`:''}</div></article>`;
   }
   async function handleAction(event){
    const button=event.target.closest('[data-pdf-open-question], [data-pdf-status]');if(!button)return;
@@ -265,15 +351,17 @@
    regionMode=enabled;$('#pdfRegionMode').setAttribute('aria-pressed',String(enabled));$('#pdfPageFrame').classList.toggle('pdf-region-mode',enabled);
    $('#pdfRegionStatus').textContent=enabled?'拖动鼠标画截图框；拉边角调整大小，拖动框内移动；按 Esc 取消。':'点击「截图框选」在原页画方框。';
    if(enabled)$('#pdfSplitLine').hidden=true;
-   const part=current?.questions.find(q=>q.id===selectedId)?.parts.find(p=>p.page===pageNumber);
-   const isolated=!enabled&&part?.left!==undefined;$('#pdfCropView').hidden=!isolated;$('#pdfCanvasHost').hidden=isolated;
+   const question=current?.questions.find(q=>q.id===selectedId);
+   const part=question?.parts.find(p=>p.page===pageNumber);
+   const isolated=!enabled&&isCrop(question)&&(Boolean(part)||question.parts.length>1);$('#pdfCropView').hidden=!isolated;$('#pdfCanvasHost').hidden=isolated;
   }
   function cancelRegion(){
    ++regionVersion;
-   const pointer=regionDrag?.pointerId;regionDrag=null;regionDraft=null;regionBounds=null;regionEditingId=null;
+   const pointer=regionDrag?.pointerId;regionDrag=null;regionDraft=null;regionSegment=null;regionBounds=null;regionEditingId=null;
    if(pointer!==undefined&&$('#pdfPageFrame').hasPointerCapture?.(pointer))$('#pdfPageFrame').releasePointerCapture(pointer);
-   $('#pdfRegionBox').hidden=true;$('#pdfRegionReview').hidden=true;$('#pdfQuestionEditor').classList.toggle('hidden',!current?.questions.some(q=>q.id===selectedId));$('#pdfCancelRegion').disabled=true;$('#pdfConfirmRegion').disabled=false;$('#pdfConfirmRegion').textContent='确认框选，建立题目';
+   $('#pdfRegionBox').hidden=true;$('#pdfRegionReview').hidden=true;$('#pdfQuestionEditor').classList.toggle('hidden',Boolean(stitchParts.length)||!current?.questions.some(q=>q.id===selectedId));$('#pdfCancelRegion').disabled=true;$('#pdfConfirmRegion').disabled=false;$('#pdfConfirmRegion').textContent='确认框选，建立题目';
    const preview=$('#pdfRegionPreview');preview.width=1;preview.height=1;
+   updateStitchControls();
   }
   function point(event){
    const bounds=$('#pdfCanvas').getBoundingClientRect();
@@ -282,40 +370,134 @@
   function drawRegion(region){
    regionBounds={...region};const box=$('#pdfRegionBox');box.hidden=false;box.style.left=region.left*100+'%';box.style.top=region.top*100+'%';box.style.width=(region.right-region.left)*100+'%';box.style.height=(region.bottom-region.top)*100+'%';
   }
+  function updateStitchControls(){
+   const count=stitchParts.length;
+   $('#pdfStitchQueue').hidden=!count;
+   $('#pdfStitchCount').textContent=`已加入 ${count} 段 · 按加入顺序从上到下拼接`;
+   $('#pdfStitchParts').innerHTML=stitchParts.map(({part},index)=>`<li>第 ${part.page} 页 <button class="text-button" type="button" data-remove-stitch="${index}" aria-label="移除片段 ${index+1}">移除</button></li>`).join('');
+   $('#pdfAddStitchPart').hidden=!regionSegment||Boolean(regionEditingId);
+   $('#pdfAddStitchPart').disabled=committingRegion||count>=maxStitchParts;
+   $('#pdfReviewStitch').disabled=committingRegion||Boolean(regionBounds);
+   $('#pdfClearStitch').disabled=committingRegion;
+  }
+  function resetStitch(){
+   stitchParts=[];
+   cancelRegion();
+  }
+  function fillRegionReview(draft,buttonLabel,reason){
+   regionDraft=draft;
+   $('#pdfConfirmRegion').textContent=buttonLabel;
+   $('#pdfRegionLabel').value=draft.label;
+   $('#pdfRegionChapters').innerHTML=chapterOptions(current.subject,draft.chapters);
+   $('#pdfRegionType').value=draft.type;
+   $('#pdfRegionText').value=draft.text;
+   $('#pdfRegionReason').textContent=reason;
+   $('#pdfRegionReview').hidden=false;
+   $('#pdfQuestionEditor').classList.toggle('hidden',true);
+  }
+  function classificationReason(draft){
+   if(!draft.text)return '没有可提取文字，可按截图手动分类。';
+   return draft.matchedKeywords?.length?'建议依据：'+draft.matchedKeywords.join('、')+'。章节和题型均可修改。':'暂未匹配到章节，可手动选择。';
+  }
   async function recognizeRegion(region,page){
-   const version=++regionVersion,documentId=current?.id,documentToRead=pdf;
+   const version=++regionVersion,record=current,documentToRead=pdf;
    $('#pdfRegionStatus').textContent='正在读取框内文字并建议章节…';
    try{
-    const source=await documentToRead.getPage(page),viewport=source.getViewport({scale:1});let text='',unreadable=false;
-    try{const content=await source.getTextContent();text=core.regionText(content.items,viewport,region);}catch{unreadable=true;}
-    if(version!==regionVersion||current?.id!==documentId||pageNumber!==page)return;
+    const source=await documentToRead.getPage(page),viewport=source.getViewport({scale:1});
+    let text='';
+    try{const content=await source.getTextContent();text=core.regionText(content.items,viewport,region);}catch{}finally{source.cleanup();}
+    if(version!==regionVersion||current!==record||pageNumber!==page)return;
     const editing=current.questions.find(q=>q.id===regionEditingId);
-    regionDraft=core.regionQuestion(region,page,text,current.subject,chapters,editing?.id||'manual-'+root.crypto.randomUUID());
-    if(editing){regionDraft={...regionDraft,savedAt:editing.savedAt,notebookStatus:editing.notebookStatus};}
-    $('#pdfConfirmRegion').textContent=editing?'确认调整，更新截图':'确认框选，建立题目';
-    $('#pdfRegionLabel').value=editing?.label||'框选题目';$('#pdfRegionChapters').innerHTML=chapterOptions(current.subject,regionDraft.chapters);$('#pdfRegionType').value=regionDraft.type;$('#pdfRegionText').value=text;
-    $('#pdfRegionReason').textContent=text?(regionDraft.matchedKeywords.length?'建议依据：'+regionDraft.matchedKeywords.join('、')+'。章节和题型均可修改。':'框内文字已读取，暂未匹配到章节，请手动选择。'):(unreadable?'文字读取失败。':'框内没有可提取文字，可能是扫描页。')+'可按原图手动分类或粘贴文字，未启用扫描文字识别。';
+    let draft=core.regionQuestion(region,page,text,current.subject,chapters,editing?.id||'manual-'+root.crypto.randomUUID());
+    if(editing){
+     const parts=editing.parts.map((part,index)=>index===editingPartIndex?draft.parts[0]:part);
+     draft={...editing,parts};
+     if(parts.length===1)draft={...draft,text};
+    }
     const canvas=$('#pdfCanvas'),preview=$('#pdfRegionPreview'),width=(region.right-region.left)*canvas.width,height=(region.bottom-region.top)*canvas.height,scale=Math.min(1,600/width);
     preview.width=Math.max(1,Math.round(width*scale));preview.height=Math.max(1,Math.round(height*scale));
     preview.getContext('2d').drawImage(canvas,region.left*canvas.width,region.top*canvas.height,width,height,0,0,preview.width,preview.height);
-    $('#pdfRegionReview').hidden=false;$('#pdfQuestionEditor').classList.toggle('hidden',true);$('#pdfRegionStatus').textContent='第 '+page+' 页截图框已就绪。可拉动八个控制点调整大小，拖动框内移动，确认后保存独立题目截图。';
+    regionSegment={part:{page,...region},text};
+    if(!stitchParts.length)fillRegionReview(draft,editing?'确认调整，更新截图':'确认框选，建立题目',classificationReason(draft));
+    updateStitchControls();
+    $('#pdfRegionStatus').textContent=stitchParts.length?'点击「加入拼接」收录当前框选，然后继续截图或预览拼接。':'可调整方框。跨页题请点击「加入拼接」，单段题可直接确认。';
    }catch(error){if(version===regionVersion){$('#pdfRegionStatus').textContent='框选识别失败，请取消后重试。';toast(error.message||'框选识别失败。');}}
   }
-  async function editCrop(editExisting=true){
-   cancelRegion();regionEditingId=editExisting?selectedId:null;setRegionMode(true);const part=current?.questions.find(q=>q.id===selectedId)?.parts.find(p=>p.page===pageNumber);
-   if(part?.left!==undefined){const {left,right,top,bottom}=part;drawRegion({left,right,top,bottom});$('#pdfCancelRegion').disabled=false;await recognizeRegion({left,right,top,bottom},pageNumber);}
+  $('#pdfAddStitchPart').onclick=()=>{
+   if(!regionSegment||regionEditingId||committingRegion||stitchParts.length>=maxStitchParts)return;
+   const text=regionDraft?$('#pdfRegionText').value:regionSegment.text;
+   stitchParts.push({...regionSegment,text});
+   cancelRegion();
+   $('#pdfRegionStatus').textContent=stitchParts.length===maxStitchParts?'已达到 30 段，请预览拼接。':'已加入。继续框选下一段，或点击「预览拼接」。';
+  };
+  $('#pdfStitchParts').onclick=event=>{
+   const button=event.target.closest('[data-remove-stitch]');
+   if(!button||committingRegion)return;
+   stitchParts.splice(Number(button.dataset.removeStitch),1);
+   cancelRegion();
+   $('#pdfRegionStatus').textContent='已移除片段，可继续框选。';
+  };
+  $('#pdfClearStitch').onclick=()=>{
+   if(committingRegion)return;
+   resetStitch();
+   $('#pdfRegionStatus').textContent='已清空拼接，可重新框选。';
+  };
+  $('#pdfReviewStitch').onclick=async()=>{
+   if(!current||!stitchParts.length||regionBounds||committingRegion)return;
+   cancelRegion();
+   const version=regionVersion;
+   const reviewIsCurrent=()=>version===regionVersion;
+   const parts=stitchParts.map(segment=>segment.part);
+   const text=stitchParts.map(segment=>segment.text.trim()).filter(Boolean).join('\n\n').slice(0,20000);
+   const draft=core.regionQuestion(parts[0],parts[0].page,text,current.subject,chapters,'manual-'+root.crypto.randomUUID());
+   draft.parts=parts;
+   draft.label=parts.length>1?'拼接题目':'框选题目';
+   $('#pdfRegionStatus').textContent='正在生成拼接预览…';
+   try{
+    const preview=await stitchCanvas(pdf,parts,600,reviewIsCurrent);
+    if(!preview)return;
+    copyCanvas(preview,$('#pdfRegionPreview'));
+    fillRegionReview(draft,'确认拼接，建立题目',classificationReason(draft));
+    $('#pdfRegionStatus').textContent=`已拼接 ${parts.length} 段。请核对预览、章节和题型。`;
+    $('#pdfRegionReview').scrollIntoView({block:'nearest'});
+   }catch(error){if(reviewIsCurrent()){toast(error.message||'拼接预览失败，请重试。');$('#pdfRegionStatus').textContent='拼接预览失败，请重试。';}}
+  };
+  async function editCrop(){
+   const question=current?.questions.find(q=>q.id===selectedId);
+   const index=Number($('#pdfCropPart').value)||0;
+   const part=question?.parts[index];
+   if(part?.left===undefined)return;
+   setRegionMode(true);
+   pageNumber=part.page;
+   await renderPage();
+   if(current?.questions.find(q=>q.id===selectedId)!==question||!pageReady||pageNumber!==part.page||!regionMode)return;
+   regionEditingId=question.id;
+   editingPartIndex=index;
+   const {left,right,top,bottom}=part;
+   drawRegion({left,right,top,bottom});
+   $('#pdfCancelRegion').disabled=false;
+   await recognizeRegion({left,right,top,bottom},pageNumber);
   }
-  $('#pdfEditCrop').onclick=()=>editCrop(true);
-  $('#pdfRegionMode').onclick=()=>{if(regionMode){cancelRegion();setRegionMode(false);}else editCrop(false);};
-  $('#pdfDownloadCrop').onclick=()=>{if(!$('#pdfCropView').hidden)$('#pdfCropCanvas').toBlob(blob=>{if(blob)download(blob,(current?.questions.find(q=>q.id===selectedId)?.label||'题目截图')+'.png');},'image/png');};
+  $('#pdfEditCrop').onclick=editCrop;
+  $('#pdfRegionMode').onclick=()=>{
+   if(stitchParts.length){toast('请先完成拼接，或点击「清空拼接」。');return;}
+   cancelRegion();
+   setRegionMode(!regionMode);
+   if(!regionMode)return renderPage();
+  };
+  $('#pdfDownloadCrop').onclick=()=>{
+   if($('#pdfCropView').hidden||$('#pdfDownloadCrop').disabled)return;
+   const name=(current?.questions.find(q=>q.id===selectedId)?.label||'题目截图')+'.png';
+   $('#pdfCropCanvas').toBlob(blob=>{if(blob)download(blob,name);else toast('截图导出失败，请重试。');},'image/png');
+  };
   $('#pdfCancelRegion').onclick=()=>{cancelRegion();$('#pdfRegionStatus').textContent='已取消框选，未修改原有题目。可以重新拖动框选。';};
   $('#pdfPageFrame').onpointerdown=event=>{
-   if(!regionMode||!current||!pdf||renderTask||(event.button!==undefined&&event.button!==0)||event.isPrimary===false)return;
+   if(!regionMode||!current||!pdf||!pageReady||committingRegion||renderTask||(event.button!==undefined&&event.button!==0)||event.isPrimary===false)return;
    event.preventDefault();const start=point(event);if(!Number.isFinite(start.x)||!Number.isFinite(start.y))return;
    const handle=event.target?.closest?.('[data-region-handle]')?.dataset.regionHandle;
    const inside=event.target?.closest?.('#pdfRegionBox');
    const previous=regionBounds?{...regionBounds}:null,kind=previous&&(handle||inside)?handle||'move':'draw';
-   if(kind==='draw'){const editing=regionEditingId;cancelRegion();regionEditingId=editing;}else{++regionVersion;regionDraft=null;$('#pdfRegionReview').hidden=true;$('#pdfConfirmRegion').disabled=true;}
+   if(kind==='draw'){const editing=regionEditingId;cancelRegion();regionEditingId=editing;}else{++regionVersion;regionDraft=null;regionSegment=null;updateStitchControls();$('#pdfRegionReview').hidden=true;$('#pdfConfirmRegion').disabled=true;}
    regionDrag={kind,original:previous,start,end:start,page:pageNumber,pointerId:event.pointerId};$('#pdfPageFrame').setPointerCapture?.(event.pointerId);$('#pdfCancelRegion').disabled=false;
   };
   function draggedRegion(drag,end){
@@ -333,26 +515,31 @@
   };
   $('#pdfPageFrame').onpointercancel=()=>cancelRegion();
   $('#pdfPageFrame').onlostpointercapture=()=>{if(regionDrag)cancelRegion();};
-  $('#pdfViewerDialog').addEventListener('cancel',event=>{if(regionMode||regionDraft||regionDrag){event.preventDefault();cancelRegion();setRegionMode(false);}});
-  $('#pdfViewerDialog').addEventListener('keydown',event=>{if(event.key==='Escape'&&(regionMode||regionDraft||regionDrag)){event.preventDefault();cancelRegion();setRegionMode(false);}});
+  $('#pdfViewerDialog').addEventListener('cancel',event=>{if(regionMode||regionDraft||regionDrag){event.preventDefault();cancelRegion();if(!stitchParts.length){setRegionMode(false);renderPage();}}});
+  $('#pdfViewerDialog').addEventListener('keydown',event=>{if(event.key==='Escape'&&(regionMode||regionDraft||regionDrag)){event.preventDefault();cancelRegion();if(!stitchParts.length){setRegionMode(false);renderPage();}}});
   $('#pdfRegionSuggest').onclick=()=>{
    if(!current||!regionDraft)return;const text=$('#pdfRegionText').value,suggestion=core.classify(text,current.subject,chapters);
    $('#pdfRegionChapters').innerHTML=chapterOptions(current.subject,suggestion.chapters);$('#pdfRegionType').value=core.questionType(text);$('#pdfRegionReason').textContent=suggestion.matchedKeywords.length?'建议依据：'+suggestion.matchedKeywords.join('、'):'没有足够线索，请手动选择章节。';
   };
   $('#pdfConfirmRegion').onclick=async()=>{
-   if(!current||!regionDraft)return;const record=current,previous=current.questions,draft=regionDraft,editing=regionEditingId;
+   if(!current||!regionDraft||committingRegion)return;const record=current,previous=current.questions,draft=regionDraft,editing=regionEditingId;
    const label=$('#pdfRegionLabel').value.trim();if(!label){toast('请填写题目名称。');return;}
    const allowed=new Set(chapters.filter(ch=>ch.subject===record.subject).map(ch=>ch.id));
    const question={...draft,label:label.slice(0,30),text:$('#pdfRegionText').value.slice(0,20000),chapters:[...$('#pdfRegionChapters').selectedOptions].map(option=>option.value).filter(id=>allowed.has(id)),type:core.types[$('#pdfRegionType').value]?$('#pdfRegionType').value:'other'};
-   $('#pdfConfirmRegion').disabled=true;record.questions=editing?previous.map(q=>q.id===editing?question:q):[...previous,question];
+   committingRegion=true;
+   $('#pdfConfirmRegion').disabled=true;
+   updateStitchControls();
+   const questions=editing?previous.map(q=>q.id===editing?question:q):[...previous,question];
    try{
-    await store.update(await owner(),metadata(record));cacheRecord(record);
+    await store.update(await owner(),metadata({...record,questions}));
+    record.questions=questions;
+    cacheRecord(record);
     if(current===record){cancelRegion();setRegionMode(false);$('#pdfChapterFilter').value='';$('#pdfTypeFilter').value='';$('#pdfQuestionSearch').value='';await selectQuestion(question.id);}
-    await renderHistory();toast(editing?'题目截图已更新，原错题状态已保留。':'已建立独立题目截图。可修改分类，再保存单题或收录错题。');
-   }catch(error){record.questions=previous;toast(error.message);}finally{$('#pdfConfirmRegion').disabled=false;}
+    await renderHistory();toast(editing?'题目截图已更新，原错题状态已保留。':(question.parts.length>1?'已拼成一道完整题目，可保存或收录错题。':'已建立独立题目截图，可保存或收录错题。'));
+   }catch(error){toast(error.message);}finally{committingRegion=false;$('#pdfConfirmRegion').disabled=false;updateStitchControls();}
   };
   $('#pdfSplitQuestion').onclick=async()=>{
-   if(!current)return;const old=current.questions.find(q=>q.id===selectedId);if(!old)return;
+   if(!current||committingRegion)return;const old=current.questions.find(q=>q.id===selectedId);if(!old||isCrop(old))return;
    if(old.savedAt&&!root.confirm('拆分会替换这道已保存题目，并清除它原来的错题状态。拆分后请分别保存，继续吗？'))return;
    const previous=current.questions;
    try{
