@@ -1,0 +1,7 @@
+{
+  "name": "chapter-lab-private-file-sync",
+  "main": "worker.mjs",
+  "compatibility_date": "2026-11-25",
+  "vars": { "SYNC_ORIGINS": "https://hankgao15888.github.io" },
+  "r2_buckets": [{ "binding": "PRIVATE_FILES", "bucket_name": "chapter-lab-private-sync" }]
+}

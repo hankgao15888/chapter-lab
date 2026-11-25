@@ -26,6 +26,7 @@
   }
   const acquirePDF=loadDocument||loadPDF;
   const questionAnswers=root.ChapterLabPDFQuestionAnswers.create({store,owner,loadPDF:acquirePDF,download});
+  root.ChapterLabFileSync.create({store,owner,download,onRestored:renderHistory});
   function metadata(record){const {blob,...meta}=record;return meta;}
   async function refresh(){recordsCache=await store.list(await owner());onChange();}
   function entries(){return core.questionEntries(recordsCache);}
@@ -107,7 +108,7 @@
     $('#pdfSavedQuestionList').innerHTML=saved.map(q=>questionCard(q)).join('')||'<p class="pdf-local-note">拆题后点击「保存这道题」，就会出现在这里；可同时选择收录错题。</p>';
     $('#pdfHistoryList').innerHTML=visible.map(record=>{
      const classified=record.questions.filter(q=>q.chapters.length).length;
-     return `<article class="pdf-history-row"><div class="pdf-file-icon" aria-hidden="true">PDF</div><div><button class="pdf-title-button" data-open-pdf="${esc(record.id)}">${esc(record.title)}</button><p>${esc(core.subjects[record.subject])} · ${record.pageCount} 页 · ${record.questions.length} 个题目 / 页面条目 · ${classified} 个有章节</p><small>${record.scannedPages?'含 '+record.scannedPages+' 页扫描或少文字内容，需手动核对':'文字识别与章节为自动建议，可在阅读器调整'}</small></div><div class="pdf-row-actions"><button class="primary" data-open-pdf="${esc(record.id)}">直接查看 →</button><button class="text-button" data-remove-pdf="${esc(record.id)}">删除</button></div></article>`;
+     return `<article class="pdf-history-row"><div class="pdf-file-icon" aria-hidden="true">PDF</div><div><button class="pdf-title-button" data-open-pdf="${esc(record.id)}">${esc(record.title)}${record.id.includes(':sync-')?'（同步副本）':''}</button><p>${esc(core.subjects[record.subject])} · ${record.pageCount} 页 · ${record.questions.length} 个题目 / 页面条目 · ${classified} 个有章节</p><small>${record.scannedPages?'含 '+record.scannedPages+' 页扫描或少文字内容，需手动核对':'文字识别与章节为自动建议，可在阅读器调整'}</small></div><div class="pdf-row-actions"><button class="primary" data-open-pdf="${esc(record.id)}">直接查看 →</button><button class="text-button" data-remove-pdf="${esc(record.id)}">删除</button></div></article>`;
     }).join('')||'<div class="empty-state"><strong>还没有导入的 PDF</strong>点击「导入 PDF」，导入后可直接阅读并按章节整理。</div>';
    }catch(error){$('#pdfHistoryCount').textContent='';$('#pdfHistoryList').innerHTML=`<div class="info-box">${esc(error.message)}</div>`;}
   }
@@ -382,7 +383,7 @@
   };
   function questionCard(q,notebook=false){
    const status=q.notebookStatus;
-   return `<article class="pdf-saved-question"><div><span class="badge">本地 PDF · ${esc(core.subjects[q.subject])}</span><h3>${esc(q.label)}</h3><small>${esc(q.title)} · ${pageLabel(q.parts)} · ${esc(core.types[q.type])}</small><p>${q.chapters.map(id=>esc(chapterMap.get(id)?.zh||id)).join(' / ')||'待归类'}</p><pre>${esc(q.text.slice(0,500)||'扫描题目，请打开原题查看。')}</pre></div><div class="pdf-row-actions"><button class="primary" data-pdf-open-question="${esc(q.questionId)}" data-pdf-document="${esc(q.documentId)}">查看这道题 →</button><button data-pdf-status="${status?'remove':'wrong'}" data-pdf-question="${esc(q.questionId)}" data-pdf-document="${esc(q.documentId)}">${status?'移出错题本':'＋ 收录错题'}</button>${status?`<button data-pdf-status="${status==='correct'?'wrong':'correct'}" data-pdf-question="${esc(q.questionId)}" data-pdf-document="${esc(q.documentId)}">${status==='correct'?'↺ 仍需复习':'✓ 我已掌握'}</button>`:''}</div></article>`;
+   return `<article class="pdf-saved-question"><div><span class="badge">本地 PDF · ${esc(core.subjects[q.subject])}</span><h3>${esc(q.label)}</h3><small>${esc(q.title)}${q.documentId.includes(':sync-')?'（同步副本）':''} · ${pageLabel(q.parts)} · ${esc(core.types[q.type])}</small><p>${q.chapters.map(id=>esc(chapterMap.get(id)?.zh||id)).join(' / ')||'待归类'}</p><pre>${esc(q.text.slice(0,500)||'扫描题目，请打开原题查看。')}</pre></div><div class="pdf-row-actions"><button class="primary" data-pdf-open-question="${esc(q.questionId)}" data-pdf-document="${esc(q.documentId)}">查看这道题 →</button><button data-pdf-status="${status?'remove':'wrong'}" data-pdf-question="${esc(q.questionId)}" data-pdf-document="${esc(q.documentId)}">${status?'移出错题本':'＋ 收录错题'}</button>${status?`<button data-pdf-status="${status==='correct'?'wrong':'correct'}" data-pdf-question="${esc(q.questionId)}" data-pdf-document="${esc(q.documentId)}">${status==='correct'?'↺ 仍需复习':'✓ 我已掌握'}</button>`:''}</div></article>`;
   }
   async function handleAction(event){
    const button=event.target.closest('[data-pdf-open-question], [data-pdf-status]');if(!button)return;

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="登录 Chapter Lab 后，按 OxfordAQA 官方单元筛选物理、数学、进阶数学、化学、生物与经济真题，跨考试局生成章节练习卷，并在公共聊天自习室交流。"><title>Chapter Lab · 学员登录</title><link rel="stylesheet" href="style.css?v=1.21.0"><link rel="stylesheet" href="study-room.css?v=1.21.0"><link rel="stylesheet" href="auth.css?v=1.21.0"><link rel="stylesheet" href="notebook.css?v=1.21.0"><link rel="stylesheet" href="pdf-library.css?v=1.21.0"><link rel="stylesheet" href="study-assistant.css?v=1.21.0"></head>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="登录 Chapter Lab 后，按 OxfordAQA 官方单元筛选物理、数学、进阶数学、化学、生物与经济真题，跨考试局生成章节练习卷，并在公共聊天自习室交流。"><title>Chapter Lab · 学员登录</title><link rel="stylesheet" href="style.css?v=1.22.0"><link rel="stylesheet" href="study-room.css?v=1.22.0"><link rel="stylesheet" href="auth.css?v=1.22.0"><link rel="stylesheet" href="notebook.css?v=1.22.0"><link rel="stylesheet" href="pdf-library.css?v=1.22.0"><link rel="stylesheet" href="study-assistant.css?v=1.22.0"></head>
 <body class="auth-locked">
 <section id="authGate" class="auth-gate" aria-labelledby="authHeadline">
 <div class="auth-visual">
@@ -52,7 +52,7 @@
 </div>
 </section>
 <section id="papersView" class="view hidden"><div class="panel-heading"><div><h2>整卷档案</h2><p>网站公开目录中的原卷与评分标准；只有标记「已拆题」的试卷进入章节题库。</p></div><input id="paperSearch" placeholder="搜索年份、单元或卷号" aria-label="搜索原卷"></div><div id="paperList"></div><div id="paperPagination"></div></section>
-<section id="historyView" class="view hidden"><div class="panel-heading"><div><h2>我的练习</h2><p>练习卷、错题与章节调整保存在当前浏览器。导出备份可迁移到其他设备。</p></div><div><button class="quiet" id="backupBtn">导出备份</button><label class="button">导入备份<input type="file" id="restoreInput" accept="application/json" hidden></label></div></div><section class="pdf-history-section" aria-labelledby="pdfHistoryTitle"><div class="pdf-history-heading"><div><h3 id="pdfHistoryTitle">我导入的 PDF</h3><p id="pdfHistoryCount" role="status" aria-live="polite"></p></div><div><select id="pdfHistorySubject" aria-label="按科目筛选 PDF"><option value="">全部科目</option><option value="physics">物理</option><option value="mathematics">数学</option><option value="furthermathematics">进阶数学</option><option value="chemistry">化学</option><option value="biology">生物</option><option value="economics">经济</option></select><button type="button" class="primary" id="pdfUploadHistory">＋ 导入 PDF</button></div></div><p class="pdf-local-note">PDF 按登录学员保存在当前浏览器，刷新后可继续阅读；不会上传到公共题库，也不会随账号自动同步到其他设备。JSON 练习备份不包含 PDF 原文件，请自行保留。</p><div id="pdfHistoryList"></div><div class="pdf-history-heading"><h3>已保存的单题</h3><span id="pdfSavedQuestionCount" class="pdf-local-note"></span></div><div id="pdfSavedQuestionList"></div></section><h3 class="pdf-saved-paper-heading">我保存的练习卷</h3><div id="historyList"></div></section>
+<section id="historyView" class="view hidden"><div class="panel-heading"><div><h2>我的练习</h2><p>练习卷、错题与章节调整保存在当前浏览器。导出备份可迁移到其他设备。</p></div><div><button class="quiet" id="backupBtn">导出备份</button><label class="button">导入备份<input type="file" id="restoreInput" accept="application/json" hidden></label></div></div><section class="pdf-history-section" aria-labelledby="pdfHistoryTitle"><div class="pdf-history-heading"><div><h3 id="pdfHistoryTitle">我导入的 PDF</h3><p id="pdfHistoryCount" role="status" aria-live="polite"></p></div><div><select id="pdfHistorySubject" aria-label="按科目筛选 PDF"><option value="">全部科目</option><option value="physics">物理</option><option value="mathematics">数学</option><option value="furthermathematics">进阶数学</option><option value="chemistry">化学</option><option value="biology">生物</option><option value="economics">经济</option></select><button type="button" class="quiet" id="fileSyncOpen">文件同步</button><button type="button" class="primary" id="pdfUploadHistory">＋ 导入 PDF</button></div></div><p class="pdf-local-note">PDF 按学员保存在当前浏览器。换设备可在「文件同步」中迁移原 PDF、已拆单题和答案。</p><div id="pdfHistoryList"></div><div class="pdf-history-heading"><h3>已保存的单题</h3><span id="pdfSavedQuestionCount" class="pdf-local-note"></span></div><div id="pdfSavedQuestionList"></div></section><h3 class="pdf-saved-paper-heading">我保存的练习卷</h3><div id="historyList"></div></section>
 <section id="studyView" class="view hidden">
 <div class="study-hero"><div><div class="eyebrow">PUBLIC STUDY ROOM · 无需注册</div><h2>把“一个人学”变成<em>一起坚持。</em></h2><p>聊聊卡住的题、交换思路，或只是安静地打卡。这里是一间公开、临时的自习室。</p></div><div id="studyRelay" class="study-relay" data-state="connecting" role="status" aria-live="polite"><span></span><strong>正在连接</strong><small>公共消息中继</small></div></div>
 <div class="study-shell">
@@ -81,6 +81,34 @@
  <ol id="pdfStitchParts" aria-label="截图拼接顺序"></ol>
 </section>
 <div id="pdfPageToolbar" class="pdf-page-toolbar"><button id="pdfBackToCrop" class="quiet" type="button" hidden>← 返回题目截图</button><button id="pdfPagePrevious" class="quiet" type="button" aria-label="上一页 PDF">← 上一页</button><label>页码 <input id="pdfPageNumber" type="number" min="1" value="1" aria-label="PDF 页码"><span id="pdfPageTotal"></span></label><button id="pdfPageNext" class="quiet" type="button" aria-label="下一页 PDF">下一页 →</button><label>缩放<select id="pdfZoom"><option value="1">适合宽度</option><option value="1.25">125%</option><option value="1.5">150%</option></select></label><button id="pdfQuestionAnswer" class="quiet" type="button" hidden>单题答案</button></div><p id="pdfPageStatus" class="pdf-page-status" role="status" aria-live="polite"></p><section id="pdfCropView" hidden><div class="pdf-crop-heading"><strong id="pdfCropTitle">本题截图</strong><button id="pdfViewOriginal" type="button" class="primary">查看原试卷</button><button id="pdfCropAnswer" class="quiet" type="button">单题答案</button><button id="pdfCropDetails" type="button" class="quiet" aria-expanded="false" aria-controls="pdfQuestionEditor">编辑题目</button><label id="pdfCropPartPicker" hidden>调整片段 <select id="pdfCropPart"></select></label><button id="pdfEditCrop" type="button" class="quiet">重新框选 / 调整范围</button><button id="pdfDownloadCrop" type="button" class="quiet">下载题目截图</button></div><canvas id="pdfCropCanvas" aria-label="独立题目截图"></canvas></section><div id="pdfCanvasHost"><div id="pdfPageFrame"><canvas id="pdfCanvas" aria-label="PDF 原始页面"></canvas><div id="pdfQuestionHighlight" hidden aria-hidden="true"></div><div id="pdfSplitLine" hidden aria-hidden="true"></div><div id="pdfRegionBox" hidden><button type="button" class="pdf-region-handle handle-nw" data-region-handle="nw" aria-label="调整截图框左上角" title="拖动调整范围"></button><button type="button" class="pdf-region-handle handle-n" data-region-handle="n" aria-label="调整截图框上边" title="拖动调整范围"></button><button type="button" class="pdf-region-handle handle-ne" data-region-handle="ne" aria-label="调整截图框右上角" title="拖动调整范围"></button><button type="button" class="pdf-region-handle handle-e" data-region-handle="e" aria-label="调整截图框右边" title="拖动调整范围"></button><button type="button" class="pdf-region-handle handle-se" data-region-handle="se" aria-label="调整截图框右下角" title="拖动调整范围"></button><button type="button" class="pdf-region-handle handle-s" data-region-handle="s" aria-label="调整截图框下边" title="拖动调整范围"></button><button type="button" class="pdf-region-handle handle-sw" data-region-handle="sw" aria-label="调整截图框左下角" title="拖动调整范围"></button><button type="button" class="pdf-region-handle handle-w" data-region-handle="w" aria-label="调整截图框左边" title="拖动调整范围"></button></div></div></div></div></div></div></dialog>
+<dialog id="fileSyncDialog" aria-labelledby="fileSyncTitle">
+ <div class="dialog-shell">
+  <button class="close" type="button" data-close="fileSyncDialog" aria-label="关闭文件同步">×</button>
+  <h2 id="fileSyncTitle">文件同步</h2>
+  <p>将原 PDF、截题、章节分类、本地错题状态和答案附件一起带到另一台设备。</p>
+  <section class="file-sync-section" aria-labelledby="fileSyncKeyTitle">
+   <h3 id="fileSyncKeyTitle">同步密钥</h3>
+   <label for="fileSyncCode">在新设备使用原来的密钥</label>
+   <input id="fileSyncCode" type="password" maxlength="64" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="粘贴 64 位同步密钥">
+   <div class="file-sync-actions"><button id="fileSyncNew" class="quiet" type="button">生成新密钥</button><button id="fileSyncUse" class="quiet" type="button">使用此密钥</button><button id="fileSyncReveal" class="text-button" type="button">显示密钥</button><button id="fileSyncCopy" class="text-button" type="button">复制密钥</button></div>
+   <p class="pdf-local-note">请妥善保管密钥。另一台设备需登录同一学员名，再使用同一密钥。</p>
+  </section>
+  <section class="file-sync-section" aria-labelledby="fileSyncBundleTitle">
+   <h3 id="fileSyncBundleTitle">加密同步包</h3>
+   <label for="fileSyncDocument">导出的范围</label>
+   <select id="fileSyncDocument"><option value="">全部 PDF</option></select>
+   <div class="file-sync-actions"><button id="fileSyncExport" class="primary" type="button" disabled>导出同步包</button><label class="button pdf-answer-picker file-sync-picker">导入同步包<input id="fileSyncImport" type="file" accept=".clsync,application/octet-stream" disabled></label></div>
+   <p class="pdf-local-note">将 .clsync 文件传到新设备后导入。每个包最大 80 MB。不同版本会保留为副本。</p>
+  </section>
+  <section class="file-sync-section" aria-labelledby="fileSyncCloudTitle">
+   <h3 id="fileSyncCloudTitle">私有云端</h3>
+   <p id="fileSyncCloudState" class="pdf-local-note">正在读取配置…</p>
+   <div class="file-sync-actions"><button id="fileSyncPush" class="quiet" type="button" disabled>上传全部 PDF</button><button id="fileSyncPull" class="quiet" type="button" disabled>下载到此设备</button></div>
+   <details class="pdf-local-note"><summary>同步存储编号</summary><code id="fileSyncVault"></code></details>
+  </section>
+  <p id="fileSyncStatus" role="status" aria-live="polite"></p>
+ </div>
+</dialog>
 <dialog id="pdfAnswerDialog" aria-labelledby="pdfAnswerTitle">
  <div class="dialog-shell">
   <button class="close" type="button" aria-label="关闭单题答案" data-close="pdfAnswerDialog">×</button>
@@ -142,5 +170,5 @@
   <div id="assistantQuestionContent"></div>
  </div>
 </dialog>
-<div id="toast" role="status"></div><div id="printArea"></div><script src="login-activity.js?v=1.21.0"></script><script src="auth.js?v=1.21.0"></script>
+<div id="toast" role="status"></div><div id="printArea"></div><script src="login-activity.js?v=1.22.0"></script><script src="auth.js?v=1.22.0"></script>
 </body></html>

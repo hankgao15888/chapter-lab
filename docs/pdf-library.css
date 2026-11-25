@@ -66,3 +66,16 @@
 .pdf-answer-preview{display:block;width:auto;max-width:100%;height:auto;margin:12px auto 0;background:white;box-shadow:0 3px 15px #233b3620}
 .pdf-answer-actions button:disabled{opacity:.45;cursor:default}
 @media(max-width:650px){#pdfAnswerDialog .dialog-shell{padding:24px 14px}}
+
+#fileSyncDialog .dialog-shell{padding:24px 26px}
+#fileSyncDialog h2{padding-right:22px}
+.file-sync-section{border-top:1px solid var(--line);padding:9px 0 4px}
+#fileSyncDialog .file-sync-section h3{margin:0 0 6px}
+.file-sync-section label{font-size:12px}
+#fileSyncDocument,#fileSyncCode{box-sizing:border-box;width:100%;margin:4px 0 8px;padding:8px 10px;border:1px solid var(--line);border-radius:7px;background:white}
+#fileSyncCode,#fileSyncVault{font-family:ui-monospace,monospace}
+#fileSyncVault{overflow-wrap:anywhere}
+.file-sync-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.file-sync-actions button:disabled{opacity:.46;cursor:default}
+#fileSyncDialog #fileSyncStatus{color:var(--ink);font-weight:600;overflow-wrap:anywhere}
+@media(max-width:650px){#fileSyncDialog .dialog-shell{padding:20px 14px}}

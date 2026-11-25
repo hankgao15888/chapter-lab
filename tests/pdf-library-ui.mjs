@@ -26,7 +26,7 @@ function setup(name='Student Alice'){
   }
   return elements.get(selector);
  }
- const context=vm.createContext({document:{createElement:tag=>tag==='canvas'?{getContext:()=>({drawImage(){},fillRect(){}})}:{click(){downloads.push(this.download);}},querySelector:el,baseURI:'http://localhost/'},ChapterLabPDFCore:core,crypto:crypto.webcrypto,Blob,File,URL,Image:class{async decode(){}},TextEncoder,TextDecoder,AbortSignal,setTimeout:()=>0,confirm:()=>true,devicePixelRatio:1,addEventListener(){}});
+ const context=vm.createContext({document:{createElement:tag=>tag==='canvas'?{getContext:()=>({drawImage(){},fillRect(){}})}:{click(){downloads.push(this.download);}},querySelector:el,baseURI:'http://localhost/'},ChapterLabPDFCore:core,ChapterLabFileSync:{create(){}},crypto:crypto.webcrypto,Blob,File,URL,Image:class{async decode(){}},TextEncoder,TextDecoder,AbortSignal,setTimeout:()=>0,confirm:()=>true,devicePixelRatio:1,addEventListener(){}});
  for(const filename of ['pdf-question-answers.js','pdf-library.js'])vm.runInContext(fs.readFileSync(new URL('../docs/'+filename,import.meta.url),'utf8'),context);
  const library=context.ChapterLabPDFLibrary.create({chapters,getOwner:()=>name,getSubject:()=> 'physics',toast:message=>messages.push(message),onImported:()=>imported++,storage,loadDocument});
  return {el,library,downloads};

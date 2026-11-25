@@ -64,6 +64,37 @@
     };
    });
   }
+  async function snapshot(owner,documentId){
+   return transaction(['documents','files'],'readonly',tx=>{
+    const files=tx.objectStore('files');
+    const document=tx.objectStore('documents').get(documentId);
+    let file,answers;
+    document.onsuccess=()=>{
+     const meta=document.result;
+     if(meta?.owner!==owner)return;
+     file=files.get(documentId);
+     answers=meta.questions.map(question=>[question.id,files.get(answerKey(documentId,question.id))]);
+    };
+    return ()=>file?.result?.blob?{
+     metadata:document.result,blob:file.result.blob,
+     answers:answers.flatMap(([questionId,request])=>request.result?.attachment?[{questionId,...request.result.attachment}]:[])
+    }:null;
+   });
+  }
+  async function restore(owner,{metadata,blob,answers}){
+   return transaction(['documents','files'],'readwrite',tx=>{
+    const documents=tx.objectStore('documents'),files=tx.objectStore('files');
+    const existing=documents.get(metadata.id);let added=false;
+    existing.onsuccess=()=>{
+     if(existing.result)return;
+     documents.put({...metadata,owner});
+     files.put({id:metadata.id,blob});
+     for(const {questionId,...attachment} of answers)files.put({id:answerKey(metadata.id,questionId),attachment});
+     added=true;
+    };
+    return ()=>added;
+   });
+  }
   async function update(owner,meta,{discardAnswers=[]}={}){
    return transaction(['documents','files'],'readwrite',tx=>{
     const store=tx.objectStore('documents'),request=store.get(meta.id);
@@ -93,7 +124,7 @@
     };
    });
   }
-  return {list,get,save,update,remove,getAnswer,setAnswer};
+  return {list,get,save,update,remove,getAnswer,setAnswer,snapshot,restore};
  }
  const api={create};if(typeof module==='object'&&module.exports)module.exports=api;else root.ChapterLabPDFStore=api;
 })(globalThis);
