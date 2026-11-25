@@ -8,7 +8,7 @@
   let regionMode=false,regionDrag=null,regionDraft=null,regionBounds=null,regionEditingId=null,regionVersion=0;
   let stitchParts=[],regionSegment=null,editingPartIndex=0,committingRegion=false,pageReady=false;
   const maxStitchParts=30;
-  let viewingOriginal=false;
+  let viewingOriginal=false,cropDetailsOpen=false;
   let libraryPromise,ownerPromise,current=null,pdf=null,selectedId=null,renderTask=null,renderVersion=0,pageNumber=1,historyVersion=0,opening=0,busy=false;
   const hash=async bytes=>Array.from(new Uint8Array(await root.crypto.subtle.digest('SHA-256',bytes)),byte=>byte.toString(16).padStart(2,'0')).join('');
   function owner(){if(!ownerPromise)ownerPromise=hash(new TextEncoder().encode('chapterlab-pdf-owner-v1\0'+core.normalize(getOwner())));return ownerPromise;}
@@ -147,6 +147,7 @@
    resetStitch();
    const question=current?.questions.find(q=>q.id===id);if(!question)return;
    viewingOriginal=false;
+   cropDetailsOpen=false;
    selectedId=id;pageNumber=question.parts[0].page;setRegionMode(!isCrop(question));fillEditor(question);fillCropPicker(question);renderQuestions();await renderPage();
   }
   function fillCropPicker(question){
@@ -247,6 +248,7 @@
   }
   async function cleanup(){
    viewingOriginal=false;
+   cropDetailsOpen=false;
    resetStitch();setRegionMode(false);pageReady=false;
    ++opening;++renderVersion;
    if(renderTask){renderTask.cancel();await renderTask.promise.catch(()=>{});renderTask=null;}
@@ -298,10 +300,18 @@
   $('#pdfPageNext').onclick=()=>goToPage(pageNumber+1);
   $('#pdfPageNumber').onchange=()=>goToPage($('#pdfPageNumber').value);
   $('#pdfZoom').onchange=renderPage;
+  $('#pdfCropDetails').onclick=()=>{
+   const question=current?.questions.find(q=>q.id===selectedId);
+   if(!showingCrop(question))return;
+   cropDetailsOpen=!cropDetailsOpen;
+   updateReaderView();
+   if(cropDetailsOpen)$('#pdfQuestionLabel').focus();
+  };
   $('#pdfViewOriginal').onclick=async()=>{
    const question=current?.questions.find(q=>q.id===selectedId);
    if(!isCrop(question)||viewingOriginal)return;
    viewingOriginal=true;
+   cropDetailsOpen=false;
    pageNumber=question.parts[0].page;
    $('#pdfCanvasHost').scrollTop=0;
    await renderPage();
@@ -340,7 +350,11 @@
     const updated={...old,...edit};const previous=current.questions;
     current.questions=current.questions.map(q=>q.id===selectedId?updated:q);
     try{await saveCurrent();}catch(error){current.questions=previous;throw error;}
-    renderQuestions();fillEditor(updated);await renderHistory();await renderPage();toast(updated.notebookStatus?'单题已保存，并已收录到错题本。':'单题已保存到「我的练习」。');
+    const returnToCrop=showingCrop(updated)&&cropDetailsOpen;
+    cropDetailsOpen=false;
+    renderQuestions();fillEditor(updated);await renderHistory();await renderPage();
+    if(returnToCrop&&selectedId===updated.id&&showingCrop(updated))$('#pdfCropDetails').focus({preventScroll:true});
+    toast(updated.notebookStatus?'单题已保存，并已收录到错题本。':'单题已保存到「我的练习」。');
    }catch(error){toast(error.message);}
   };
   $('#pdfSuggestQuestion').onclick=()=>{
@@ -390,6 +404,14 @@
   function updateReaderView(){
    const question=current?.questions.find(q=>q.id===selectedId);
    const showCrop=showingCrop(question);
+   const showDetails=showCrop&&cropDetailsOpen;
+   $('#pdfReaderGrid').classList.toggle('pdf-crop-only',showCrop);
+   $('#pdfReaderSidebar').hidden=showCrop&&!showDetails;
+   $('#pdfQuestionDirectory').hidden=showCrop;
+   $('#pdfViewerHeading').hidden=showCrop;
+   $('#pdfRegionToolbar').hidden=showCrop;
+   $('#pdfCropDetails').setAttribute('aria-expanded',String(showDetails));
+   $('#pdfCropDetails').textContent=showDetails?'收起编辑':question?.savedAt?'编辑题目':'保存 / 编辑题目';
    $('#pdfCropView').hidden=!showCrop;
    $('#pdfCanvasHost').hidden=showCrop;
    $('#pdfPageToolbar').hidden=showCrop;
@@ -507,6 +529,7 @@
    const index=Number($('#pdfCropPart').value)||0;
    const part=question?.parts[index];
    if(part?.left===undefined)return;
+   cropDetailsOpen=false;
    setRegionMode(true);
    pageNumber=part.page;
    await renderPage();

@@ -136,8 +136,13 @@ assert.match(ui.el('#pdfCropTitle').textContent,/3 段/);
 assert(ui.el('#pdfCropCanvas').height>ui.el('#pdfRegionPreview').height);
 ui.el('#pdfDownloadCrop').onclick();
 assert.equal(ui.downloads.at(-1),'拼接题目.png');
+assert.equal(ui.el('#pdfReaderSidebar').hidden,true);
+ui.el('#pdfCropDetails').onclick();
+assert.equal(ui.el('#pdfReaderSidebar').hidden,false);
+assert.equal(ui.el('#pdfQuestionDirectory').hidden,true,'The save and edit form never reopens the directory');
 ui.el('#pdfSaveToNotebook').checked=true;
 await ui.el('#pdfSaveQuestion').onclick();
+assert.equal(ui.el('#pdfReaderSidebar').hidden,true);
 await ui.library.openRecord(id,stitched.id);
 assert.deepEqual(records.get(id).questions.at(-1).parts,stitched.parts,'Saving must preserve all exact crop bounds');
 assert.equal(ui.library.entries().find(question=>question.questionId===stitched.id).notebookStatus,'wrong');
@@ -157,11 +162,15 @@ for(const question of [region,adjusted]){
  await ui.library.openRecord(id,question.id);
  assert.equal(ui.el('#pdfCropView').hidden,false);
  assert.equal(ui.el('#pdfPageToolbar').hidden,true);
+ assert.equal(ui.el('#pdfQuestionDirectory').hidden,true);
+ assert.equal(ui.el('#pdfReaderSidebar').hidden,true);
  await ui.el('#pdfViewOriginal').onclick();
  assert.equal(ui.el('#pdfCropView').hidden,true);
  assert.equal(ui.el('#pdfCanvasHost').hidden,false);
  assert.equal(ui.el('#pdfBackToCrop').hidden,false);
  assert.equal(ui.el('#pdfPageToolbar').hidden,false);
+ assert.equal(ui.el('#pdfQuestionDirectory').hidden,false);
+ assert.equal(ui.el('#pdfReaderSidebar').hidden,false);
  assert.equal(ui.el('#pdfPageNumber').value,question.parts[0].page);
  assert.equal(ui.el('#pdfRegionMode')['aria-pressed'],'false');
  await ui.el('#pdfPageNext').onclick();
@@ -175,6 +184,8 @@ for(const question of [region,adjusted]){
  assert.equal(ui.el('#pdfCanvasHost').hidden,true);
  assert.equal(ui.el('#pdfBackToCrop').hidden,true);
  assert.equal(ui.el('#pdfDownloadCrop').disabled,false);
+ assert.equal(ui.el('#pdfQuestionDirectory').hidden,true);
+ assert.equal(ui.el('#pdfReaderSidebar').hidden,true);
 }
 console.log('Single and stitched PDF crops can open the source paper, browse pages, then return to the same crop.');
 const first=[...records.values()][0];

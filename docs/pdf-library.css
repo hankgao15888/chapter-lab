@@ -15,7 +15,7 @@
 .pdf-reader-grid{display:grid;grid-template-columns:310px minmax(0,1fr);border:1px solid var(--line);border-radius:10px;overflow:hidden;background:white}
 .pdf-reader-sidebar{padding:16px;border-right:1px solid var(--line);max-height:calc(95vh - 170px);overflow:auto;background:#fbfcf7;min-width:0}
 .pdf-sidebar-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13px;margin-bottom:14px}
-.pdf-reader-sidebar>select,.pdf-search{display:block;width:100%;margin-bottom:9px;font-size:11px}.pdf-search{border:1px solid var(--line);border-radius:7px;padding:10px;background:#fff;color:var(--ink)}
+#pdfQuestionDirectory>select,.pdf-search{display:block;width:100%;margin-bottom:9px;font-size:11px}.pdf-search{border:1px solid var(--line);border-radius:7px;padding:10px;background:#fff;color:var(--ink)}
 #pdfQuestionList{max-height:320px;overflow:auto}.pdf-question-item{display:block;width:100%;text-align:left;border:1px solid var(--line);border-radius:8px;background:white;padding:12px;margin:0 0 9px}.pdf-question-item.selected{border-color:#759a64;background:#edf4e2}.pdf-question-item strong,.pdf-question-item small,.pdf-question-item span,.pdf-question-item em{display:block}.pdf-question-item strong{font-size:12px}.pdf-question-item small{font-size:10px;color:var(--muted);margin:4px 0}.pdf-question-item span{font-size:10px;color:var(--green)}.pdf-question-item em{font-size:9px;font-style:normal;color:#a0814f;margin-top:5px}.pdf-empty{color:var(--muted);font-size:11px;line-height:1.8}
 .pdf-question-editor{border-top:1px solid var(--line);margin-top:18px;padding-top:16px}.pdf-question-editor h3{font-size:13px;margin:0 0 14px}.pdf-question-editor label{display:grid;gap:6px;font-size:11px;color:var(--muted);margin-bottom:12px}.pdf-question-editor input,.pdf-question-editor textarea,.pdf-question-editor select{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:6px;padding:8px;background:#fff;color:var(--ink);font:inherit}.pdf-question-editor select[multiple]{padding:4px}.pdf-question-editor textarea{resize:vertical;line-height:1.7}.pdf-question-editor option{padding:4px}.pdf-question-editor>.primary{display:block;width:100%;margin-bottom:12px}.pdf-page-range{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .pdf-reader-main{min-width:0;background:#e9ece4}.pdf-page-toolbar{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;padding:12px;background:#f6f8f0;border-bottom:1px solid var(--line)}.pdf-page-toolbar label{display:flex;align-items:center;gap:6px;font-size:11px}.pdf-page-toolbar input{width:62px;padding:6px;border:1px solid var(--line);border-radius:5px}.pdf-page-toolbar select{padding:6px;font-size:11px}.pdf-page-status{font-size:11px;color:var(--muted);padding:8px 14px;margin:0}
@@ -43,3 +43,10 @@
 #pdfStitchQueue[hidden],#pdfQuestionPages[hidden],#pdfQuestionBounds[hidden],#pdfSplitTools[hidden],#pdfCropPartPicker[hidden],#pdfAddStitchPart[hidden]{display:none}
 
 #pdfPageToolbar[hidden],#pdfBackToCrop[hidden]{display:none}
+
+#pdfReaderSidebar[hidden],#pdfQuestionDirectory[hidden],#pdfViewerHeading[hidden],#pdfRegionToolbar[hidden]{display:none}
+.pdf-reader-grid.pdf-crop-only{grid-template-columns:minmax(0,1fr)}
+.pdf-crop-only .pdf-reader-main{order:-1}
+.pdf-crop-only .pdf-reader-sidebar{max-height:none;border-right:0;border-top:1px solid var(--line)}
+.pdf-crop-only #pdfQuestionEditor{max-width:42rem;margin:0 auto;padding:0;border:0}
+.pdf-crop-only .pdf-crop-heading{position:sticky;top:-18px;background:#e9ece4;padding:10px 0}
