@@ -4,5 +4,6 @@
   "workers_dev": true,
   "compatibility_date": "2026-11-25",
   "vars": { "SYNC_ORIGINS": "https://hankgao15888.github.io" },
-  "r2_buckets": [{ "binding": "PRIVATE_FILES", "bucket_name": "chapter-lab-private-sync" }]
+  "durable_objects": { "bindings": [{ "name": "PRIVATE_VAULTS", "class_name": "SyncVault" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["SyncVault"] }]
 }

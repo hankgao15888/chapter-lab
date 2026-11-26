@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 import {createRequire} from 'node:module';
-import worker from '../file-sync-service/worker.mjs';
+import worker, {SyncVault} from '../file-sync-service/worker.mjs';
 const require=createRequire(import.meta.url),core=require('../docs/file-sync-core.js'),folderAPI=require('../docs/file-sync-folder.js');
 const owner='b'.repeat(64),other='c'.repeat(64);
 const code=core.newCode(),keys=await core.keys(code,owner);
@@ -33,22 +33,25 @@ const conflicting=await core.merge(store,owner,[ready]);assert.deepEqual(conflic
 assert.equal(destination.get(id).metadata.questions[0].notebookStatus,'correct');
 assert.equal([...destination.values()].find(item=>item.metadata.id!==id).metadata.questions[0].notebookStatus,'wrong');
 assert.deepEqual(await core.merge(store,owner,[ready]),{added:0,same:1,conflicts:0});
-const files=new Map();let serial=0;
-const bucket={get:async key=>files.get(key)||null,put:async(key,body,{onlyIf})=>{
- const old=files.get(key);
- if(onlyIf.get('If-None-Match')==='*'&&old||onlyIf.get('If-Match')&&onlyIf.get('If-Match')!==old?.httpEtag)return null;
- const bytes=await new Response(body).arrayBuffer();
- const value={body:bytes,size:bytes.byteLength,httpEtag:'"'+(++serial).toString(16).padStart(32,'0')+'"'};
- files.set(key,value);return value;
+const vaults=new Map();
+const namespace={getByName(name){
+ if(!vaults.has(name)){
+  const records=new Map();
+  const storage={get:async key=>structuredClone(records.get(key)),put:async(key,value)=>{records.set(key,structuredClone(value));},delete:async key=>{for(const item of [].concat(key))records.delete(item);}};
+  vaults.set(name,{records,storage,vault:new SyncVault({storage})});
+ }
+ return vaults.get(name).vault;
 }};
 const origin='https://hankgao15888.github.io';
-const env={SYNC_ORIGINS:origin,SYNC_VAULTS:keys.vault,PRIVATE_FILES:bucket};
+const otherKeys=await core.keys(code,other);
+const env={SYNC_ORIGINS:origin,SYNC_VAULTS:keys.vault,PRIVATE_VAULTS:namespace};
 const request=(method,options={})=>worker.fetch(new Request('https://example.invalid/v1/files',{
  method,body:options.body,headers:{Origin:options.origin||origin,...(options.token===null?{}:{Authorization:`Bearer ${options.token||keys.token}`}),...options.headers}
 }),env);
 assert.equal((await request('OPTIONS')).status,204);
 assert.equal((await request('GET',{token:null})).status,401);
-assert.equal((await request('GET',{token:(await core.keys(code,other)).token})).status,403);
+assert.equal((await request('GET',{token:otherKeys.token})).status,403);
+assert.equal(vaults.size,0);
 assert.equal((await request('GET',{origin:'https://example.org'})).status,403);
 assert.equal((await request('GET')).status,404);
 const uploadHeaders={'Content-Type':'application/octet-stream','Content-Length':String(packageBlob.size)};
@@ -62,6 +65,35 @@ assert.equal(response.headers.get('Cache-Control'),'no-store');
 assert.equal((await core.unpack(await response.blob(),owner,keys.key))[0].answers[0].filename,'answer.png');
 assert.equal((await request('PUT',{body:packageBlob,headers:{...uploadHeaders,'If-Match':response.headers.get('etag')}})).status,204);
 assert.equal((await request('PUT',{body:packageBlob,headers:{...uploadHeaders,'If-Match':response.headers.get('etag')}})).status,412);
+const vaultState=vaults.get(keys.vault);
+const previous=await request('GET');
+await previous.arrayBuffer();
+const previousETag=previous.headers.get('etag');
+const bigAnswer=new Blob([new Uint8Array(1_100_000).fill(187)]);
+const largerPackage=await core.pack([{...record,answers:[{...record.answers[0],blob:bigAnswer}]}],owner,keys.key);
+const largeHeaders={...uploadHeaders,'Content-Length':String(largerPackage.size),'If-Match':previousETag};
+assert.equal((await request('PUT',{body:largerPackage.slice(0,600_000),headers:largeHeaders})).status,400);
+assert(vaultState.records.has('staged'));
+vaultState.vault=new SyncVault({storage:vaultState.storage});
+const afterRestart=await request('GET');
+assert.equal(afterRestart.headers.get('etag'),previousETag);
+assert.deepEqual(await afterRestart.arrayBuffer(),await packageBlob.arrayBuffer());
+
+const replacements=await Promise.all([request('PUT',{body:largerPackage,headers:largeHeaders}),request('PUT',{body:largerPackage,headers:largeHeaders})]);
+assert.equal(replacements.filter(item=>item.status===204).length,1);
+assert(replacements.some(item=>item.status===409||item.status===412));
+assert(!vaultState.records.has('staged'));
+assert.equal([...vaultState.records.keys()].filter(key=>key.startsWith('chunk:')).length,3);
+const inProgress=await request('GET');
+assert.equal((await request('PUT',{body:largerPackage,headers:{...largeHeaders,'If-Match':inProgress.headers.get('etag')}})).status,409);
+await inProgress.body.cancel();
+const restored=await request('GET');
+const [restoredPdf]=await core.unpack(await restored.blob(),owner,keys.key);
+assert.deepEqual(restoredPdf.metadata.questions,record.metadata.questions);
+assert.deepEqual(await restoredPdf.answers[0].blob.arrayBuffer(),await bigAnswer.arrayBuffer());
+env.SYNC_VAULTS+=`,${otherKeys.vault}`;
+assert.equal((await request('GET',{token:otherKeys.token})).status,404);
+assert.equal(vaults.size,2);
 const html=fs.readFileSync(new URL('../docs/index.html',import.meta.url),'utf8');
 for(const match of fs.readFileSync(new URL('../docs/file-sync.js',import.meta.url),'utf8').matchAll(/\$\('(fileSync\w+)'\)/g))assert(html.includes(`id="${match[1]}"`));
 console.log('File sync: complete encrypted round trips, changed snapshots, wrong students/keys, tamper detection, private storage authentication and conditional updates passed.');

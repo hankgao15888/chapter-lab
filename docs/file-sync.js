@@ -205,6 +205,7 @@
   function cloudError(response){
    if(response.status===403||response.status===401)return '此同步存储尚未开通，请联系网站管理员。';
    if(response.status===412)return '云端已有新版本。请先下载合并，再尝试上传。';
+   if(response.status===409)return '这组文件正在同步。请等另一设备完成，再重试。';
    if(response.status===413)return '同步包超过云端允许的大小。';
    return '云端同步未完成，请检查网络后重试。';
   }
