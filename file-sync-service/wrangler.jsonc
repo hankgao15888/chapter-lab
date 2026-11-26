@@ -2,6 +2,7 @@
   "name": "chapter-lab-private-file-sync",
   "main": "worker.mjs",
   "workers_dev": true,
+  "preview_urls": false,
   "compatibility_date": "2026-11-25",
   "vars": { "SYNC_ORIGINS": "https://hankgao15888.github.io" },
   "durable_objects": { "bindings": [{ "name": "PRIVATE_VAULTS", "class_name": "SyncVault" }] },

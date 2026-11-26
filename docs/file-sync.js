@@ -26,6 +26,7 @@
    upload.disabled=busy||!endpoint||!cryptoKeys||select.options.length<2;
    pull.disabled=busy||!endpoint||!cryptoKeys;
    $('fileSyncVault').textContent=cryptoKeys?.vault||'请先设置同步密钥。';
+   $('fileSyncCopyVault').disabled=busy||!cryptoKeys;
    $('fileSyncFolderPick').disabled=busy||!hasFolderPicker;
    $('fileSyncFolderSave').disabled=busy||!directory||!cryptoKeys||select.options.length<2;
    $('fileSyncFolderRefresh').disabled=busy||!directory||!cryptoKeys;
@@ -107,7 +108,7 @@
       }
      }
     }catch{}
-    $('fileSyncCloudState').textContent=endpoint?'使用同一学员名和同步密钥连接云端。':'云端存储尚未开通。可以用同步包迁移到其它设备。';
+    $('fileSyncCloudState').textContent=endpoint?'开通后，用同一学员名和同步密钥上传、下载。每次上传最多 80 MB。':'云端存储尚未开通。可以用同步包迁移到其它设备。';
     status.textContent=cryptoKeys?'可导出同步包，或导入另一台设备的同步包。':'请先生成密钥，或填入原设备的同步密钥。';
    });
   };
@@ -125,6 +126,11 @@
    if(!cryptoKeys)throw Error('请先生成或设置同步密钥。');
    try{await root.navigator.clipboard.writeText(settings.code);status.textContent='已复制同步密钥。';}
    catch{status.textContent='自动复制失败。请显示密钥后手动复制。';}
+  });
+  $('fileSyncCopyVault').onclick=()=>task('正在复制存储编号…',async()=>{
+   if(!cryptoKeys)throw Error('请先设置同步密钥。');
+   try{await root.navigator.clipboard.writeText(cryptoKeys.vault);status.textContent='已复制存储编号。开通云端只需要这个编号。';}
+   catch{status.textContent='自动复制失败。请选中下方显示的编号手动复制。';}
   });
   $('fileSyncExport').onclick=()=>task('正在加密 PDF、截图和答案…',async()=>{
    const encrypted=await makePack(select.value);

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="登录 Chapter Lab 后，按 OxfordAQA 官方单元筛选物理、数学、进阶数学、化学、生物与经济真题，跨考试局生成章节练习卷，并在公共聊天自习室交流。"><title>Chapter Lab · 学员登录</title><link rel="stylesheet" href="style.css?v=1.23.0"><link rel="stylesheet" href="study-room.css?v=1.23.0"><link rel="stylesheet" href="auth.css?v=1.23.0"><link rel="stylesheet" href="notebook.css?v=1.23.0"><link rel="stylesheet" href="pdf-library.css?v=1.23.0"><link rel="stylesheet" href="study-assistant.css?v=1.23.0"></head>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="登录 Chapter Lab 后，按 OxfordAQA 官方单元筛选物理、数学、进阶数学、化学、生物与经济真题，跨考试局生成章节练习卷，并在公共聊天自习室交流。"><title>Chapter Lab · 学员登录</title><link rel="stylesheet" href="style.css?v=1.24.0"><link rel="stylesheet" href="study-room.css?v=1.24.0"><link rel="stylesheet" href="auth.css?v=1.24.0"><link rel="stylesheet" href="notebook.css?v=1.24.0"><link rel="stylesheet" href="pdf-library.css?v=1.24.0"><link rel="stylesheet" href="study-assistant.css?v=1.24.0"></head>
 <body class="auth-locked">
 <section id="authGate" class="auth-gate" aria-labelledby="authHeadline">
 <div class="auth-visual">
@@ -115,10 +115,10 @@
    <p class="pdf-local-note">将 .clsync 文件传到新设备后导入。每个包最大 80 MB。不同版本会保留为副本。</p>
   </section>
   <details class="file-sync-section">
-   <summary>私有云端（可选）</summary>
+   <summary>Cloudflare 私有云端（可选）</summary>
    <p id="fileSyncCloudState" class="pdf-local-note">正在读取配置…</p>
    <div class="file-sync-actions"><button id="fileSyncPush" class="quiet" type="button" disabled>上传全部 PDF</button><button id="fileSyncPull" class="quiet" type="button" disabled>下载到此设备</button></div>
-   <details class="pdf-local-note"><summary>同步存储编号</summary><code id="fileSyncVault"></code></details>
+   <details class="pdf-local-note"><summary>同步存储编号</summary><code id="fileSyncVault"></code><div><button id="fileSyncCopyVault" type="button" class="text-button" disabled>复制存储编号</button></div><p>开通云端只需要这个编号。请勿分享上面的同步密钥或学员密码。</p></details>
   </details>
  </div>
 </dialog>
@@ -183,5 +183,5 @@
   <div id="assistantQuestionContent"></div>
  </div>
 </dialog>
-<div id="toast" role="status"></div><div id="printArea"></div><script src="login-activity.js?v=1.23.0"></script><script src="auth.js?v=1.23.0"></script>
+<div id="toast" role="status"></div><div id="printArea"></div><script src="login-activity.js?v=1.24.0"></script><script src="auth.js?v=1.24.0"></script>
 </body></html>
