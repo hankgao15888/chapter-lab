@@ -16,7 +16,7 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function (root) {
   'use strict';
 
-  const VERSION = '1.25.0';
+  const VERSION = '1.26.0';
   const ACCOUNTS_KEY = 'chapterlab-device-accounts-v1';
   const SESSION_KEY = 'chapterlab-student-session-v1';
   const ACCESS_CACHE_KEY = 'chapterlab-access-controls-v1';
@@ -36,6 +36,7 @@
     'answers.js',
     'study-room.js',
     'notebook-state.js',
+    'practice-sync.js',
     'pdf-library-core.js',
     'pdf-library-store.js',
     'pdf-question-answers.js',
@@ -827,6 +828,10 @@
     derivePasswordHash,
     isAuthenticated: () => authenticated,
     currentStudent: () => currentStudent,
+    isOnlyLocalStudent: () => {
+      const accounts=Object.keys(readAccounts(browserStorage('localStorage')).accounts);
+      return Boolean(currentStudent&&accounts.length===1&&accounts[0]===normalizeStudentName(currentStudent));
+    },
     sessionMode: () => authMode,
     start
   };

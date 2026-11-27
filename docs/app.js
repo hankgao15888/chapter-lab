@@ -1,4 +1,4 @@
-/* Chapter Lab: buildless, browser-local practice. No API keys or server storage. */
+/* Chapter Lab: buildless practice with optional encrypted backups. */
 'use strict';
 if (!window.ChapterLabAuth || !window.ChapterLabAuth.isAuthenticated()) {
   throw new Error('Student login is required before loading Chapter Lab.');
@@ -35,19 +35,37 @@ function renderSubjectStatus(){
  if(error)$('#retrySubject').onclick=()=>activateSubject(state.subject);
 }
 
-let saved={practice:{},overrides:{},papers:[]};
-try{Object.assign(saved,JSON.parse(localStorage.getItem('chapterlab-v1')||'{}'));}catch{}
 const notebookModel=ChapterLabNotebook;
 const notebookSubjectFor=id=>QM.get(id)?.subject||notebookModel.subjectFromId(id);
-saved.notebook=notebookModel.migrate(saved,notebookSubjectFor);
+let practiceStorage;
+try{practiceStorage=localStorage;}catch{}
+const practiceStore=ChapterLabPracticeSync.open(practiceStorage,ChapterLabAuth.normalizeStudentName(ChapterLabAuth.currentStudent()),{
+ mayClaim:ChapterLabAuth.isOnlyLocalStudent(),migrateNotebook:old=>{old.notebook=notebookModel.migrate(old,notebookSubjectFor);}
+});
+let saved=practiceStore.initial();
 let state={subject:'physics',view:'bank',notebookSubject:null,notebookStatus:'wrong',chapters:new Set(),basket:[],page:1,paperPage:1,wrongPage:1,unmapped:false,title:'',minutes:90};
 let previewQuestions=[];
 const drafts={};
-const pdfLibrary=ChapterLabPDFLibrary.create({chapters:DB.chapters,getOwner:()=>ChapterLabAuth.currentStudent(),getSubject:()=>state.subject,toast,onImported:()=>switchView('history'),onChange:()=>{syncPractice();if(state.view==='notebook')renderNotebook();}});
+const pdfLibrary=ChapterLabPDFLibrary.create({chapters:DB.chapters,getOwner:()=>ChapterLabAuth.currentStudent(),getSubject:()=>state.subject,toast,onImported:()=>switchView('history'),onChange:()=>{syncPractice();if(state.view==='notebook')renderNotebook();},practiceSync:{
+ snapshot:practiceStore.snapshot,
+ receive(remote){const {saved:next,needsUpload}=practiceStore.receive(remote);if(next){saved=next;refreshPracticeViews();}return needsUpload;}
+}});
 pdfLibrary.refresh?.().catch(error=>toast(error.message));
 const qCh=q=>(saved.overrides[q.id]??q.chapters).filter(id=>CH.has(id));
 const total=qs=>qs.reduce((s,q)=>s+(q.marks||0),0);
-function persist(){try{localStorage.setItem('chapterlab-v1',JSON.stringify(saved));return true;}catch{toast('浏览器未能保存记录，请导出备份。');return false;}}
+function persist(){try{saved=practiceStore.commit(saved);pdfLibrary.practiceChanged?.();return true;}catch{toast('浏览器未能保存记录，请导出备份。');return false;}}
+function refreshPracticeViews(){
+ syncPractice();renderChapters();renderBank();
+ if(state.view==='history')renderHistory();
+ if(state.view==='notebook')renderNotebook();
+}
+const legacyPracticeButton=$('#claimLegacyPractice');
+legacyPracticeButton.hidden=!practiceStore.pendingLegacy();
+legacyPracticeButton.onclick=()=>{
+ if(!window.confirm('这是此浏览器里的旧练习记录。请确认这些资料属于当前学员，再迁入这个账号。继续吗？'))return;
+ try{saved=practiceStore.claim();legacyPracticeButton.hidden=true;pdfLibrary.practiceChanged?.();refreshPracticeViews();toast('已迁入此浏览器的旧练习记录。');}
+ catch{toast('浏览器无法保存旧练习记录，请检查存储空间后重试。');}
+};
 let toastTimer;function toast(t){$('#toast').textContent=t;$('#toast').style.display='block';clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').style.display='none',3500);}
 function badge(board){return `<span class="badge ${board==='cie-international'?'cie':board==='edexcel-ial'?'edexcel':''}">${BOARD[board]}</span>`;}
 function wrongButton(q){const active=Boolean(saved.notebook[q.id]);return `<button type="button" class="wrong-toggle ${active?'is-wrong':''}" data-wrong-id="${esc(q.id)}" aria-pressed="${active}">${active?'✓ 已收录 · 移出错题':'＋ 收录错题'}</button>`;}
@@ -102,7 +120,7 @@ function card(q){const ch=qCh(q),done=saved.practice[q.id],added=state.basket.in
 function bindCards(selector='#questionList'){$$(selector+' article').forEach(el=>{const q=QM.get(el.dataset.id);el.querySelectorAll('[data-action]').forEach(b=>b.onclick=()=>{
  if(b.dataset.action==='add'){const i=state.basket.indexOf(q.id);i>=0?state.basket.splice(i,1):state.basket.push(q.id);b.classList.toggle('added',i<0);b.textContent=i<0?'✓ 已加入':'＋ 加入练习卷';updateBasket();}
  if(b.dataset.action==='expand'){const slot=el.querySelector('.expand-slot');if(slot.innerHTML){slot.innerHTML='';b.textContent='查看原题 ▾';return;}slot.innerHTML=`<div class="question-images">${questionContent(q)}<div class="actions"><button class="quiet" data-result="correct">✓ 我已掌握</button><button class="quiet" data-result="wrong">↺ 收录错题</button><button class="quiet" data-result="clear">清除状态</button></div></div>`;slot.querySelectorAll('[data-result]').forEach(bt=>bt.onclick=()=>{setPractice(q.id,bt.dataset.result);});b.textContent='收起原题 ▴';ChapterLabQuestions.load(q).catch(()=>{});}
- if(b.dataset.action==='map'){const slot=el.querySelector('.mapping-slot');if(slot.innerHTML){slot.innerHTML='';return;}slot.innerHTML=`<div class="mapping-editor"><p>对照原图选择章节，可按 Ctrl / Command 多选。仅在本浏览器生效。</p><select multiple size="8">${DB.chapters.filter(c=>c.subject===q.subject).map(c=>`<option value="${c.id}" ${qCh(q).includes(c.id)?'selected':''}>${esc(c.code)} · ${esc(c.zh)} (${c.level})</option>`).join('')}</select><button class="primary" data-save-map>保存调整</button> <button class="quiet" data-reset-map>恢复自动建议</button></div>`;slot.querySelector('[data-save-map]').onclick=()=>{saved.overrides[q.id]=[...slot.querySelector('select').selectedOptions].map(o=>o.value);persist();renderChapters();renderBank();if(state.view==='notebook')renderNotebook();toast('章节调整已保存。');};slot.querySelector('[data-reset-map]').onclick=()=>{delete saved.overrides[q.id];persist();renderChapters();renderBank();if(state.view==='notebook')renderNotebook();};}
+ if(b.dataset.action==='map'){const slot=el.querySelector('.mapping-slot');if(slot.innerHTML){slot.innerHTML='';return;}slot.innerHTML=`<div class="mapping-editor"><p>对照原图选择章节，可按 Ctrl / Command 多选。</p><select multiple size="8">${DB.chapters.filter(c=>c.subject===q.subject).map(c=>`<option value="${c.id}" ${qCh(q).includes(c.id)?'selected':''}>${esc(c.code)} · ${esc(c.zh)} (${c.level})</option>`).join('')}</select><button class="primary" data-save-map>保存调整</button> <button class="quiet" data-reset-map>恢复自动建议</button></div>`;slot.querySelector('[data-save-map]').onclick=()=>{saved.overrides[q.id]=[...slot.querySelector('select').selectedOptions].map(o=>o.value);persist();renderChapters();renderBank();if(state.view==='notebook')renderNotebook();toast('章节调整已保存。');};slot.querySelector('[data-reset-map]').onclick=()=>{delete saved.overrides[q.id];persist();renderChapters();renderBank();if(state.view==='notebook')renderNotebook();};}
  });});}
 function pagination(page,count,type){return `<div class="pagination"><button data-page="${page-1}" data-type="${type}" ${page===1?'disabled':''}>← 上一页</button><span>${page} / ${count}</span><button data-page="${page+1}" data-type="${type}" ${page===count?'disabled':''}>下一页 →</button></div>`;}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-page]');if(!b)return;if(b.dataset.type==='question'){state.page=Number(b.dataset.page);renderBank();$('.results-head').scrollIntoView({behavior:'smooth',block:'start'});}else if(b.dataset.type==='notebook'){state.wrongPage=Number(b.dataset.page);renderNotebook();$('#notebookView').scrollIntoView({behavior:'smooth',block:'start'});}else{state.paperPage=Number(b.dataset.page);renderPapers();$('#papersView').scrollIntoView({behavior:'smooth'});}});
@@ -250,8 +268,18 @@ $('#printPaper').onclick=async()=>{
 };
 function download(name,obj){const url=URL.createObjectURL(new Blob([JSON.stringify(obj,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),2000);}
 $('#exportPaper').onclick=()=>download('chapter-lab-paper.json',{format:'chapterlab-paper-v1',title:$('#previewTitle').textContent,minutes:state.minutes,questions:previewQuestions.map(q=>({...q,images:[],chapters:qCh(q)}))});
-$('#savePaper').onclick=()=>{saved.papers.unshift({id:Date.now().toString(36),title:$('#previewTitle').textContent,minutes:state.minutes,subject:state.subject,ids:previewQuestions.map(q=>q.id),date:new Date().toISOString()});persist();toast('已保存到「我的练习」。');};
-function renderHistory(){pdfLibrary.renderHistory();const rows=saved.papers.filter(p=>p.subject===state.subject);const wrong=Object.entries(saved.practice).filter(([id,status])=>status==='wrong'&&QM.get(id)?.subject===state.subject).length;$('#historyList').innerHTML=`<div class="info-box">${SUBJECT[state.subject]}：已记录 ${Object.keys(saved.practice).filter(id=>QM.get(id)?.subject===state.subject).length} 道练习，其中 ${wrong} 道错题。可打开「错题本」集中复习、查看答案或按错题组卷。</div>`+rows.map(p=>`<div class="history-row"><div><strong>${esc(p.title)}</strong><small>${p.ids.filter(id=>QM.has(id)).length} 道 · ${p.minutes} 分钟 · ${new Date(p.date).toLocaleDateString('zh-CN',{timeZone:'Asia/Shanghai'})}</small></div><div class="row-links"><button data-history="${esc(p.id)}">继续练习 →</button><button data-delete="${esc(p.id)}">删除</button></div></div>`).join('')+(rows.length?'':'<div class="empty-state"><strong>留下一份练习记录</strong>在练习卷预览中点击「保存练习」，下次可以接着做。</div>');$$('[data-history]').forEach(b=>b.onclick=()=>{const p=saved.papers.find(p=>p.id===b.dataset.history);state.basket=p.ids.filter(id=>QM.has(id));state.title=p.title;state.minutes=p.minutes;delete state.target;updateBasket();openPreview();});$$('[data-delete]').forEach(b=>b.onclick=()=>{saved.papers=saved.papers.filter(p=>p.id!==b.dataset.delete);persist();renderHistory();});}
+$('#savePaper').onclick=()=>{saved.papers.unshift({id:crypto.randomUUID(),title:$('#previewTitle').textContent,minutes:state.minutes,subject:state.subject,ids:previewQuestions.map(q=>q.id),date:new Date().toISOString()});if(persist())toast('已保存到「我的练习」。');};
+let practiceHistoryLimit=30;
+function renderPracticed(){
+ const list=$('#practicedQuestionList');
+ const rows=Object.keys(saved.practice).map(id=>QM.get(id)).filter(q=>q?.subject===state.subject);
+ list.innerHTML=rows.slice(0,practiceHistoryLimit).map(q=>`<div class="history-row"><div><strong>${esc(q.title)} · Q${esc(q.number)}</strong><small>${saved.practice[q.id]==='wrong'?'待掌握':'已掌握'}</small></div><button type="button" class="quiet" data-practiced-id="${esc(q.id)}">查看这道题 →</button></div>`).join('')+(rows.length>practiceHistoryLimit?'<button type="button" class="quiet" data-practiced-more>查看更多</button>':'')||(catalog.isLoaded(state.subject)?'<p class="pdf-local-note">本科目还没有练习记录。</p>':'<p class="pdf-local-note">正在加载本科目的题目。</p>');
+ list.onclick=event=>{const action=event.target.closest('[data-practiced-id], [data-practiced-more]');if(!action)return;
+  if(action.dataset.practicedId){const question=QM.get(action.dataset.practicedId);if(question)showAssistantQuestion(question);}
+  else{practiceHistoryLimit+=30;renderPracticed();}
+ };
+}
+function renderHistory(){pdfLibrary.renderHistory();renderPracticed();const rows=saved.papers.filter(p=>p.subject===state.subject);const wrong=Object.entries(saved.practice).filter(([id,status])=>status==='wrong'&&QM.get(id)?.subject===state.subject).length;$('#historyList').innerHTML=`<div class="info-box">${SUBJECT[state.subject]}：已记录 ${Object.keys(saved.practice).filter(id=>QM.get(id)?.subject===state.subject).length} 道练习，其中 ${wrong} 道错题。可打开「错题本」集中复习、查看答案或按错题组卷。</div>`+rows.map(p=>`<div class="history-row"><div><strong>${esc(p.title)}</strong><small>${p.ids.filter(id=>QM.has(id)).length} 道 · ${p.minutes} 分钟 · ${new Date(p.date).toLocaleDateString('zh-CN',{timeZone:'Asia/Shanghai'})}</small></div><div class="row-links"><button data-history="${esc(p.id)}">继续练习 →</button><button data-delete="${esc(p.id)}">删除</button></div></div>`).join('')+(rows.length?'':'<div class="empty-state"><strong>留下一份练习记录</strong>在练习卷预览中点击「保存练习」，下次可以接着做。</div>');$$('[data-history]').forEach(b=>b.onclick=()=>{const p=saved.papers.find(p=>p.id===b.dataset.history);state.basket=p.ids.filter(id=>QM.has(id));state.title=p.title;state.minutes=p.minutes;delete state.target;updateBasket();openPreview();});$$('[data-delete]').forEach(b=>b.onclick=()=>{saved.papers=saved.papers.filter(p=>p.id!==b.dataset.delete);persist();renderHistory();});}
 $('#backupBtn').onclick=()=>download('chapter-lab-backup.json',{format:'chapterlab-backup-v1',...saved});
 $('#restoreInput').onchange=async e=>{try{const f=e.target.files[0];if(!f)return;if(f.size>5e6)throw Error();const data=JSON.parse(await f.text());if(data.format!=='chapterlab-backup-v1'||!Array.isArray(data.papers)||typeof data.practice!=='object'||typeof data.overrides!=='object')throw Error();const referenced=new Set(data.papers.map(p=>p.subject).filter(subject=>SUBJECT[subject]));for(const id of [...Object.keys(data.practice),...Object.keys(data.overrides)])for(const subject of Object.keys(SUBJECT))if(id.includes('-'+subject+'-'))referenced.add(subject);toast('正在载入备份涉及的题库…');await loadSubjects([...referenced]);for(const [id,v] of Object.entries(data.practice))if(QM.has(id)&&['correct','wrong'].includes(v))saved.practice[id]=v;for(const [id,ids] of Object.entries(data.overrides))if(QM.has(id)&&Array.isArray(ids))saved.overrides[id]=ids.filter(c=>CH.has(c)&&CH.get(c).subject===QM.get(id).subject);const safe=data.papers.filter(p=>typeof p.title==='string'&&typeof p.id==='string'&&Array.isArray(p.ids)&&Number.isFinite(p.minutes)&&SUBJECT[p.subject]&&Number.isFinite(Date.parse(p.date))).map(p=>({...p,ids:p.ids.filter(id=>QM.has(id))}));const have=new Set(saved.papers.map(p=>p.id));saved.papers.push(...safe.filter(p=>!have.has(p.id)));notebookModel.restore(saved,data,notebookSubjectFor);persist();syncPractice();renderHistory();renderChapters();renderBank();if(state.view==='notebook')renderNotebook();toast('备份已合并到当前浏览器。');}catch{toast('文件不是有效的 Chapter Lab 备份。');}e.target.value='';};
 function coverageTable(){

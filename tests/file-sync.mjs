@@ -4,6 +4,7 @@ import vm from 'node:vm';
 import {createRequire} from 'node:module';
 import worker, {SyncVault} from '../file-sync-service/worker.mjs';
 const require=createRequire(import.meta.url),core=require('../docs/file-sync-core.js'),folderAPI=require('../docs/file-sync-folder.js');
+const practiceModel=require('../docs/practice-sync.js');
 const owner='b'.repeat(64),other='c'.repeat(64);
 const code=core.newCode(),keys=await core.keys(code,owner);
 assert(core.validCode(code));assert.notEqual(keys.vault,(await core.keys(code,other)).vault);
@@ -99,17 +100,17 @@ for(const match of fs.readFileSync(new URL('../docs/file-sync.js',import.meta.ur
 console.log('File sync: complete encrypted round trips, changed snapshots, wrong students/keys, tamper detection, private storage authentication and conditional updates passed.');
 
 // Two independent browser profiles: export on device one and recover using device two.
-function device(initial,folder=null,{syncCode,cloud=false}={}){
+function device(initial,folder=null,{syncCode,cloud=false,practiceSync,savedSettings}={}){
  const data=new Map(initial.map(item=>[item.metadata.id,structuredClone(item)]));
  const storage=new Map(),controls=new Map(),downloads=[];
  const timers=new Map(),events=new Map();let sequence=0,rendered=0,offline=false;
- if(syncCode)storage.set('chapterlab-file-sync-v1:'+owner,JSON.stringify({code:syncCode}));
+ if(syncCode)storage.set('chapterlab-file-sync-v1:'+owner,JSON.stringify({code:syncCode,...savedSettings}));
  let remembered=null;
  function control(id){
   if(!controls.has(id))controls.set(id,{value:'',options:[],append(option){this.options.push(option);},replaceChildren(){this.options=[];},addEventListener(){},showModal(){this.open=true;}});
   return controls.get(id);
  }
- const context=vm.createContext({ChapterLabFileSyncCore:core,ChapterLabSyncFolder:folderAPI,showDirectoryPicker:folder?async()=>folder:undefined,document:{getElementById:control,createElement:()=>({}),addEventListener:(name,fn)=>events.set(name,fn)},
+ const context=vm.createContext({ChapterLabFileSyncCore:core,ChapterLabPracticeSync:practiceModel,ChapterLabSyncFolder:folderAPI,showDirectoryPicker:folder?async()=>folder:undefined,document:{getElementById:control,createElement:()=>({}),addEventListener:(name,fn)=>events.set(name,fn)},
   setTimeout(fn){const id=++sequence;timers.set(id,fn);return id;},clearTimeout(id){timers.delete(id);},addEventListener:(name,fn)=>events.set(name,fn),
   AbortSignal,URL,location:{hostname:'example.test'},fetch:async(url,{method,headers,body}={})=>{
    if(offline)throw Error('Offline');
@@ -118,7 +119,7 @@ function device(initial,folder=null,{syncCode,cloud=false}={}){
   },
   localStorage:{getItem:key=>storage.get(key),setItem:(key,value)=>storage.set(key,value)},confirm:()=>true});
  vm.runInContext(fs.readFileSync(new URL('../docs/file-sync.js',import.meta.url),'utf8'),context);
- const sync=context.ChapterLabFileSync.create({owner:async()=>owner,store:{
+ const sync=context.ChapterLabFileSync.create({owner:async()=>owner,practiceSync,store:{
   async list(){return [...data.values()].map(item=>item.metadata);},
   async snapshot(owner,id){return data.get(id);},
   async setSyncDirectory(owner,handle){remembered=handle;},
@@ -234,3 +235,50 @@ recovered.sync.start();await recovered.flush();
 assert.equal(recovered.data.size,2,'A returning device restores both versions without opening the sync dialog');
 assert.equal(recovered.data.get(id).answers[0].filename,'new-answer.png');
 console.log('Automatic cloud sync: initial backup, one-time key setup, startup restore, revision updates, offline retry, and conflict preservation passed.');
+
+function practiceFor(student='alice',seed={}){
+ const disk=new Map(Object.entries(seed));
+ const model=practiceModel.open({getItem:key=>disk.get(key),setItem:(key,value)=>disk.set(key,value)},student);
+ let saved=model.initial();
+ return {snapshot:model.snapshot,receive(remote){const result=model.receive(remote);if(result.saved)saved=result.saved;return result.needsUpload;},get state(){return saved;},edit(produce){produce(saved);saved=model.commit(saved);},disk};
+}
+const q1='oxford-aqa-international-physics-2026-q1',q2='cie-international-mathematics-2025-q2';
+const paper={id:'paper-1',title:'复习卷',minutes:60,subject:'physics',date:'2026-11-27T09:00:00Z',ids:[q1]};
+const legacy={practice:{[q1]:'wrong'},notebook:{[q1]:{subject:'physics'}},papers:[paper],overrides:{[q1]:['physics-3.2']}};
+const shared=practiceFor('alice',{'chapterlab-v1':JSON.stringify(legacy)});
+assert(!practiceModel.size(shared.snapshot()),'Legacy browser-wide data is not claimed automatically on shared browsers');
+const sharedStorage={getItem:key=>shared.disk.get(key),setItem:(key,value)=>shared.disk.set(key,value)};
+const aliceClaim=practiceModel.open(sharedStorage,'alice');
+assert(aliceClaim.pendingLegacy());assert.deepEqual(aliceClaim.claim(),legacy);
+const bobClaim=practiceModel.open(sharedStorage,'bob',{mayClaim:true});
+assert(!bobClaim.pendingLegacy());assert(!practiceModel.size(bobClaim.snapshot()),'Claimed records cannot leak to another student');
+
+// Upgrade a vault that already contains a v1 PDF-only snapshot, including the old remembered ETag.
+vaults.clear();
+const old=device([record],null,{cloud:true,syncCode:code});old.sync.start();await old.flush();
+const oldSettings=JSON.parse([...old.storage.values()][0]);delete oldSettings.practiceEtag;
+const alice=practiceFor('alice');alice.edit(state=>Object.assign(state,structuredClone(legacy)));
+const upgraded=device([record],null,{cloud:true,syncCode:code,savedSettings:oldSettings,practiceSync:alice});
+upgraded.sync.start();await upgraded.flush();
+assert.match(upgraded.control('fileSyncActivity').textContent,/备份完成/);
+const remote=practiceFor('alice');const next=device([],null,{cloud:true,syncCode:code,practiceSync:remote});
+next.sync.start();await next.flush();
+assert.deepEqual(remote.state,legacy);
+assert.equal(next.data.get(id).answers[0].filename,'answer.png');
+
+upgraded.setOffline(true);
+alice.edit(state=>{state.practice[q1]='correct';state.papers=[];});upgraded.sync.changed();await upgraded.flush();
+remote.edit(state=>{state.practice[q2]='wrong';state.notebook[q2]={subject:'mathematics'};});next.sync.changed();await next.flush();
+upgraded.setOffline(false);upgraded.event('online');await upgraded.flush();
+next.event('online');await next.flush();
+assert.equal(remote.state.practice[q1],'correct');assert.equal(remote.state.notebook[q1].subject,'physics');
+assert.equal(remote.state.practice[q2],'wrong');assert.equal(remote.state.papers.length,0,'A saved paper deletion is not resurrected by an older device');
+assert.deepEqual(remote.state,alice.state);
+
+vaults.clear();
+const noPdf=device([],null,{cloud:true,syncCode:code,practiceSync:alice});noPdf.sync.start();await noPdf.flush();
+const practiceOnly=practiceFor();const practiceDevice=device([],null,{cloud:true,syncCode:code,practiceSync:practiceOnly});
+practiceDevice.sync.start();await practiceDevice.flush();
+assert.deepEqual(practiceOnly.state,alice.state,'Practice history synchronizes even without a PDF');
+assert.equal(practiceDevice.data.size,0);
+console.log('Practice sync: safe legacy migration, v1 upgrade, PDFs plus notebook and paper restore, offline merge, deletion, and practice-only vaults passed.');

@@ -1,6 +1,6 @@
 (function(root){
  'use strict';
- function create({store,owner,download,onRestored,canReplace}){
+ function create({store,owner,download,onRestored,canReplace,practiceSync}){
   const $=id=>root.document.getElementById(id),core=root.ChapterLabFileSyncCore;
   const dialog=$('fileSyncDialog'),status=$('fileSyncStatus'),keyInput=$('fileSyncCode');
   const select=$('fileSyncDocument'),importInput=$('fileSyncImport');
@@ -13,6 +13,10 @@
   let account,settings={},endpoint='',cryptoKeys=null,busy=false,initializing,endpointChecked=false;
   let edits=0,savedEdits=0,timer,autoRequested=false,lastCheck=0,retries=0;
   const activity=message=>{$('fileSyncActivity').textContent=message;};
+  const practiceSnapshot=()=>{
+   const records=practiceSync?.snapshot();
+   return records&&root.ChapterLabPracticeSync.size(records)?records:null;
+  };
 
   function writeSettings(next){
    try{root.localStorage.setItem('chapterlab-file-sync-v1:'+account,JSON.stringify(next));}
@@ -25,7 +29,7 @@
    importInput.disabled=busy||!cryptoKeys;
    select.disabled=busy;
    keyInput.disabled=busy;
-   upload.disabled=busy||!endpoint||!cryptoKeys||select.options.length<2;
+   upload.disabled=busy||!endpoint||!cryptoKeys||(select.options.length<2&&!practiceSnapshot());
    pull.disabled=busy||!endpoint||!cryptoKeys;
    $('fileSyncVault').textContent=cryptoKeys?.vault||'请先设置同步密钥。';
    $('fileSyncCopyVault').disabled=busy||!cryptoKeys;
@@ -228,37 +232,39 @@
   }
   async function uploadCloud(){
    const epoch=edits,snapshots=await snapshotsFor('');
-   if(!snapshots.length)throw Error('这台设备没有可备份的 PDF。');
+   const practice=practiceSnapshot();
+   if(!snapshots.length&&!practice)throw Error('这台设备没有可备份的 PDF 或练习记录。');
    const baseline=await core.signatures(snapshots,account);
-   const body=await core.pack(snapshots,account,cryptoKeys.key);
+   const body=await core.pack(snapshots,account,cryptoKeys.key,practice);
    const conditions=settings.etag?{'If-Match':settings.etag}:{'If-None-Match':'*'};
    const response=await cloudRequest('PUT',{body,headers:{...conditions,'Content-Type':'application/octet-stream'}});
    if(!response.ok)throw cloudError(response);
    const etag=response.headers.get('etag');
    if(!etag)throw Error('文件已上传，但未读取到云端版本。下次请先下载再上传。');
-   writeSettings({...settings,etag,baseline,pending:epoch!==edits});
+   writeSettings({...settings,etag,baseline,practiceEtag:etag,pending:epoch!==edits});
    savedEdits=epoch;
    return true;
   }
   async function readCloud(force=false){
    const response=await cloudRequest('GET');
    if(response.status===404){
-    if(settings.etag)writeSettings({...settings,etag:'',baseline:{}});
+    if(settings.etag)writeSettings({...settings,etag:'',practiceEtag:'',baseline:{}});
     return {empty:true,summary:'云端还没有文件。请在原设备打开网站完成备份。'};
    }
    if(!response.ok)throw cloudError(response);
    const etag=response.headers.get('etag');
    if(!etag)throw Error('无法确认云端文件版本，请稍后重试。');
-   if(!force&&etag===settings.etag&&settings.baseline){
+   if(!force&&etag===settings.etag&&settings.baseline&&(!practiceSync||etag===settings.practiceEtag)){
     await response.body?.cancel();return {summary:'云端资料已是最新。'};
    }
-   const snapshots=await core.unpack(await response.blob(),account,cryptoKeys.key);
+   const {snapshots,practice}=await core.unpackBundle(await response.blob(),account,cryptoKeys.key);
    let result;
    try{result=await core.mergeCloud(store,account,snapshots,settings.baseline,canReplace);}
    catch(error){await reloadViews().catch(()=>{});throw error;}
-   writeSettings({...settings,etag,baseline:result.baseline});
+   const needsUpload=practiceSync?.receive(practice)??false;
+   writeSettings({...settings,etag,baseline:result.baseline,practiceEtag:etag,pending:settings.pending||needsUpload});
    if(result.added||result.updated)await reloadViews();
-   const summary=`云端同步完成：新增 ${result.added} 份，更新 ${result.updated} 份 PDF。${result.conflicts?`已保留 ${result.conflicts} 份不同版本。`:''}`;
+   const summary=`云端同步完成：新增 ${result.added} 份，更新 ${result.updated} 份 PDF。${practice?'错题和练习记录也已合并。':''}${result.conflicts?`已保留 ${result.conflicts} 份不同版本。`:''}`;
    return {summary};
   }
   async function syncAutomatically(){
@@ -272,7 +278,7 @@
      if(!cryptoKeys){activity('换设备时，在「文件同步」填写原来的密钥即可自动恢复。');status.textContent='请填入原设备的同步密钥，或首次使用时生成。';return;}
      activity('正在读取云端资料…');
      const remote=await readCloud();
-     if((settings.pending||edits>savedEdits||remote.empty)&&(await store.list(account)).length){
+     if((settings.pending||edits>savedEdits||remote.empty)&&(practiceSnapshot()||(await store.list(account)).length)){
       activity('正在加密备份到云端…');
       await uploadCloud();
       status.textContent='云端备份完成，可在另一台设备查看。';

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="登录 Chapter Lab 后，按 OxfordAQA 官方单元筛选物理、数学、进阶数学、化学、生物与经济真题，跨考试局生成章节练习卷，并在公共聊天自习室交流。"><title>Chapter Lab · 学员登录</title><link rel="stylesheet" href="style.css?v=1.25.0"><link rel="stylesheet" href="study-room.css?v=1.25.0"><link rel="stylesheet" href="auth.css?v=1.25.0"><link rel="stylesheet" href="notebook.css?v=1.25.0"><link rel="stylesheet" href="pdf-library.css?v=1.25.0"><link rel="stylesheet" href="study-assistant.css?v=1.25.0"></head>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="登录 Chapter Lab 后，按 OxfordAQA 官方单元筛选物理、数学、进阶数学、化学、生物与经济真题，跨考试局生成章节练习卷，并在公共聊天自习室交流。"><title>Chapter Lab · 学员登录</title><link rel="stylesheet" href="style.css?v=1.26.0"><link rel="stylesheet" href="study-room.css?v=1.26.0"><link rel="stylesheet" href="auth.css?v=1.26.0"><link rel="stylesheet" href="notebook.css?v=1.26.0"><link rel="stylesheet" href="pdf-library.css?v=1.26.0"><link rel="stylesheet" href="study-assistant.css?v=1.26.0"></head>
 <body class="auth-locked">
 <section id="authGate" class="auth-gate" aria-labelledby="authHeadline">
 <div class="auth-visual">
@@ -52,7 +52,7 @@
 </div>
 </section>
 <section id="papersView" class="view hidden"><div class="panel-heading"><div><h2>整卷档案</h2><p>网站公开目录中的原卷与评分标准；只有标记「已拆题」的试卷进入章节题库。</p></div><input id="paperSearch" placeholder="搜索年份、单元或卷号" aria-label="搜索原卷"></div><div id="paperList"></div><div id="paperPagination"></div></section>
-<section id="historyView" class="view hidden"><div class="panel-heading"><div><h2>我的练习</h2><p>练习卷、错题与章节调整保存在当前浏览器。导出备份可迁移到其他设备。</p></div><div><button class="quiet" id="backupBtn">导出备份</button><label class="button">导入备份<input type="file" id="restoreInput" accept="application/json" hidden></label></div></div><section class="pdf-history-section" aria-labelledby="pdfHistoryTitle"><div class="pdf-history-heading"><div><h3 id="pdfHistoryTitle">我导入的 PDF</h3><p id="pdfHistoryCount" role="status" aria-live="polite"></p></div><div><select id="pdfHistorySubject" aria-label="按科目筛选 PDF"><option value="">全部科目</option><option value="physics">物理</option><option value="mathematics">数学</option><option value="furthermathematics">进阶数学</option><option value="chemistry">化学</option><option value="biology">生物</option><option value="economics">经济</option></select><button type="button" class="quiet" id="fileSyncOpen">文件同步</button><button type="button" class="primary" id="pdfUploadHistory">＋ 导入 PDF</button></div></div><p class="pdf-local-note">云端已开通的设备会在登录后自动恢复 PDF、已拆单题和答案。</p><p id="fileSyncActivity" class="pdf-local-note" role="status" aria-live="polite"></p><div id="pdfHistoryList"></div><div class="pdf-history-heading"><h3>已保存的单题</h3><span id="pdfSavedQuestionCount" class="pdf-local-note"></span></div><div id="pdfSavedQuestionList"></div></section><h3 class="pdf-saved-paper-heading">我保存的练习卷</h3><div id="historyList"></div></section>
+<section id="historyView" class="view hidden"><div class="panel-heading"><div><h2>我的练习</h2><p>开通文件同步后，错题、练习和已保存的练习卷会自动跨设备同步。</p></div><div><button class="quiet" type="button" id="claimLegacyPractice" hidden>迁入此浏览器的旧练习记录</button><button class="quiet" id="backupBtn">导出备份</button><label class="button">导入备份<input type="file" id="restoreInput" accept="application/json" hidden></label></div></div><section class="pdf-history-section" aria-labelledby="pdfHistoryTitle"><div class="pdf-history-heading"><div><h3 id="pdfHistoryTitle">我导入的 PDF</h3><p id="pdfHistoryCount" role="status" aria-live="polite"></p></div><div><select id="pdfHistorySubject" aria-label="按科目筛选 PDF"><option value="">全部科目</option><option value="physics">物理</option><option value="mathematics">数学</option><option value="furthermathematics">进阶数学</option><option value="chemistry">化学</option><option value="biology">生物</option><option value="economics">经济</option></select><button type="button" class="quiet" id="fileSyncOpen">文件同步</button><button type="button" class="primary" id="pdfUploadHistory">＋ 导入 PDF</button></div></div><p class="pdf-local-note">云端已开通的设备会在登录后自动恢复 PDF、已拆单题和答案。</p><p id="fileSyncActivity" class="pdf-local-note" role="status" aria-live="polite"></p><div id="pdfHistoryList"></div><div class="pdf-history-heading"><h3>已保存的单题</h3><span id="pdfSavedQuestionCount" class="pdf-local-note"></span></div><div id="pdfSavedQuestionList"></div></section><h3 class="pdf-saved-paper-heading">我保存的练习卷</h3><div id="historyList"></div><h3 class="pdf-saved-paper-heading">练习过的题目</h3><div id="practicedQuestionList"></div></section>
 <section id="studyView" class="view hidden">
 <div class="study-hero"><div><div class="eyebrow">PUBLIC STUDY ROOM · 无需注册</div><h2>把“一个人学”变成<em>一起坚持。</em></h2><p>聊聊卡住的题、交换思路，或只是安静地打卡。这里是一间公开、临时的自习室。</p></div><div id="studyRelay" class="study-relay" data-state="connecting" role="status" aria-live="polite"><span></span><strong>正在连接</strong><small>公共消息中继</small></div></div>
 <div class="study-shell">
@@ -85,7 +85,7 @@
  <div class="dialog-shell">
   <button class="close" type="button" data-close="fileSyncDialog" aria-label="关闭文件同步">×</button>
   <h2 id="fileSyncTitle">文件同步</h2>
-  <p>将原 PDF、截题、章节分类、本地错题状态和答案附件一起带到另一台设备。</p>
+  <p>同步原 PDF、截题和答案，也同步题库错题、练习记录和已保存的练习卷。</p>
   <p id="fileSyncStatus" role="status" aria-live="polite"></p>
   <section class="file-sync-section" aria-labelledby="fileSyncKeyTitle">
    <h3 id="fileSyncKeyTitle">同步密钥</h3>
@@ -117,7 +117,7 @@
   <details class="file-sync-section">
    <summary>Cloudflare 私有云端（可选）</summary>
    <p id="fileSyncCloudState" class="pdf-local-note">正在读取配置…</p>
-   <div class="file-sync-actions"><button id="fileSyncPush" class="quiet" type="button" disabled>上传全部 PDF</button><button id="fileSyncPull" class="quiet" type="button" disabled>下载到此设备</button></div>
+   <div class="file-sync-actions"><button id="fileSyncPush" class="quiet" type="button" disabled>备份全部资料</button><button id="fileSyncPull" class="quiet" type="button" disabled>下载到此设备</button></div>
    <details class="pdf-local-note"><summary>同步存储编号</summary><code id="fileSyncVault"></code><div><button id="fileSyncCopyVault" type="button" class="text-button" disabled>复制存储编号</button></div><p>开通云端只需要这个编号。请勿分享上面的同步密钥或学员密码。</p></details>
   </details>
  </div>
@@ -183,5 +183,5 @@
   <div id="assistantQuestionContent"></div>
  </div>
 </dialog>
-<div id="toast" role="status"></div><div id="printArea"></div><script src="login-activity.js?v=1.25.0"></script><script src="auth.js?v=1.25.0"></script>
+<div id="toast" role="status"></div><div id="printArea"></div><script src="login-activity.js?v=1.26.0"></script><script src="auth.js?v=1.26.0"></script>
 </body></html>

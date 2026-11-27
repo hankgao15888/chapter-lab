@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 import {createRequire} from 'node:module';
-const require=createRequire(import.meta.url),model=require('../docs/notebook-state.js'),assistant=require('../docs/study-assistant.js');
+const require=createRequire(import.meta.url),model=require('../docs/notebook-state.js'),practice=require('../docs/practice-sync.js'),assistant=require('../docs/study-assistant.js');
 const catalog=JSON.parse(fs.readFileSync(new URL('../data/catalog.json',import.meta.url),'utf8'));
 const physics=catalog.questions.filter(q=>q.subject==='physics').slice(0,3);
 const chemistry=catalog.questions.find(q=>q.subject==='chemistry');
@@ -24,7 +24,7 @@ function app(storage,pdfRows=[]){
  const db={...catalog,questions:[...physics,chemistry],subjectIndex:{}};
  const context=vm.createContext({document,DB:db,console,Map,Set,URL,Blob,
   localStorage:{getItem:key=>storage[key]||null,setItem:(key,value)=>storage[key]=value},
-  ChapterLabAssistant:{...assistant,mount(options){assistantActions=options;}},ChapterLabNotebook:model,ChapterLabAuth:{isAuthenticated:()=>true,currentStudent:()=>'Student Alice',normalizeStudentName:name=>name.toLowerCase()},
+  ChapterLabAssistant:{...assistant,mount(options){assistantActions=options;}},ChapterLabNotebook:model,ChapterLabPracticeSync:practice,ChapterLabAuth:{isAuthenticated:()=>true,currentStudent:()=>'Student Alice',normalizeStudentName:name=>name.toLowerCase(),isOnlyLocalStudent:()=>true},
   ChapterLabPDFLibrary:{create:options=>({renderHistory(){},openRecord(...ids){openedPDFs.push(ids);},entries:()=>pdfRows,questionCard:q=>`<article>${q.label}<button data-pdf-status="correct">我已掌握</button></article>`,handleAction:event=>{const q=pdfRows.find(q=>q.id===event.target.dataset.pdfId);if(q){q.notebookStatus=event.target.dataset.pdfStatus;options.onChange();}}})},
   ChapterLabCatalogLoader:{createCatalog:()=>({isLoaded:()=>true,loadMany:async subjects=>subjects.map(subject=>db.questions.filter(q=>q.subject===subject))})},
   ChapterLabCatalog:{availableYears:()=>[2026]},ChapterLabSelection:{selectPaper:()=>null},
@@ -34,7 +34,7 @@ function app(storage,pdfRows=[]){
  context.window=context;
  vm.runInContext(fs.readFileSync(new URL('../docs/app.js',import.meta.url),'utf8'),context);
  function click(dataset,selector){const target={dataset,closest:query=>query===selector?target:null};return {target};}
- return {element,assistant:assistantActions,openedPDFs,async settle(){await Promise.resolve();await Promise.resolve();},home(){vm.runInContext("switchView('notebook')",context);},subject(subject){element('#notebookSubjects').onclick(click({notebookSubject:subject},'[data-notebook-subject]'));},tab(status){element('#notebookStatusTabs').onclick(click({notebookStatus:status},'[data-notebook-status]'));},result(id,status){const event=click({questionId:id,notebookResult:status},'[data-notebook-result]');clicks.forEach(handler=>handler(event));}};
+ return {element,assistant:assistantActions,openedPDFs,async settle(){await Promise.resolve();await Promise.resolve();},home(){vm.runInContext("switchView('notebook')",context);},history(){vm.runInContext("switchView('history')",context);},subject(subject){element('#notebookSubjects').onclick(click({notebookSubject:subject},'[data-notebook-subject]'));},tab(status){element('#notebookStatusTabs').onclick(click({notebookStatus:status},'[data-notebook-status]'));},result(id,status){const event=click({questionId:id,notebookResult:status},'[data-notebook-result]');clicks.forEach(handler=>handler(event));}};
 }
 const storage={'chapterlab-v1':JSON.stringify({practice:{[physics[0].id]:'wrong',[physics[1].id]:'wrong',[physics[2].id]:'correct',[chemistry.id]:'wrong'},overrides:{},papers:[]})};
 let ui=app(storage);await ui.settle();ui.home();
@@ -65,6 +65,9 @@ ui.element('#notebookBack').onclick();ui.subject('biology');await ui.settle();
 assert.equal(ui.element('#notebookPendingCount').textContent,'0');
 assert(ui.element('#notebookList').innerHTML.includes('暂时没有待掌握'));
 ui.home();assert.equal((ui.element('#notebookSubjects').innerHTML.match(/data-notebook-subject=/g)||[]).length,6);
+ui.subject('physics');await ui.settle();ui.history();
+assert(ui.element('#practicedQuestionList').innerHTML.includes(physics[0].id),'Tracked questions are directly accessible from My Practice');
+assert(!ui.element('#practicedQuestionList').innerHTML.includes(chemistry.id));
 console.log('Notebook app events: subject home, isolated lists, mark/revisit, refresh persistence and empty subjects passed.');
 
 const local={id:'local-pdf-id',questionId:'q1',documentId:'file',label:'Imported force exercise',text:'local force question',number:'Q1',title:'My PDF',localPDF:true,subject:'physics',chapters:[physics[0].chapters[0]],notebookStatus:'wrong',autoSelectable:false};

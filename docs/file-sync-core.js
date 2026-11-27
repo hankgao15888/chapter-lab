@@ -3,6 +3,7 @@
  'use strict';
  const encoder=new TextEncoder(),decoder=new TextDecoder('utf-8',{fatal:true});
  const magic=encoder.encode('CLSYNC1\0');
+ const practiceMagic=encoder.encode('CLSYNC2\0');
  const maxBytes=80*1024*1024;
  const maxHeader=12*1024*1024;
  const subjects=new Set(['physics','mathematics','furthermathematics','chemistry','biology','economics']);
@@ -56,32 +57,37 @@
   }
   return {metadata,pdfBytes:snapshot.blob.size,attachments};
  }
- async function pack(snapshots,owner,key){
-  if(!snapshots.length||snapshots.length>300)throw Error('请至少选择一份 PDF，每个同步包最多包含 300 份。');
+ async function pack(snapshots,owner,key,practice=null){
+  if((!snapshots.length&&!practice)||snapshots.length>300)throw Error('没有可同步的资料，或同步包超过 300 份 PDF。');
   const total=snapshots.reduce((sum,item)=>sum+item.blob.size+item.answers.reduce((n,a)=>n+a.blob.size,0),0);
   if(total>maxBytes)throw Error('单个同步包最多 80 MB。可分批导出 PDF。');
   const items=[];
   for(const snapshot of snapshots)items.push(await describe(snapshot,owner));
-  const header=encoder.encode(JSON.stringify(items));
+  const version=practice?practiceMagic:magic;
+  const header=encoder.encode(JSON.stringify(practice?{owner,items,practice}:items));
   if(header.length>maxHeader||header.length+total+40>maxBytes)throw Error('同步包超过 80 MB。可分批导出 PDF。');
   const length=new Uint8Array(4);new DataView(length.buffer).setUint32(0,header.length);
   const payload=new Blob([length,header,...snapshots.flatMap(item=>[item.blob,...item.answers.map(answer=>answer.blob)])]);
   const iv=root.crypto.getRandomValues(new Uint8Array(12));
-  const ciphertext=await root.crypto.subtle.encrypt({name:'AES-GCM',iv,additionalData:magic},key,await payload.arrayBuffer());
-  return new Blob([magic,iv,ciphertext],{type:'application/octet-stream'});
+  const ciphertext=await root.crypto.subtle.encrypt({name:'AES-GCM',iv,additionalData:version},key,await payload.arrayBuffer());
+  return new Blob([version,iv,ciphertext],{type:'application/octet-stream'});
  }
- async function unpack(blob,owner,key){
+ async function unpackBundle(blob,owner,key){
   if(blob.size>maxBytes||blob.size<magic.length+12+20)throw Error('文件太小或超过 80 MB，请选择有效同步包。');
   const input=new Uint8Array(await blob.arrayBuffer());
-  if(!magic.every((value,i)=>input[i]===value))throw Error('请选择 Chapter Lab 的 .clsync 同步包。');
+  const version=[magic,practiceMagic].find(candidate=>candidate.every((value,i)=>input[i]===value));
+  if(!version)throw Error('请选择 Chapter Lab 的 .clsync 同步包。');
   let bytes;
   try{
-   bytes=await root.crypto.subtle.decrypt({name:'AES-GCM',iv:input.subarray(magic.length,magic.length+12),additionalData:magic},key,input.subarray(magic.length+12));
+   bytes=await root.crypto.subtle.decrypt({name:'AES-GCM',iv:input.subarray(version.length,version.length+12),additionalData:version},key,input.subarray(version.length+12));
   }catch{throw Error('无法解锁同步包。请确认是同一学员账号、同一同步密钥，且文件没有损坏。');}
   const headerLength=new DataView(bytes).getUint32(0);
   if(!integer(headerLength,1,maxHeader)||headerLength+4>bytes.byteLength)throw Error('同步包目录无效。');
-  const items=JSON.parse(decoder.decode(new Uint8Array(bytes,4,headerLength)));
-  if(!Array.isArray(items)||!items.length||items.length>300)throw Error('同步包中没有有效 PDF。');
+  const header=JSON.parse(decoder.decode(new Uint8Array(bytes,4,headerLength)));
+  const hasPractice=version===practiceMagic;
+  if(hasPractice&&(header?.owner!==owner||!header.practice||typeof header.practice!=='object'||Array.isArray(header.practice)))throw Error('同步包里的练习记录无效或不属于这个学员。');
+  const items=hasPractice?header.items:header;
+  if(!Array.isArray(items)||(!items.length&&!hasPractice)||items.length>300)throw Error('同步包目录没有有效资料。');
   const result=[],recordIds=new Set();let offset=4+headerLength;
   function take(size,max,type){
    if(!integer(size,1,max)||offset+size>bytes.byteLength)throw Error('同步包文件大小无效。');
@@ -107,8 +113,9 @@
    result.push({metadata:{...metadata,owner,size:pdfBytes},blob:pdf.blob,answers});
   }
   if(offset!==bytes.byteLength)throw Error('同步包中有额外的文件数据。');
-  return result;
+  return {snapshots:result,practice:hasPractice?header.practice:null};
  }
+ async function unpack(blob,owner,key){return (await unpackBundle(blob,owner,key)).snapshots;}
  async function identity(snapshot,owner){
   const item=await describe(snapshot,owner);
   delete item.metadata.id;
@@ -150,6 +157,6 @@
   }
   return result;
  }
- const api={newCode,validCode,keys,pack,unpack,merge,mergeCloud,signatures,maxBytes};
+ const api={newCode,validCode,keys,pack,unpack,unpackBundle,merge,mergeCloud,signatures,maxBytes};
  if(typeof module==='object'&&module.exports)module.exports=api;else root.ChapterLabFileSyncCore=api;
 })(globalThis);

@@ -1,6 +1,6 @@
 (function(root){
  'use strict';
- function create({chapters,getOwner,getSubject,toast,onImported=()=>{},onChange=()=>{},storage,loadDocument}){
+ function create({chapters,getOwner,getSubject,toast,onImported=()=>{},onChange=()=>{},practiceSync,storage,loadDocument}){
   const $=selector=>document.querySelector(selector),core=root.ChapterLabPDFCore,baseStore=storage||root.ChapterLabPDFStore.create();
   let fileSync;
   const store={...baseStore};
@@ -31,7 +31,7 @@
   }
   const acquirePDF=loadDocument||loadPDF;
   const questionAnswers=root.ChapterLabPDFQuestionAnswers.create({store,owner,loadPDF:acquirePDF,download});
-  fileSync=root.ChapterLabFileSync.create({store:baseStore,owner,download,onRestored:renderHistory,canReplace:id=>current?.id!==id});
+  fileSync=root.ChapterLabFileSync.create({store:baseStore,owner,download,onRestored:renderHistory,canReplace:id=>current?.id!==id,practiceSync});
   function metadata(record){const {blob,...meta}=record;return meta;}
   async function refresh(){recordsCache=await store.list(await owner());onChange();}
   function entries(){return core.questionEntries(recordsCache);}
@@ -633,7 +633,7 @@
   $('#pdfViewerDialog').addEventListener('close',()=>{questionAnswers.close();return cleanup();});
   root.addEventListener('pagehide',()=>{questionAnswers.close();return cleanup();});
   fileSync?.start();
-  return {renderHistory,importFiles,openRecord,refresh,entries,questionCard,handleAction,setNotebook};
+  return {renderHistory,importFiles,openRecord,refresh,entries,questionCard,handleAction,setNotebook,practiceChanged:()=>fileSync?.changed()};
  }
  root.ChapterLabPDFLibrary={create};
 })(globalThis);
