@@ -3,6 +3,7 @@
  function create(indexedDB){
   if(arguments.length===0){try{indexedDB=root.indexedDB;}catch{indexedDB=null;}}
   let opening;
+  const withRevision=meta=>({...meta,syncRevision:root.crypto.randomUUID()});
   function open(){
    if(!indexedDB)return Promise.reject(new Error('浏览器不支持本地 PDF 存储。请使用常规浏览器并允许站点存储。'));
    if(!opening)opening=new Promise((resolve,reject)=>{
@@ -35,7 +36,7 @@
    });
   }
   async function save(meta,blob){
-   return transaction(['documents','files'],'readwrite',tx=>{tx.objectStore('documents').put(meta);tx.objectStore('files').put({id:meta.id,blob});});
+   return transaction(['documents','files'],'readwrite',tx=>{tx.objectStore('documents').put(withRevision(meta));tx.objectStore('files').put({id:meta.id,blob});});
   }
   // Attachments share the existing binary store; document lists never load their bytes.
   const answerKey=(documentId,questionId)=>'question-answer:'+JSON.stringify([documentId,questionId]);
@@ -61,6 +62,7 @@
      const files=tx.objectStore('files'),id=answerKey(documentId,questionId);
      if(attachment)files.put({id,attachment});
      else files.delete(id);
+     tx.objectStore('documents').put(withRevision(meta));
     };
    });
   }
@@ -93,13 +95,16 @@
     }:null;
    });
   }
-  async function restore(owner,{metadata,blob,answers}){
+  async function restore(owner,{metadata,blob,answers},replace){
    return transaction(['documents','files'],'readwrite',tx=>{
     const documents=tx.objectStore('documents'),files=tx.objectStore('files');
     const existing=documents.get(metadata.id);let added=false;
     existing.onsuccess=()=>{
-     if(existing.result)return;
-     documents.put({...metadata,owner});
+     const prior=existing.result;
+     if(prior&&(!replace||prior.owner!==owner||prior.syncRevision!==replace.revision||!replace.allowed()))return;
+     if(!prior&&replace)return;
+     for(const question of prior?.questions||[])files.delete(answerKey(metadata.id,question.id));
+     documents.put(withRevision({...metadata,owner}));
      files.put({id:metadata.id,blob});
      for(const {questionId,...attachment} of answers)files.put({id:answerKey(metadata.id,questionId),attachment});
      added=true;
@@ -119,7 +124,7 @@
      for(const question of previous.questions){
       if(!retained.has(question.id)||discard.has(question.id))files.delete(answerKey(meta.id,question.id));
      }
-     store.put({...meta,owner});
+     store.put(withRevision({...meta,owner}));
     };
    });
   }

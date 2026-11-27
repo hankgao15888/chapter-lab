@@ -1,7 +1,12 @@
 (function(root){
  'use strict';
  function create({chapters,getOwner,getSubject,toast,onImported=()=>{},onChange=()=>{},storage,loadDocument}){
-  const $=selector=>document.querySelector(selector),core=root.ChapterLabPDFCore,store=storage||root.ChapterLabPDFStore.create();
+  const $=selector=>document.querySelector(selector),core=root.ChapterLabPDFCore,baseStore=storage||root.ChapterLabPDFStore.create();
+  let fileSync;
+  const store={...baseStore};
+  for(const method of ['save','update','setAnswer'])store[method]=async(...args)=>{
+   const result=await baseStore[method](...args);fileSync?.changed();return result;
+  };
   const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const chapterMap=new Map(chapters.map(ch=>[ch.id,ch]));
   let recordsCache=[];
@@ -26,7 +31,7 @@
   }
   const acquirePDF=loadDocument||loadPDF;
   const questionAnswers=root.ChapterLabPDFQuestionAnswers.create({store,owner,loadPDF:acquirePDF,download});
-  root.ChapterLabFileSync.create({store,owner,download,onRestored:renderHistory});
+  fileSync=root.ChapterLabFileSync.create({store:baseStore,owner,download,onRestored:renderHistory,canReplace:id=>current?.id!==id});
   function metadata(record){const {blob,...meta}=record;return meta;}
   async function refresh(){recordsCache=await store.list(await owner());onChange();}
   function entries(){return core.questionEntries(recordsCache);}
@@ -627,6 +632,7 @@
   $('#pdfExportClassification').onclick=()=>{if(current)download(new Blob([JSON.stringify({format:'chapterlab-pdf-classification-v1',...metadata(current)},null,2)],{type:'application/json'}),current.title+'-章节分类.json');};
   $('#pdfViewerDialog').addEventListener('close',()=>{questionAnswers.close();return cleanup();});
   root.addEventListener('pagehide',()=>{questionAnswers.close();return cleanup();});
+  fileSync?.start();
   return {renderHistory,importFiles,openRecord,refresh,entries,questionCard,handleAction,setNotebook};
  }
  root.ChapterLabPDFLibrary={create};

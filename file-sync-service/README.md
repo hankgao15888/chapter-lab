@@ -16,7 +16,7 @@
 2. 在 `file-sync-service/` 使用 Wrangler 登录，然后运行 `wrangler deploy`。配置会建立 SQLite Durable Object；不需要另建数据库。`SYNC_ORIGINS` 应为实际站点的 HTTPS origin，不包含目录或结尾斜线。
 3. 运行 `wrangler secret put SYNC_VAULTS`，填写获准使用云端的完整存储编号，多个编号以英文逗号分隔。更新时应保留仍需使用的编号。
 4. 将 Worker 的 HTTPS 地址填入 `docs/file-sync-config.json` 的 `endpoint`，发布 GitHub Pages。该文件只含服务地址。不要提交 Cloudflare API 密钥、学员同步密钥或答案文件。
-5. 原设备点「上传全部 PDF」，新设备用同一学员名和同步密钥点「下载到此设备」。云端同步包最多 80 MB；超过时可通过坚果云或按 PDF 分批导出同步包。遇到版本冲突，先下载合并，再上传。导入保留本地版本，不传播删除。
+5. 在原设备登录后会自动备份已有资料。新设备用同一学员名登录，设置一次原密钥即可自动恢复。「上传全部 PDF」和「下载到此设备」仍可手动使用。云端同步包最多 80 MB；超过时可通过坚果云或按 PDF 分批导出同步包。同步不会删除另一台设备上已有的本地文件。
 
 服务校验同步存储编号与独立派生的访问令牌，只收加密包。学员名、PDF 文件名及解密密钥不发送到服务。每个编号对应独立的存储空间。上传完成前保留上一份完整备份，使用版本匹配防止意外覆盖。撤销访问可从 `SYNC_VAULTS` 移除对应编号；移除编号本身不会删除已存的加密数据。免费额度及超限处理见 [Cloudflare Durable Objects 定价](https://developers.cloudflare.com/durable-objects/platform/pricing/)。
 

@@ -44,7 +44,7 @@
   return ids;
  }
  async function describe(snapshot,owner){
-  const {owner:ignored,...metadata}=snapshot.metadata;
+  const {owner:ignored,syncRevision:localRevision,...metadata}=snapshot.metadata;
   const ids=validateDocument(metadata,owner);
   if(!integer(snapshot.blob.size,1,50*1024*1024))throw Error('原 PDF 超出可同步的大小。');
   const seen=new Set();
@@ -129,6 +129,27 @@
   }
   return result;
  }
- const api={newCode,validCode,keys,pack,unpack,merge,maxBytes};
+ async function signatures(snapshots,owner){
+  const map={};for(const item of snapshots)map[item.metadata.id]=await identity(item,owner);return map;
+ }
+ async function mergeCloud(store,owner,snapshots,baseline={},canReplace=()=>true){
+  const result={added:0,same:0,conflicts:0,updated:0,baseline:await signatures(snapshots,owner)};
+  for(const item of snapshots){
+   const id=item.metadata.id,remote=result.baseline[id];
+   if(await store.restore(owner,item)){result.added++;continue;}
+   const local=await store.snapshot(owner,id);
+   const localContent=local&&await identity(local,owner);
+   if(localContent===remote||baseline[id]===remote){result.same++;continue;}
+   if(local&&localContent===baseline[id]&&await store.restore(owner,item,{revision:local.metadata.syncRevision,allowed:()=>canReplace(id)}))result.updated++;
+   else {
+    const alternate=`${owner}:${item.metadata.fingerprint}:sync-${remote}`;
+    const copy={...item,metadata:{...item.metadata,id:alternate}};
+    if(await store.restore(owner,copy)){result.added++;result.conflicts++;}
+    else result.same++;
+   }
+  }
+  return result;
+ }
+ const api={newCode,validCode,keys,pack,unpack,merge,mergeCloud,signatures,maxBytes};
  if(typeof module==='object'&&module.exports)module.exports=api;else root.ChapterLabFileSyncCore=api;
 })(globalThis);

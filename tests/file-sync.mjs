@@ -99,26 +99,35 @@ for(const match of fs.readFileSync(new URL('../docs/file-sync.js',import.meta.ur
 console.log('File sync: complete encrypted round trips, changed snapshots, wrong students/keys, tamper detection, private storage authentication and conditional updates passed.');
 
 // Two independent browser profiles: export on device one and recover using device two.
-function device(initial,folder=null){
+function device(initial,folder=null,{syncCode,cloud=false}={}){
  const data=new Map(initial.map(item=>[item.metadata.id,structuredClone(item)]));
  const storage=new Map(),controls=new Map(),downloads=[];
+ const timers=new Map(),events=new Map();let sequence=0,rendered=0,offline=false;
+ if(syncCode)storage.set('chapterlab-file-sync-v1:'+owner,JSON.stringify({code:syncCode}));
  let remembered=null;
  function control(id){
   if(!controls.has(id))controls.set(id,{value:'',options:[],append(option){this.options.push(option);},replaceChildren(){this.options=[];},addEventListener(){},showModal(){this.open=true;}});
   return controls.get(id);
  }
- const context=vm.createContext({ChapterLabFileSyncCore:core,ChapterLabSyncFolder:folderAPI,showDirectoryPicker:folder?async()=>folder:undefined,document:{getElementById:control,createElement:()=>({})},
-  AbortSignal,location:{hostname:'example.test'},fetch:async()=>({ok:true,json:async()=>({endpoint:''})}),
+ const context=vm.createContext({ChapterLabFileSyncCore:core,ChapterLabSyncFolder:folderAPI,showDirectoryPicker:folder?async()=>folder:undefined,document:{getElementById:control,createElement:()=>({}),addEventListener:(name,fn)=>events.set(name,fn)},
+  setTimeout(fn){const id=++sequence;timers.set(id,fn);return id;},clearTimeout(id){timers.delete(id);},addEventListener:(name,fn)=>events.set(name,fn),
+  AbortSignal,URL,location:{hostname:'example.test'},fetch:async(url,{method,headers,body}={})=>{
+   if(offline)throw Error('Offline');
+   if(url==='file-sync-config.json')return {ok:true,json:async()=>({endpoint:cloud?'https://example.invalid':''})};
+   return worker.fetch(new Request(url,{method,headers:{...headers,Origin:origin,...(body?{'Content-Length':String(body.size)}:{})},body}),env);
+  },
   localStorage:{getItem:key=>storage.get(key),setItem:(key,value)=>storage.set(key,value)},confirm:()=>true});
  vm.runInContext(fs.readFileSync(new URL('../docs/file-sync.js',import.meta.url),'utf8'),context);
- context.ChapterLabFileSync.create({owner:async()=>owner,store:{
+ const sync=context.ChapterLabFileSync.create({owner:async()=>owner,store:{
   async list(){return [...data.values()].map(item=>item.metadata);},
   async snapshot(owner,id){return data.get(id);},
   async setSyncDirectory(owner,handle){remembered=handle;},
   async getSyncDirectory(){return remembered;},
-  async restore(owner,item){if(data.has(item.metadata.id))return false;data.set(item.metadata.id,item);return true;}
- },download:(blob,name)=>downloads.push({blob,name}),onRestored(){}});
- return {control,downloads,data};
+  async restore(owner,item,replace){const original=data.get(item.metadata.id);if(original&&(!replace||original.metadata.syncRevision!==replace.revision||!replace.allowed()))return false;data.set(item.metadata.id,structuredClone(item));return true;}
+ },download:(blob,name)=>downloads.push({blob,name}),onRestored(){rendered++;}});
+ return {control,downloads,data,sync,rendered:()=>rendered,storage,setOffline(value){offline=value;},event(name){events.get(name)?.();},async flush(){
+  let count=0;while(timers.size){assert(count++<8,'Scheduled sync must settle');const [id,fn]=timers.entries().next().value;timers.delete(id);await fn();}
+ }};
 }
 const source=device([record]),target=device([]);
 await source.control('fileSyncOpen').onclick();
@@ -191,3 +200,37 @@ await two.control('fileSyncFolderRestore').onclick();
 assert.match(two.control('fileSyncStatus').textContent,/跳过 1 份/);
 assert.match(target.control('fileSyncFolderState').textContent,/下载/);
 console.log('Nutstore folder workflow: independent browser profiles save and restore encrypted screenshots and answers; remembered folder and mobile fallback passed.');
+
+vaults.clear();
+const main=device([record],null,{cloud:true,syncCode:code}),fresh=device([],null,{cloud:true});
+main.sync.start();await main.flush();
+assert.match(main.control('fileSyncActivity').textContent,/云端备份完成/,'Opening the source automatically creates the first Cloudflare backup');
+fresh.sync.start();await fresh.flush();
+assert.equal(fresh.data.size,0,'A new device needs the original key');
+await fresh.control('fileSyncOpen').onclick();
+fresh.control('fileSyncCode').value=code;
+await fresh.control('fileSyncUse').onclick();await fresh.flush();
+assert.deepEqual(fresh.data.get(id).metadata.questions,record.metadata.questions);
+assert.equal(fresh.data.get(id).answers[0].filename,'answer.png');
+assert.equal(fresh.rendered(),1,'The questions and practice view refresh automatically');
+
+main.data.get(id).metadata.questions[0].notebookStatus='correct';
+main.sync.changed();await main.flush();
+fresh.event('online');await fresh.flush();
+assert.equal(fresh.data.get(id).metadata.questions[0].notebookStatus,'correct');
+assert.equal(fresh.data.size,1,'A clean device updates the existing PDF without duplicating it');
+
+main.setOffline(true);
+main.data.get(id).answers[0].filename='new-answer.png';
+main.sync.changed();await main.flush();
+assert.equal(JSON.parse([...main.storage.values()][0]).pending,true,'Failed backup keeps unsynced edits queued');
+fresh.data.get(id).metadata.questions[0].notebookStatus='wrong';
+fresh.sync.changed();await fresh.flush();
+main.setOffline(false);main.event('online');await main.flush();
+assert.equal(main.data.get(id).answers[0].filename,'new-answer.png');
+assert.equal(main.data.size,2,'Concurrent edits retain both versions');
+const recovered=device([],null,{cloud:true,syncCode:code});
+recovered.sync.start();await recovered.flush();
+assert.equal(recovered.data.size,2,'A returning device restores both versions without opening the sync dialog');
+assert.equal(recovered.data.get(id).answers[0].filename,'new-answer.png');
+console.log('Automatic cloud sync: initial backup, one-time key setup, startup restore, revision updates, offline retry, and conflict preservation passed.');
